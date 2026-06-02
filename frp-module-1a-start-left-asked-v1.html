@@ -1,0 +1,2286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Start → Left → Asked | Asher PSLE Quiz Lab</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #536170;
+  --line: #d8ded6;
+  --primary: #225e54;
+  --primary-dark: #18463f;
+  --accent: #d55f3a;
+  --checkpoint: #344b7a;
+  --success: #1f6d46;
+  --retry: #9a4b1f;
+  --shadow: 0 18px 45px rgba(28, 36, 48, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(34, 94, 84, 0.09), rgba(255, 255, 255, 0) 38%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 32px 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.completion-panel,
+.error-panel {
+  margin-top: clamp(24px, 8vh, 80px);
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.question-panel {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.eyebrow,
+.question-id,
+.progress-text,
+.attempt-count,
+.small-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.question-id {
+  margin: 0 0 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 4.8rem, 4.8rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 2.2rem, 2.2rem);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.topic-line {
+  margin: 12px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.mode-actions,
+.support-actions,
+.navigation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action,
+.text-action,
+.final-action {
+  padding: 10px 16px;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-action:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-action {
+  background: #fff4ed;
+  color: #713316;
+  border: 1px solid #f2c3a8;
+}
+
+.final-action {
+  background: #8e2f2f;
+  color: #ffffff;
+}
+
+.final-action:hover {
+  background: #6f2424;
+}
+
+.text-action {
+  min-height: auto;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f0ec;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mode-pill.checkpoint {
+  background: #e9edf7;
+  color: var(--checkpoint);
+}
+
+.question-map {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.question-map-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.question-map-button {
+  display: grid;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  text-align: left;
+}
+
+.question-map-button span {
+  font-weight: 800;
+}
+
+.question-map-button small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.question-map-button.is-current {
+  border-color: var(--checkpoint);
+  outline: 3px solid rgba(52, 75, 122, 0.14);
+}
+
+.question-map-button.is-correct {
+  border-color: rgba(31, 109, 70, 0.45);
+  background: #eef8f1;
+}
+
+.question-map-button.is-tried {
+  border-color: rgba(154, 75, 31, 0.45);
+  background: #fff6ee;
+}
+
+.question-map-button.is-not-tried {
+  background: #ffffff;
+}
+
+.prompt {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f9faf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+}
+
+.answer-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.answer-form label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.answer-form input:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+}
+
+.feedback.is-retry {
+  color: var(--retry);
+}
+
+.hint-list,
+.summary-list {
+  margin: 20px 0 0;
+  padding-left: 22px;
+}
+
+.hint-list li,
+.summary-list li {
+  margin-top: 8px;
+}
+
+.worked-solution,
+.run-command {
+  margin: 20px 0 0;
+  padding: 16px;
+  overflow: auto;
+  background: #17202a;
+  color: #f7fbff;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.attempt-count {
+  min-height: 24px;
+  margin: 8px 0 0;
+}
+
+.summary-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .app {
+    padding: 18px 12px;
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .progress-text {
+    grid-column: 1 / -1;
+  }
+
+  .answer-form {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-form button,
+  .mode-actions button,
+  .support-actions button,
+  .navigation-actions button {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section class="panel hero-panel">
+        <p class="eyebrow">Asher PSLE Quiz Lab</p>
+        <h1>Loading quiz...</h1>
+      </section>
+    </main>
+    <script id="quiz-content-data" type="application/json">
+{
+  "quiz_id": "frp-module-1a-start-left-asked-v1",
+  "title": "Start → Left → Asked",
+  "topic": "Fractions / Ratio / Percentage",
+  "version": "1.0",
+  "source_authority": "D_DAVE_REVIEWED_AI_DRAFT",
+  "practice_questions": [
+    {
+      "question_id": "FRP-M1A-L1-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 1: What is left?",
+      "mode": "Practice",
+      "prompt": "If 2/5 of a packet of marbles was used, what fraction of the packet was left?",
+      "expected_format": "fraction",
+      "canonical_answer": "3/5",
+      "accepted_answers": [
+        "3/5"
+      ],
+      "target_value": {
+        "whole": 0,
+        "numerator": 3,
+        "denominator": 5
+      },
+      "diagnostic_answers": {
+        "2/5": "WRONG_LEFTOVER_STAGE"
+      },
+      "equivalent_not_simplest_examples": [
+        "6/10"
+      ],
+      "error_tags": [
+        "LEFTOVER_FRACTION",
+        "WRONG_LEFTOVER_STAGE",
+        "NOT_SIMPLEST_FORM",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. That is the fraction left.",
+        "WRONG_LEFTOVER_STAGE": "That is the part used. What fraction is left?",
+        "EQUIVALENT_NOT_SIMPLEST": "Good value, but simplify if you can.",
+        "CALCULATION_ERROR": "Check the subtraction from 1 whole.",
+        "INVALID_FORMAT": "Write your answer as a fraction, like 3/5.",
+        "FRACTION_REQUIRED": "Write your answer as a fraction, like 3/5."
+      },
+      "hints": [
+        "A whole is 1.",
+        "If 2/5 is used, subtract from 1 whole.",
+        "Think: 5/5 - 2/5."
+      ],
+      "worked_solution": "One whole is 5/5.\n\n5/5 - 2/5 = 3/5\n\nAnswer: 3/5",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L1-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 1: What is left?",
+      "mode": "Practice",
+      "prompt": "If 3/8 of a bottle of juice was poured out, what fraction of the bottle was left?",
+      "expected_format": "fraction",
+      "canonical_answer": "5/8",
+      "accepted_answers": [
+        "5/8"
+      ],
+      "target_value": {
+        "whole": 0,
+        "numerator": 5,
+        "denominator": 8
+      },
+      "diagnostic_answers": {
+        "3/8": "WRONG_LEFTOVER_STAGE"
+      },
+      "equivalent_not_simplest_examples": [
+        "10/16"
+      ],
+      "error_tags": [
+        "LEFTOVER_FRACTION",
+        "WRONG_LEFTOVER_STAGE",
+        "NOT_SIMPLEST_FORM",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. That is the fraction left.",
+        "WRONG_LEFTOVER_STAGE": "That is the part poured out. What fraction is left?",
+        "EQUIVALENT_NOT_SIMPLEST": "Good value, but simplify if you can.",
+        "CALCULATION_ERROR": "Check the subtraction from 1 whole.",
+        "INVALID_FORMAT": "Write your answer as a fraction.",
+        "FRACTION_REQUIRED": "Write your answer as a fraction."
+      },
+      "hints": [
+        "The poured-out part is gone.",
+        "A whole is 8/8.",
+        "Find 8/8 - 3/8."
+      ],
+      "worked_solution": "One whole is 8/8.\n\n8/8 - 3/8 = 5/8\n\nAnswer: 5/8",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L2-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 2: Fraction of what?",
+      "mode": "Practice",
+      "prompt": "Kayla had 80 cards. She gave away 1/4 of them. Then she sorted 2/5 of the remaining cards into a blue box.\n\nThe 2/5 is about what?\n\nA. All 80 cards\nB. The remaining cards\nC. The cards in the blue box\nD. The cards given away",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "remaining cards",
+        "the remaining cards",
+        "cards left",
+        "the cards left"
+      ],
+      "option_feedback_codes": {
+        "A": "WRONG_BASE_ORIGINAL",
+        "C": "WRONG_LEFTOVER_STAGE",
+        "D": "WRONG_CATEGORY"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "FRACTION_BASE_RECOGNITION",
+        "WRONG_BASE_ORIGINAL",
+        "WRONG_LEFTOVER_STAGE"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. This fraction is about what was left.",
+        "WRONG_BASE_ORIGINAL": "Careful. This fraction is about what was left, not the starting total.",
+        "WRONG_LEFTOVER_STAGE": "Not quite. This is before the final leftover. What is the fraction attached to?",
+        "INVALID_FORMAT": "Choose whether it is about the starting total or what was left."
+      },
+      "hints": [
+        "Watch the word remaining.",
+        "Remaining means the whole has changed to what is left."
+      ],
+      "worked_solution": "Kayla first gave away some cards.\n\nAfter that, the 2/5 is about the cards that remained.\n\nAnswer: B. The remaining cards",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L2-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 2: Fraction of what?",
+      "mode": "Practice",
+      "prompt": "A bakery made 90 buns. It sold 1/3 of them in the morning. After that, 1/2 of the remaining buns were packed into boxes.\n\nThe 1/2 is about what?\n\nA. All 90 buns\nB. The remaining buns\nC. The buns packed into boxes\nD. The buns sold in the morning",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "remaining buns",
+        "the remaining buns",
+        "buns left",
+        "the buns left"
+      ],
+      "option_feedback_codes": {
+        "A": "WRONG_BASE_ORIGINAL",
+        "C": "WRONG_LEFTOVER_STAGE",
+        "D": "WRONG_CATEGORY"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "FRACTION_BASE_RECOGNITION",
+        "WRONG_BASE_ORIGINAL",
+        "WRONG_LEFTOVER_STAGE"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. This fraction is about what was left.",
+        "WRONG_BASE_ORIGINAL": "Careful. This fraction is not about all 90 buns.",
+        "WRONG_LEFTOVER_STAGE": "Check which stage the fraction belongs to.",
+        "INVALID_FORMAT": "Choose starting total or what was left."
+      },
+      "hints": [
+        "After that tells us something has already changed.",
+        "Check what is left before using the next fraction."
+      ],
+      "worked_solution": "The bakery sold some buns first.\n\nAfter that, the 1/2 is about the remaining buns.\n\nAnswer: B. The remaining buns",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L3-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 3: Find part of the leftover",
+      "mode": "Practice",
+      "prompt": "Mei had 72 stickers. She gave away 1/3 of them. Of the stickers left, 1/4 were shiny stickers.\n\nHow many shiny stickers did she have left?",
+      "expected_format": "numeric",
+      "canonical_answer": "12 shiny stickers",
+      "accepted_answers": [
+        "12",
+        "12 shiny stickers"
+      ],
+      "target_number": 12,
+      "diagnostic_answers": {
+        "18": "WRONG_BASE_ORIGINAL",
+        "48": "INTERMEDIATE_NOT_FINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "FRACTION_OF_LEFTOVER",
+        "WRONG_BASE_ORIGINAL",
+        "INTERMEDIATE_NOT_FINAL",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You found the right part of what was left.",
+        "WRONG_BASE_ORIGINAL": "This fraction is about what was left. Use the leftover amount.",
+        "INTERMEDIATE_NOT_FINAL": "Good step, but the question asks for part of that leftover.",
+        "CALCULATION_ERROR": "Your steps look close. Check the calculation.",
+        "INVALID_FORMAT": "Write a whole-number answer, like 12."
+      },
+      "hints": [
+        "First find how many stickers were left.",
+        "Then take 1/4 of that leftover.",
+        "Start -> Left -> Asked."
+      ],
+      "worked_solution": "Mei gave away 1/3, so 2/3 of the stickers were left.\n\n72 x 2/3 = 48\n\n1/4 of 48 = 12\n\nAnswer: 12 shiny stickers",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L3-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 3: Find part of the leftover",
+      "mode": "Practice",
+      "prompt": "A shop had 100 keychains. It sold 3/10 of them. Of the remaining keychains, 2/7 were blue.\n\nHow many blue keychains remained?",
+      "expected_format": "numeric",
+      "canonical_answer": "20 blue keychains",
+      "accepted_answers": [
+        "20",
+        "20 blue keychains"
+      ],
+      "target_number": 20,
+      "diagnostic_answers": {
+        "28": "WRONG_BASE_ORIGINAL",
+        "70": "INTERMEDIATE_NOT_FINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "FRACTION_OF_LEFTOVER",
+        "WRONG_BASE_ORIGINAL",
+        "INTERMEDIATE_NOT_FINAL",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You found the right part of what was left.",
+        "WRONG_BASE_ORIGINAL": "This fraction is about what was left, not all 100 keychains.",
+        "INTERMEDIATE_NOT_FINAL": "You found the leftover, but not the blue keychains yet.",
+        "CALCULATION_ERROR": "Check the calculation.",
+        "INVALID_FORMAT": "Write a whole-number answer."
+      },
+      "hints": [
+        "Do not take 2/7 from 100.",
+        "First find the keychains that were left.",
+        "Then find 2/7 of that leftover."
+      ],
+      "worked_solution": "The shop sold 3/10, so 7/10 were left.\n\n100 x 7/10 = 70\n\n2/7 of 70 = 20\n\nAnswer: 20 blue keychains",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L3-03",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 3: Find part of the leftover",
+      "mode": "Practice",
+      "prompt": "There were 96 sweets in a jar. 1/4 of them were eaten. Of the sweets left, 5/6 were packed into goodie bags.\n\nHow many sweets were packed into goodie bags?",
+      "expected_format": "numeric",
+      "canonical_answer": "60 sweets",
+      "accepted_answers": [
+        "60",
+        "60 sweets"
+      ],
+      "target_number": 60,
+      "diagnostic_answers": {
+        "72": "INTERMEDIATE_NOT_FINAL",
+        "80": "WRONG_BASE_ORIGINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "FRACTION_OF_LEFTOVER",
+        "WRONG_BASE_ORIGINAL",
+        "INTERMEDIATE_NOT_FINAL",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Nice tracking.",
+        "WRONG_BASE_ORIGINAL": "The 5/6 is about the sweets left, not all 96 sweets.",
+        "INTERMEDIATE_NOT_FINAL": "You found a useful number, but is it the answer yet?",
+        "CALCULATION_ERROR": "Your thinking looks close. Check the calculation.",
+        "INVALID_FORMAT": "Write a whole-number answer."
+      },
+      "hints": [
+        "Start -> Left -> Asked.",
+        "What fraction of the sweets was left?",
+        "Now take 5/6 of the sweets left."
+      ],
+      "worked_solution": "1/4 were eaten, so 3/4 were left.\n\n96 x 3/4 = 72\n\n5/6 of 72 = 60\n\nAnswer: 60 sweets",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L4-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 4: Spot the oops",
+      "mode": "Practice",
+      "prompt": "Question: Mei had 72 stickers. She gave away 1/3 of them. Of the stickers left, 1/4 were shiny. How many shiny stickers did she have left?\n\nStudent's working: 1/4 of 72 = 18.\n\nWhat went wrong?\n\nA. They stopped at a halfway answer.\nB. They used the starting total instead of what was left.\nC. They answered the wrong thing.\nD. They forgot the unit.",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "used the starting total instead of what was left",
+        "starting total instead of what was left"
+      ],
+      "option_feedback_codes": {
+        "A": "INTERMEDIATE_NOT_FINAL",
+        "C": "WRONG_CATEGORY",
+        "D": "MISSING_UNIT"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "SPOT_THE_OOPS",
+        "WRONG_BASE_ORIGINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You spotted the oops.",
+        "WRONG_BASE_ORIGINAL": "Check whether 1/4 is about the starting total or what was left.",
+        "INTERMEDIATE_NOT_FINAL": "The issue is not stopping early. Check what 1/4 was applied to.",
+        "WRONG_CATEGORY": "Check what mistake the working made.",
+        "MISSING_UNIT": "The unit is not the main problem here.",
+        "INVALID_FORMAT": "Choose A, B, C, or D."
+      },
+      "hints": [
+        "Detective mode. The mistake is hiding in what the fraction is about.",
+        "Ask: should 1/4 be taken from 72 or from what was left?"
+      ],
+      "worked_solution": "The student used 72 as the base for 1/4.\n\nBut 1/4 is about the stickers left after giving away 1/3.\n\nAnswer: B. They used the starting total instead of what was left.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L4-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 4: Spot the oops",
+      "mode": "Practice",
+      "prompt": "Question: A class had 90 cards. It used 1/5 of them. Of the cards left, 1/3 were red. How many cards left were not red?\n\nStudent's answer: 24 red cards.\n\nWhat went wrong?\n\nA. They stopped at a halfway answer.\nB. They used the starting total instead of what was left.\nC. They answered the wrong thing.\nD. They forgot the unit.",
+      "expected_format": "mcq",
+      "canonical_answer": "C",
+      "accepted_answers": [
+        "C",
+        "answered the wrong thing",
+        "wrong thing"
+      ],
+      "option_feedback_codes": {
+        "A": "INTERMEDIATE_NOT_FINAL",
+        "B": "WRONG_BASE_ORIGINAL",
+        "D": "MISSING_UNIT"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "SPOT_THE_OOPS",
+        "WRONG_CATEGORY",
+        "QUESTION_TARGET_MISREAD"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. They found red cards, but the question asked for not-red cards.",
+        "WRONG_CATEGORY": "Check what the final sentence asked for.",
+        "INTERMEDIATE_NOT_FINAL": "This is more than stopping early. The group answered is wrong.",
+        "WRONG_BASE_ORIGINAL": "The main problem is the final target.",
+        "MISSING_UNIT": "The unit is there. Check the group asked for.",
+        "INVALID_FORMAT": "Choose A, B, C, or D."
+      },
+      "hints": [
+        "Check the final sentence.",
+        "Did it ask for red cards or not-red cards?"
+      ],
+      "worked_solution": "The student found red cards.\n\nBut the question asked for cards that were not red.\n\nAnswer: C. They answered the wrong thing.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-L4-03",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 4: Spot the oops",
+      "mode": "Practice",
+      "prompt": "Question: A teacher had 64 bookmarks. She gave away 3/8 of them. Of the bookmarks left, 3/5 were laminated. How many laminated bookmarks were left?\n\nStudent's answer: 24\n\nWhat went wrong?\n\nA. They stopped at a halfway answer.\nB. They used the starting total instead of what was left.\nC. They answered the wrong thing.\nD. They forgot the unit.",
+      "expected_format": "mcq",
+      "canonical_answer": "D",
+      "accepted_answers": [
+        "D",
+        "forgot the unit",
+        "unit"
+      ],
+      "option_feedback_codes": {
+        "A": "INTERMEDIATE_NOT_FINAL",
+        "B": "WRONG_BASE_ORIGINAL",
+        "C": "WRONG_CATEGORY"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "SPOT_THE_OOPS",
+        "MISSING_UNIT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The number needs the unit or group.",
+        "MISSING_UNIT": "Add the thing being counted.",
+        "WRONG_CATEGORY": "The group is correct, but it was not written.",
+        "CALCULATION_ERROR": "The number is correct; check what is missing.",
+        "INTERMEDIATE_NOT_FINAL": "The number is not the halfway issue here.",
+        "WRONG_BASE_ORIGINAL": "The calculation is not the main problem here.",
+        "INVALID_FORMAT": "Choose A, B, C, or D."
+      },
+      "hints": [
+        "The number is not lonely.",
+        "It needs the thing being counted."
+      ],
+      "worked_solution": "The number 24 is correct, but the answer does not say what the 24 are.\n\nAnswer: D. They forgot the unit.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ],
+  "checkpoint_questions": [
+    {
+      "question_id": "FRP-M1A-C1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Start → Left → Asked",
+      "mode": "Checkpoint",
+      "prompt": "Nora had 84 stickers. She gave away 1/7 of them. Of the stickers left, 3/4 were animal stickers.\n\nHow many animal stickers did she have left?",
+      "expected_format": "numeric",
+      "canonical_answer": "54 animal stickers",
+      "accepted_answers": [
+        "54",
+        "54 animal stickers"
+      ],
+      "target_number": 54,
+      "diagnostic_answers": {
+        "63": "WRONG_BASE_ORIGINAL",
+        "72": "INTERMEDIATE_NOT_FINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "CHECKPOINT",
+        "FRACTION_OF_LEFTOVER",
+        "WRONG_BASE_ORIGINAL",
+        "INTERMEDIATE_NOT_FINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_BASE_ORIGINAL": "Try again: check what the fraction is about.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this looks like a halfway answer.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-C2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Start → Left → Asked",
+      "mode": "Checkpoint",
+      "prompt": "A jug had 1200 ml of juice. 1/3 of the juice was poured into cups. Of the juice left, 5/8 was orange juice.\n\nHow many ml of orange juice was left?",
+      "expected_format": "numeric",
+      "canonical_answer": "500 ml",
+      "accepted_answers": [
+        "500",
+        "500 ml"
+      ],
+      "target_number": 500,
+      "diagnostic_answers": {
+        "750": "WRONG_BASE_ORIGINAL",
+        "800": "INTERMEDIATE_NOT_FINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "CHECKPOINT",
+        "FRACTION_OF_LEFTOVER",
+        "WRONG_BASE_ORIGINAL",
+        "INTERMEDIATE_NOT_FINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_BASE_ORIGINAL": "Try again: check what the 5/8 is about.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this looks like a halfway answer.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-C3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Start → Left → Asked",
+      "mode": "Checkpoint",
+      "prompt": "A box had 150 cards. 2/5 of them were used for a game. Of the remaining cards, 1/3 were red.\n\nHow many remaining cards were not red?",
+      "expected_format": "numeric",
+      "canonical_answer": "60 cards",
+      "accepted_answers": [
+        "60",
+        "60 cards",
+        "60 not-red cards"
+      ],
+      "target_number": 60,
+      "diagnostic_answers": {
+        "30": "WRONG_CATEGORY",
+        "50": "WRONG_BASE_ORIGINAL",
+        "90": "INTERMEDIATE_NOT_FINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "CHECKPOINT",
+        "FINAL_TARGET_CHECK",
+        "WRONG_CATEGORY",
+        "WRONG_BASE_ORIGINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_BASE_ORIGINAL": "Try again: check what the 1/3 is about.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this looks like a halfway answer.",
+        "WRONG_CATEGORY": "Try again: check what the question asked for.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-C4",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Start → Left → Asked",
+      "mode": "Checkpoint",
+      "prompt": "A bakery had 96 buns. It sold 1/4 of them in the morning. Of the buns left, 2/3 were packed for an order.\n\nHow many buns were not packed after that?",
+      "expected_format": "numeric",
+      "canonical_answer": "24 buns",
+      "accepted_answers": [
+        "24",
+        "24 buns"
+      ],
+      "target_number": 24,
+      "diagnostic_answers": {
+        "48": "WRONG_CATEGORY",
+        "64": "WRONG_BASE_ORIGINAL",
+        "72": "INTERMEDIATE_NOT_FINAL"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "CHECKPOINT",
+        "FINAL_TARGET_CHECK",
+        "WRONG_CATEGORY",
+        "INTERMEDIATE_NOT_FINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_BASE_ORIGINAL": "Try again: check what the 2/3 is about.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this looks like a halfway answer.",
+        "WRONG_CATEGORY": "Try again: check what the question asked for.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M1A-C5",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Start → Left → Asked",
+      "mode": "Checkpoint",
+      "prompt": "A class collected 80 cans. 3/8 of them were crushed. Of the cans left, 2/5 were labelled.\n\nA student said:\n2/5 of 80 = 32 labelled cans\n\nWhat went wrong?\n\nA. They stopped at a halfway answer.\nB. They used the starting total instead of what was left.\nC. They answered the wrong thing.\nD. They forgot the unit.",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "used the starting total instead of what was left",
+        "starting total instead of what was left"
+      ],
+      "option_feedback_codes": {
+        "A": "INTERMEDIATE_NOT_FINAL",
+        "C": "WRONG_CATEGORY",
+        "D": "MISSING_UNIT"
+      },
+      "equivalent_not_simplest_examples": [],
+      "error_tags": [
+        "CHECKPOINT",
+        "SPOT_THE_OOPS",
+        "WRONG_BASE_ORIGINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_BASE_ORIGINAL": "Try again: check what the fraction is about.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this is not mainly a halfway-answer issue.",
+        "WRONG_CATEGORY": "Try again: check whether the group or the base is the problem.",
+        "MISSING_UNIT": "Try again: check whether the unit is the main problem.",
+        "INVALID_FORMAT": "Try again: use the required answer format."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ]
+}
+    </script>
+    <script>
+(() => {
+  "use strict";
+
+  // validation.js
+const FEEDBACK_CODES = Object.freeze({
+  CORRECT: "CORRECT",
+  BLANK: "BLANK",
+  INVALID_FORMAT: "INVALID_FORMAT",
+  FRACTION_REQUIRED: "FRACTION_REQUIRED",
+  MIXED_NUMBER_REQUIRED: "MIXED_NUMBER_REQUIRED",
+  EQUIVALENT_NOT_SIMPLEST: "EQUIVALENT_NOT_SIMPLEST",
+  PLACE_VALUE_DENOMINATOR_ERROR: "PLACE_VALUE_DENOMINATOR_ERROR",
+  WRONG_VALUE: "WRONG_VALUE",
+  CALCULATION_ERROR: "CALCULATION_ERROR",
+  WRONG_BASE_ORIGINAL: "WRONG_BASE_ORIGINAL",
+  WRONG_BASE_REMAINDER: "WRONG_BASE_REMAINDER",
+  WRONG_LEFTOVER_STAGE: "WRONG_LEFTOVER_STAGE",
+  INTERMEDIATE_NOT_FINAL: "INTERMEDIATE_NOT_FINAL",
+  WRONG_CATEGORY: "WRONG_CATEGORY",
+  MISSING_UNIT: "MISSING_UNIT"
+});
+
+const PLACE_VALUE_DENOMINATORS = new Set([10, 100, 1000]);
+
+function normaliseAnswer(input) {
+  return String(input ?? "")
+    .replace(/\u2044/g, "/")
+    .trim()
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+/g, " ");
+}
+
+function getFeedbackMessage(code, mode, expectedFormat = "fraction", question = null) {
+  const mixedFormat = expectedFormat.includes("mixed");
+  const questionFeedback = question?.feedback_by_code?.[code];
+
+  if (questionFeedback) return questionFeedback;
+
+  if (code === FEEDBACK_CODES.CORRECT) return "Correct.";
+  if (code === FEEDBACK_CODES.BLANK) return mode === "Practice" ? "Try typing an answer." : "Try again.";
+  if (code === FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST) {
+    return mode === "Practice"
+      ? "Equivalent, but not in simplest form. Try simplifying it."
+      : "Try again: equivalent but not in simplest form.";
+  }
+  if (code === FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR) {
+    return mode === "Practice"
+      ? "Try again: check the decimal place value."
+      : "Try again: check the decimal place value.";
+  }
+  if (code === FEEDBACK_CODES.MIXED_NUMBER_REQUIRED || (code === FEEDBACK_CODES.INVALID_FORMAT && mixedFormat)) {
+    return "Try again: write your answer as a mixed number.";
+  }
+  if (code === FEEDBACK_CODES.INVALID_FORMAT && expectedFormat === "numeric") {
+    return "Try again: use a whole-number answer.";
+  }
+  if (code === FEEDBACK_CODES.FRACTION_REQUIRED || code === FEEDBACK_CODES.INVALID_FORMAT) {
+    return "Try again: answer must be written as a fraction.";
+  }
+  if (code === FEEDBACK_CODES.WRONG_BASE_ORIGINAL) return "Try again: check what the fraction is about.";
+  if (code === FEEDBACK_CODES.WRONG_BASE_REMAINDER) return "Try again: check what we started with.";
+  if (code === FEEDBACK_CODES.WRONG_LEFTOVER_STAGE) return "Try again: check what is left.";
+  if (code === FEEDBACK_CODES.INTERMEDIATE_NOT_FINAL) return "Try again: this looks like a halfway answer.";
+  if (code === FEEDBACK_CODES.WRONG_CATEGORY) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.MISSING_UNIT) return "Try again: include the unit or group.";
+  if (code === FEEDBACK_CODES.CALCULATION_ERROR) return "Try again: check the calculation.";
+
+  return "Try again.";
+}
+
+function validateQuestionAnswer(question, rawInput) {
+  const answer = normaliseAnswer(rawInput);
+
+  if (!answer) {
+    return result(FEEDBACK_CODES.BLANK, answer);
+  }
+
+  if (question.expected_format === "three_denominators") {
+    return validateDenominatorSequence(question, answer);
+  }
+
+  if (question.expected_format === "denominator_only") {
+    return validateDenominatorOnly(question, answer);
+  }
+
+  if (question.expected_format === "mcq") {
+    return validateMcq(question, answer);
+  }
+
+  if (question.expected_format === "numeric") {
+    return validateNumeric(question, answer);
+  }
+
+  if (question.expected_format === "error_explanation_plus_fraction") {
+    return validateErrorExplanation(question, answer);
+  }
+
+  if (question.expected_format === "yes_no_plus_mixed_number") {
+    return validateYesNoMixed(question, answer);
+  }
+
+  if (question.expected_format === "mixed_number") {
+    return validateMixedNumber(question, answer);
+  }
+
+  return validateFraction(question, answer);
+}
+
+function validateDenominatorSequence(question, answer) {
+  const numbers = answer.split(/[,\s]+/).filter(Boolean);
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).replace(/\s*,\s*/g, ",")) ?? [];
+  const compact = answer.replace(/\s*,\s*/g, ",");
+
+  if (accepted.includes(compact) || arraysEqual(numbers, ["10", "100", "1000"])) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateDenominatorOnly(question, answer) {
+  if (question.accepted_answers?.includes(answer)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateMcq(question, answer) {
+  const cleaned = answer.toUpperCase().replace(/\.$/, "");
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).toUpperCase()) ?? [];
+
+  if (accepted.includes(cleaned)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const optionFeedbackCode = question.option_feedback_codes?.[cleaned];
+  if (optionFeedbackCode && FEEDBACK_CODES[optionFeedbackCode]) {
+    return result(FEEDBACK_CODES[optionFeedbackCode], answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  if (/^[A-D]$/i.test(cleaned)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+}
+
+function validateNumeric(question, answer) {
+  const parsed = parseWholeNumberAnswer(answer);
+
+  if (!parsed.ok) {
+    return result(parsed.code, answer);
+  }
+
+  const targetNumber = getTargetNumber(question);
+  if (!Number.isInteger(targetNumber)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.value === targetNumber) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, String(parsed.value));
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.CALCULATION_ERROR, answer);
+}
+
+function validateErrorExplanation(question, answer) {
+  const hasFinalFraction = hasTargetFractionToken(question, answer);
+  const hasMistakeEvidence = hasP10MistakeEvidence(answer);
+
+  if (hasFinalFraction && hasMistakeEvidence) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const parsedFraction = parseFraction(answer);
+  if (parsedFraction.ok && !isFractionPartSimplest(parsedFraction.value)) {
+    return evaluateFractionValue(question, parsedFraction.value, "fraction", answer);
+  }
+
+  if (hasFractionToken(answer, "48/100")) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  if (answer.includes("48/10") || answer.includes("24/5")) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateYesNoMixed(question, answer) {
+  const hasFinalMixedNumber = hasTargetMixedNumberToken(question, answer);
+  const hasNotSimplestSignal = hasP11NotSimplestSignal(answer);
+
+  if (hasFinalMixedNumber && hasNotSimplestSignal) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (hasFinalMixedNumber) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (question.equivalent_not_simplest_examples?.some((item) => answer.includes(normaliseAnswer(item)))) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function validateFraction(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.FRACTION_REQUIRED, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseFraction(answer);
+  if (!parsed.ok) {
+    return result(parsed.code ?? FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return evaluateFractionValue(question, parsed.value, "fraction", answer);
+}
+
+function validateMixedNumber(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  if (mixed.code === FEEDBACK_CODES.INVALID_FORMAT && mixed.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  if (fraction.code === FEEDBACK_CODES.INVALID_FORMAT && fraction.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function evaluateFractionValue(question, parsed, parsedFormat, normalised) {
+  const target = targetToImproperFraction(question.target_value);
+
+  if (!target) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  const input = toImproperFraction(parsed);
+
+  if (sameValue(input, target)) {
+    if (parsedFormat === "improper_for_mixed") {
+      return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, normalised);
+    }
+
+    if (!isFractionPartSimplest(parsed)) {
+      return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, normalised);
+    }
+
+    return result(FEEDBACK_CODES.CORRECT, normalised);
+  }
+
+  if (parsedFormat === "mixed_number" && parsed.whole !== question.target_value?.whole) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  if (looksLikePlaceValueError(question, parsed)) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, normalised);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+}
+
+function parseFraction(answer) {
+  const match = answer.match(/^(\d+)\/(\d+)$/);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (numerator <= 0 || denominator <= 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole: 0,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseMixedNumber(answer) {
+  const match = answer.match(/^(\d+)(?:\s+and)?\s+(\d+)\/(\d+)$/i);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+
+  const whole = Number(match[1]);
+  const numerator = Number(match[2]);
+  const denominator = Number(match[3]);
+
+  if (!Number.isInteger(whole) || !Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (whole <= 0 || numerator <= 0 || denominator <= 0 || numerator >= denominator) {
+    return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function targetToImproperFraction(target) {
+  if (!target) return null;
+
+  return {
+    numerator: target.whole * target.denominator + target.numerator,
+    denominator: target.denominator
+  };
+}
+
+function toImproperFraction(value) {
+  return {
+    numerator: value.whole * value.denominator + value.numerator,
+    denominator: value.denominator
+  };
+}
+
+function sameValue(left, right) {
+  return left.numerator * right.denominator === right.numerator * left.denominator;
+}
+
+function isFractionPartSimplest(value) {
+  return gcd(value.numerator, value.denominator) === 1;
+}
+
+function looksLikePlaceValueError(question, parsed) {
+  if (!question.place_value_denominator) return false;
+  if (!PLACE_VALUE_DENOMINATORS.has(parsed.denominator)) return false;
+
+  return parsed.denominator !== question.place_value_denominator;
+}
+
+function getDiagnosticFeedbackCode(question, answer) {
+  const diagnostics = question.diagnostic_answers ?? {};
+  const candidates = [answer, normaliseAnswer(answer), normaliseAnswer(answer).toLowerCase(), normaliseAnswer(answer).toUpperCase()];
+
+  for (const candidate of candidates) {
+    const code = diagnostics[candidate];
+    if (code && FEEDBACK_CODES[code]) {
+      return FEEDBACK_CODES[code];
+    }
+  }
+
+  return "";
+}
+
+function parseWholeNumberAnswer(answer) {
+  const match = answer.match(/^(\d+)(.*)$/);
+
+  if (!match) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const rest = match[2].trim();
+  if (rest && (/^[\d./+\-*=/]/.test(rest) || /\d+\s*\/\s*\d+/.test(rest) || /\d+\.\d+/.test(rest))) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const value = Number(match[1]);
+  if (!Number.isInteger(value)) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return { ok: true, value };
+}
+
+function getTargetNumber(question) {
+  if (Number.isInteger(question.target_number)) return question.target_number;
+  if (Number.isInteger(question.expected_numeric_value)) return question.expected_numeric_value;
+
+  const canonical = normaliseAnswer(question.canonical_answer ?? "");
+  const match = canonical.match(/^(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function hasTargetFractionToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole !== 0) return false;
+
+  return hasFractionToken(answer, `${target.numerator}/${target.denominator}`);
+}
+
+function hasTargetMixedNumberToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole <= 0) return false;
+
+  const mixedNumber = `${target.whole} ${target.numerator}/${target.denominator}`;
+  const mixedNumberWithAnd = `${target.whole} and ${target.numerator}/${target.denominator}`;
+
+  return hasPhraseToken(answer, mixedNumber) || hasPhraseToken(answer, mixedNumberWithAnd);
+}
+
+function hasP10MistakeEvidence(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    hasFractionToken(answer, "48/100") ||
+    /\bnot\s+48\/10\b/.test(lower) ||
+    /\bdenominator\b.{0,30}\b100\b/.test(lower) ||
+    /\bhundredths?\b/.test(lower)
+  );
+}
+
+function hasP11NotSimplestSignal(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    /\bno\b/.test(lower) ||
+    /\bnot\s+(?:in\s+)?simplest(?:\s+form)?\b/.test(lower) ||
+    /\bnot\s+simplified\b/.test(lower)
+  );
+}
+
+function hasFractionToken(answer, fraction) {
+  return hasPhraseToken(answer, fraction);
+}
+
+function hasPhraseToken(answer, phrase) {
+  const escaped = escapeRegExp(phrase);
+  const tokenPattern = new RegExp(`(^|[^\\d])${escaped}([^\\d]|$)`, "i");
+
+  return tokenPattern.test(answer);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasDecimalNumber(answer) {
+  return /\d+\.\d+/.test(answer);
+}
+
+function gcd(left, right) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+
+  while (b !== 0) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+
+  return a;
+}
+
+function arraysEqual(left, right) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function result(code, normalised) {
+  return {
+    code,
+    isCorrect: code === FEEDBACK_CODES.CORRECT,
+    normalised
+  };
+}
+
+
+  // logging.js
+const REMOTE_LOGGING_ENDPOINT = "";
+
+const checkpointLoggingConfig = {
+  remoteEndpoint: REMOTE_LOGGING_ENDPOINT
+};
+
+const CHECKPOINT_ATTEMPT_EVENT = "checkpoint_attempt";
+const SCHEMA_VERSION = "0.1";
+const SOURCE = "browser-local-first";
+
+function logCheckpointAttempt(session, attempt) {
+  try {
+    if (!session?.sessionId || !session?.quizId) {
+      return { ok: false, error: "Missing checkpoint session details." };
+    }
+
+    if (!attempt?.question_id || !Number.isInteger(attempt?.attempt_number)) {
+      return { ok: false, error: "Missing checkpoint attempt details." };
+    }
+
+    const endpoint = checkpointLoggingConfig.remoteEndpoint.trim();
+
+    if (!endpoint) {
+      return { ok: true, mode: "local-only" };
+    }
+
+    const payload = buildCheckpointAttemptPayload(session, attempt);
+
+    // Optional remote logging integration point. Blank by default for the static export workflow.
+    // Remote logging is fire-and-forget so it never blocks local checkpoint flow.
+    sendCheckpointAttempt(endpoint, payload);
+    return { ok: true, mode: "remote-queued" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown logging error."
+    };
+  }
+}
+
+function buildCheckpointAttemptPayload(session, attempt) {
+  return {
+    event_type: CHECKPOINT_ATTEMPT_EVENT,
+    schema_version: SCHEMA_VERSION,
+    session_id: session.sessionId,
+    quiz_id: session.quizId,
+    question_id: attempt.question_id,
+    attempt_number: attempt.attempt_number,
+    raw_input: attempt.raw_input,
+    normalised_input: attempt.normalised_input ?? "",
+    feedback_code: attempt.feedback_code,
+    is_correct: attempt.is_correct,
+    attempt_timestamp: attempt.timestamp,
+    client_timezone: getClientTimezone(),
+    source: SOURCE
+  };
+}
+
+async function sendCheckpointAttempt(endpoint, payload) {
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.warn("Checkpoint remote logging failed.", error);
+  }
+}
+
+function getClientTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+}
+
+
+  // progress.js
+
+const STORAGE_KEY_PREFIX = "asher-quiz-lab";
+
+function createCheckpointSession(quizId) {
+  return {
+    sessionId: `${quizId}-${Date.now()}`,
+    quizId,
+    startedAt: new Date().toISOString(),
+    attempts: []
+  };
+}
+
+function recordCheckpointAttempt(session, questionId, rawInput, feedbackCode, isCorrect, normalisedInput) {
+  const attemptNumber = session.attempts.filter((attempt) => attempt.question_id === questionId).length + 1;
+  const attempt = {
+    question_id: questionId,
+    attempt_number: attemptNumber,
+    raw_input: rawInput,
+    normalised_input: normalisedInput ?? "",
+    feedback_code: feedbackCode,
+    is_correct: isCorrect,
+    timestamp: new Date().toISOString()
+  };
+
+  session.attempts.push(attempt);
+  saveCheckpointSession(session);
+  logCheckpointAttempt(session, attempt);
+  return attempt;
+}
+
+function getCheckpointAttemptCounts(session, questionIds) {
+  return questionIds.map((questionId) => ({
+    question_id: questionId,
+    attempts: session.attempts.filter((attempt) => attempt.question_id === questionId).length
+  }));
+}
+
+function saveCheckpointSession(session) {
+  try {
+    window.localStorage.setItem(getStorageKey(session.quizId), JSON.stringify(session));
+  } catch {
+    // Local storage is helpful for Dave review, but the quiz should still run without it.
+  }
+}
+
+function clearCheckpointSession(quizId) {
+  try {
+    window.localStorage.removeItem(getStorageKey(quizId));
+  } catch {
+    // Ignore storage failures in local prototype mode.
+  }
+}
+
+function getStorageKey(quizId) {
+  return `${STORAGE_KEY_PREFIX}.${quizId}`;
+}
+
+
+  // quiz-engine.js
+
+const DEFAULT_QUIZ_ID = "decimals-to-fractions-v1";
+const QUIZ_REGISTRY = Object.freeze({
+  "decimals-to-fractions-v1": {
+    quizId: "decimals-to-fractions-v1",
+    contentPath: "content/math/decimals-to-fractions-v1.json"
+  },
+  "frp-module-1a-start-left-asked-v1": {
+    quizId: "frp-module-1a-start-left-asked-v1",
+    contentPath: "content/math/frp-module-1a-start-left-asked-v1.json"
+  }
+});
+const FINAL_CHECKPOINT_WARNING =
+  "After this, your checkpoint will be locked. You will not be able to change your answers or try again.";
+const CHECKPOINT_EXPORT_SCHEMA_VERSION = "1.0";
+const CHECKPOINT_EXPORT_SOURCE = "static-html-export";
+
+const app = document.querySelector("#app");
+
+let quiz = null;
+let activeMode = "home";
+let currentIndex = 0;
+let checkpointSession = null;
+let checkpointLocked = false;
+let practiceState = [];
+let checkpointState = [];
+
+init();
+
+async function init() {
+  const quizConfig = getRequestedQuizConfig();
+
+  try {
+    quiz = await loadQuizContent(quizConfig);
+    document.title = `${quiz.title} | Asher PSLE Quiz Lab`;
+    renderHome();
+  } catch (error) {
+    renderLoadError(error);
+  }
+}
+
+async function loadQuizContent(quizConfig) {
+  const embeddedQuizData = document.querySelector("#quiz-content-data");
+  if (embeddedQuizData) return JSON.parse(embeddedQuizData.textContent);
+
+  const response = await fetch(quizConfig.contentPath);
+  if (!response.ok) throw new Error(`Could not load ${quizConfig.contentPath}`);
+
+  return response.json();
+}
+
+function getRequestedQuizConfig() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedQuizId = params.get("quiz") || DEFAULT_QUIZ_ID;
+
+  return QUIZ_REGISTRY[requestedQuizId] ?? QUIZ_REGISTRY[DEFAULT_QUIZ_ID];
+}
+
+function renderHome() {
+  activeMode = "home";
+  currentIndex = 0;
+
+  app.innerHTML = `
+    <section class="panel hero-panel">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${quiz.title}</h1>
+      <p class="topic-line">${quiz.topic}</p>
+      <p class="lede">Practise the method first, then try the checkpoint without hints.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startPractice">Start Practice</button>
+        <button type="button" class="secondary-action" id="startCheckpoint">Start Checkpoint</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startPractice").addEventListener("click", startPractice);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+}
+
+function startPractice() {
+  activeMode = "Practice";
+  currentIndex = 0;
+  practiceState = createQuestionState(quiz.practice_questions);
+  renderPracticeQuestion();
+}
+
+function startCheckpoint() {
+  activeMode = "Checkpoint";
+  currentIndex = 0;
+  checkpointLocked = false;
+  checkpointState = createQuestionState(quiz.checkpoint_questions);
+  clearCheckpointSession(quiz.quiz_id);
+  checkpointSession = createCheckpointSession(quiz.quiz_id);
+  renderCheckpointQuestion();
+}
+
+function createQuestionState(questions) {
+  return questions.map(() => ({
+    input: "",
+    feedbackCode: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    hintsShown: 0,
+    solutionShown: false
+  }));
+}
+
+function renderPracticeQuestion() {
+  const question = quiz.practice_questions[currentIndex];
+  const state = practiceState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.practice_questions.length}`;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill">Practice</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.practice_questions, practiceState, currentIndex, "Practice")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        <div class="prompt" id="questionPrompt"></div>
+        <form class="answer-form" id="answerForm">
+          <label for="answerInput">Answer</label>
+          <input id="answerInput" name="answer" autocomplete="off" />
+          <button type="submit" class="primary-action">Submit Answer</button>
+        </form>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="practiceStatus"></p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="hintButton">Hint</button>
+          <button type="button" class="secondary-action" id="solutionButton">Worked Solution</button>
+        </div>
+        <ol class="hint-list" id="hintList" hidden></ol>
+        <pre class="worked-solution" id="workedSolution" hidden></pre>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="primary-action" id="nextQuestion">${currentIndex === quiz.practice_questions.length - 1 ? "Finish Practice" : "Next"}</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+
+  renderFeedback(state, "Practice");
+  renderPracticeSupport(question, state);
+  bindQuestionMap(renderPracticeQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
+  document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  input.focus();
+}
+
+function submitPracticeAnswer(event, question, state) {
+  event.preventDefault();
+
+  const input = document.querySelector("#answerInput");
+  const validation = validateQuestionAnswer(question, input.value);
+
+  state.input = input.value;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  renderPracticeQuestion();
+}
+
+function renderPracticeSupport(question, state) {
+  const hintList = document.querySelector("#hintList");
+  const hintButton = document.querySelector("#hintButton");
+  const solution = document.querySelector("#workedSolution");
+
+  if (state.hintsShown > 0) {
+    hintList.hidden = false;
+    question.hints.slice(0, state.hintsShown).forEach((hint) => {
+      const item = document.createElement("li");
+      item.textContent = hint;
+      hintList.append(item);
+    });
+  }
+
+  hintButton.disabled = state.hintsShown >= question.hints.length;
+
+  if (state.solutionShown) {
+    solution.textContent = question.worked_solution;
+    solution.hidden = false;
+  }
+}
+
+function showNextHint(question, state) {
+  state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showWorkedSolution(question, state) {
+  state.solutionShown = true;
+  renderPracticeQuestion();
+}
+
+function goToPreviousPracticeQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderPracticeQuestion();
+}
+
+function goToNextPracticeQuestion() {
+  if (currentIndex === quiz.practice_questions.length - 1) {
+    renderPracticeComplete();
+    return;
+  }
+
+  currentIndex += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeComplete() {
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Practice complete</p>
+      <h1>Nice work.</h1>
+      <p class="lede">You reached the end of the practice ladder.</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#resumePractice").addEventListener("click", () => {
+    currentIndex = quiz.practice_questions.length - 1;
+    renderPracticeQuestion();
+  });
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function renderCheckpointQuestion() {
+  const question = quiz.checkpoint_questions[currentIndex];
+  const state = checkpointState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.checkpoint_questions.length}`;
+  const attemptCount = getAttemptCount(question.question_id);
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill checkpoint">Checkpoint</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.checkpoint_questions, checkpointState, currentIndex, "Checkpoint")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        <div class="prompt" id="questionPrompt"></div>
+        <form class="answer-form" id="answerForm">
+          <label for="answerInput">Answer</label>
+          <input id="answerInput" name="answer" autocomplete="off" ${checkpointLocked ? "disabled" : ""} />
+          <button type="submit" class="primary-action" id="submitButton" ${checkpointLocked ? "disabled" : ""}>Submit Answer</button>
+        </form>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="attemptCount">Attempts recorded: ${attemptCount}</p>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="secondary-action" id="nextQuestion">Next</button>
+          <button type="button" class="final-action" id="finalCheckpoint" ${checkpointLocked ? "disabled" : ""}>Submit Final Checkpoint</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+
+  renderFeedback(state, "Checkpoint");
+  bindQuestionMap(renderCheckpointQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitCheckpointAnswer(event, question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousCheckpointQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextCheckpointQuestion);
+  document.querySelector("#finalCheckpoint").addEventListener("click", submitFinalCheckpoint);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  document.querySelector("#nextQuestion").disabled = currentIndex === quiz.checkpoint_questions.length - 1;
+  if (!checkpointLocked) input.focus();
+}
+
+function submitCheckpointAnswer(event, question, state) {
+  event.preventDefault();
+  if (checkpointLocked) return;
+
+  const input = document.querySelector("#answerInput");
+  const validation = validateQuestionAnswer(question, input.value);
+  const attempt = recordCheckpointAttempt(
+    checkpointSession,
+    question.question_id,
+    input.value,
+    validation.code,
+    validation.isCorrect,
+    validation.normalised
+  );
+
+  state.input = input.value;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  document.querySelector("#attemptCount").textContent = `Attempts recorded: ${attempt.attempt_number}`;
+  renderCheckpointQuestion();
+}
+
+function goToPreviousCheckpointQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderCheckpointQuestion();
+}
+
+function goToNextCheckpointQuestion() {
+  if (currentIndex === quiz.checkpoint_questions.length - 1) return;
+
+  currentIndex += 1;
+  renderCheckpointQuestion();
+}
+
+function submitFinalCheckpoint() {
+  if (checkpointLocked) return;
+  if (!window.confirm(FINAL_CHECKPOINT_WARNING)) return;
+
+  checkpointLocked = true;
+  checkpointSession.lockedAt = new Date().toISOString();
+  saveCheckpointSession(checkpointSession);
+  renderCheckpointComplete();
+}
+
+function renderCheckpointComplete() {
+  const questionIds = quiz.checkpoint_questions.map((question) => question.question_id);
+  const attemptCounts = getCheckpointAttemptCounts(checkpointSession, questionIds);
+  const summaries = quiz.checkpoint_questions.map((question) => {
+    const latestAttempt = getLatestAttempt(question.question_id);
+    const attempts = attemptCounts.find((item) => item.question_id === question.question_id)?.attempts ?? 0;
+    const status = getSummaryStatus(latestAttempt);
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempts,
+      isCorrect: status === "Correct"
+    };
+  });
+  const score = summaries.filter((item) => item.isCorrect).length;
+  const exportData = buildCheckpointExport(summaries, score);
+
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Checkpoint complete</p>
+      <h1>Finished.</h1>
+      <p class="lede">Score: ${score} / ${quiz.checkpoint_questions.length}</p>
+      <ul class="summary-list" id="summaryList"></ul>
+      <p class="summary-note">No answers are shown here. Review mistakes with Dad or tutor.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="exportParentSummary">Export Parent Summary</button>
+        <button type="button" class="secondary-action" id="exportResults">Export JSON Data</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  const summaryList = document.querySelector("#summaryList");
+  summaries.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.question_id}: ${item.status}, ${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+    summaryList.append(row);
+  });
+
+  document.querySelector("#exportParentSummary").addEventListener("click", () => exportParentSummary(exportData));
+  document.querySelector("#exportResults").addEventListener("click", () => exportCheckpointResults(exportData));
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function buildCheckpointExport(summaries, score) {
+  return {
+    export_schema_version: CHECKPOINT_EXPORT_SCHEMA_VERSION,
+    exported_at: new Date().toISOString(),
+    source: CHECKPOINT_EXPORT_SOURCE,
+    quiz: {
+      quiz_id: quiz.quiz_id,
+      title: quiz.title,
+      topic: quiz.topic,
+      version: quiz.version
+    },
+    checkpoint: {
+      session_id: checkpointSession.sessionId,
+      started_at: checkpointSession.startedAt,
+      locked_at: checkpointSession.lockedAt ?? "",
+      score,
+      total_questions: quiz.checkpoint_questions.length,
+      questions: summaries.map((summary) => {
+        const latestAttempt = getLatestAttempt(summary.question_id);
+
+        return {
+          question_id: summary.question_id,
+          status: summary.status,
+          is_correct: summary.isCorrect,
+          attempt_count: summary.attempts,
+          latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+          latest_attempt_timestamp: latestAttempt?.timestamp ?? ""
+        };
+      }),
+      attempts: checkpointSession.attempts.map((attempt) => ({
+        question_id: attempt.question_id,
+        attempt_number: attempt.attempt_number,
+        feedback_code: attempt.feedback_code,
+        is_correct: attempt.is_correct,
+        timestamp: attempt.timestamp
+      }))
+    }
+  };
+}
+
+function exportCheckpointResults(exportData) {
+  downloadFile(JSON.stringify(exportData, null, 2), "application/json", buildJsonExportFilename(exportData));
+}
+
+function exportParentSummary(exportData) {
+  downloadFile(buildParentSummary(exportData), "text/plain", buildParentSummaryFilename(exportData));
+}
+
+function buildParentSummary(exportData) {
+  const checkpoint = exportData.checkpoint;
+  const reviewQuestions = checkpoint.questions.filter((question) => question.status !== "Correct");
+  const lines = [
+    "Asher Quiz Lab",
+    "Checkpoint Summary",
+    "",
+    `Quiz: ${exportData.quiz.title}`,
+    `Topic: ${exportData.quiz.topic}`,
+    `Completed: ${formatSummaryTimestamp(checkpoint.locked_at || exportData.exported_at)}`,
+    `Score: ${checkpoint.score} / ${checkpoint.total_questions}`,
+    "",
+    getParentEncouragement(checkpoint.score, checkpoint.total_questions),
+    "",
+    "Question Summary",
+    "----------------",
+    ...checkpoint.questions.flatMap(formatParentQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    ...formatReviewList(reviewQuestions),
+    "",
+    "No correct answers, hints, worked solutions, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function formatParentQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status} (${formatAttemptCount(question.attempt_count)})`,
+    `  Latest feedback: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`
+  ];
+}
+
+function formatReviewList(questions) {
+  if (questions.length === 0) {
+    return ["- No checkpoint questions marked for review."];
+  }
+
+  return questions.map(
+    (question) =>
+      `- ${question.question_id}: ${question.status}; ${formatAttemptCount(question.attempt_count)}.`
+  );
+}
+
+function getParentEncouragement(score, totalQuestions) {
+  if (score === totalQuestions) {
+    return "Great focus. Every checkpoint question was finished correct.";
+  }
+
+  if (score >= Math.ceil(totalQuestions / 2)) {
+    return "Good work. There are a few questions to review together.";
+  }
+
+  if (score > 0) {
+    return "Good effort. This gives Dad or tutor a clear review list.";
+  }
+
+  return "Thanks for giving it a go. Use this as a calm review list.";
+}
+
+function formatFeedbackCodeForParent(code) {
+  const labels = {
+    CORRECT: "Correct",
+    BLANK: "Blank or not submitted",
+    INVALID_FORMAT: "Check the answer format",
+    FRACTION_REQUIRED: "Answer needed as a fraction",
+    MIXED_NUMBER_REQUIRED: "Answer needed as a mixed number",
+    EQUIVALENT_NOT_SIMPLEST: "Equivalent, but not in simplest form",
+    PLACE_VALUE_DENOMINATOR_ERROR: "Check the decimal place value",
+    WRONG_VALUE: "Try again",
+    CALCULATION_ERROR: "Check the calculation",
+    WRONG_BASE_ORIGINAL: "Check what the fraction is about",
+    WRONG_BASE_REMAINDER: "Check what we started with",
+    WRONG_LEFTOVER_STAGE: "Check what is left",
+    INTERMEDIATE_NOT_FINAL: "Halfway answer",
+    WRONG_CATEGORY: "Check what the question asked for",
+    MISSING_UNIT: "Include the unit or group"
+  };
+
+  return labels[code] ?? "Review needed";
+}
+
+function formatAttemptCount(count) {
+  return `${count} attempt${count === 1 ? "" : "s"}`;
+}
+
+function formatSummaryTimestamp(timestamp) {
+  if (!timestamp) return "";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}
+
+function downloadFile(content, type, filename) {
+  const blob = new Blob([content], {
+    type
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function buildJsonExportFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}.json`;
+}
+
+function buildParentSummaryFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildExportFilenameBase(exportData) {
+  const quizId = exportData.quiz.quiz_id.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+  const timestamp = exportData.exported_at.replace(/[:.]/g, "-");
+
+  return `asher-quiz-lab-${quizId}-${timestamp}`;
+}
+
+function renderQuestionMap(questions, states, activeIndex, mode) {
+  const buttons = questions.map((question, index) => {
+    const status = getMapStatus(states[index], index === activeIndex);
+    const classNames = ["question-map-button", `is-${status.className}`];
+    if (index === activeIndex) classNames.push("is-current");
+
+    return `
+      <button type="button" class="${classNames.join(" ")}" data-question-index="${index}" aria-current="${index === activeIndex ? "step" : "false"}">
+        <span>${question.question_id}</span>
+        <small>${status.label}</small>
+      </button>
+    `;
+  }).join("");
+
+  return `
+    <nav class="question-map" aria-label="${mode} question list">
+      <p class="question-map-title">Questions</p>
+      <div class="question-map-grid">${buttons}</div>
+    </nav>
+  `;
+}
+
+function bindQuestionMap(renderFunction) {
+  document.querySelectorAll(".question-map-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentIndex = Number(button.dataset.questionIndex);
+      renderFunction();
+    });
+  });
+}
+
+function getMapStatus(state, isCurrent) {
+  if (isCurrent) return { label: "Current", className: "current" };
+  if (!state.submitted) return { label: "Not tried", className: "not-tried" };
+  if (state.isCorrect) return { label: "Correct", className: "correct" };
+  return { label: "Tried", className: "tried" };
+}
+
+function renderFeedback(state, mode) {
+  const feedback = document.querySelector("#feedback");
+  const status = mode === "Practice" ? document.querySelector("#practiceStatus") : null;
+
+  if (!state.submitted) {
+    feedback.textContent = "";
+    if (status) status.textContent = "Not submitted yet.";
+    return;
+  }
+
+  feedback.textContent = state.feedbackMessage;
+  feedback.className = state.isCorrect ? "feedback is-correct" : "feedback is-retry";
+  if (status) status.textContent = state.isCorrect ? "Latest answer: correct." : "Latest answer: try again.";
+}
+
+function getAttemptCount(questionId) {
+  return checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId).length;
+}
+
+function getLatestAttempt(questionId) {
+  const attempts = checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId);
+  return attempts.length ? attempts[attempts.length - 1] : null;
+}
+
+function getSummaryStatus(latestAttempt) {
+  if (!latestAttempt || latestAttempt.feedback_code === "BLANK") return "Blank";
+  return latestAttempt.is_correct ? "Correct" : "Incorrect";
+}
+
+function renderLoadError(error) {
+  app.innerHTML = `
+    <section class="panel error-panel">
+      <p class="eyebrow">Local setup needed</p>
+      <h1>Quiz content did not load.</h1>
+      <p class="lede">Run a local server from the repo root, then open the local URL.</p>
+      <pre class="run-command">python -m http.server 8000</pre>
+      <p class="small-note">Then open http://localhost:8000/</p>
+    </section>
+  `;
+
+  console.error(error);
+}
+
+})();
+    </script>
+  </body>
+</html>
