@@ -372,7 +372,6 @@ h2 {
     font-size: 2.4rem;
   }
 }
-
     </style>
   </head>
   <body>
@@ -1482,7 +1481,6 @@ function result(code, normalised) {
   };
 }
 
-
   // logging.js
 const REMOTE_LOGGING_ENDPOINT = "";
 
@@ -1562,7 +1560,6 @@ function getClientTimezone() {
   }
 }
 
-
   // progress.js
 
 const STORAGE_KEY_PREFIX = "asher-quiz-lab";
@@ -1620,7 +1617,6 @@ function clearCheckpointSession(quizId) {
 function getStorageKey(quizId) {
   return `${STORAGE_KEY_PREFIX}.${quizId}`;
 }
-
 
   // quiz-engine.js
 
@@ -1726,6 +1722,7 @@ function createQuestionState(questions) {
     feedbackMessage: "",
     isCorrect: false,
     submitted: false,
+    attempts: [],
     hintsShown: 0,
     solutionShown: false
   }));
@@ -1800,6 +1797,12 @@ function submitPracticeAnswer(event, question, state) {
   state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
   state.isCorrect = validation.isCorrect;
   state.submitted = true;
+  state.attempts.push({
+    attempt_number: state.attempts.length + 1,
+    feedback_code: validation.code,
+    is_correct: validation.isCorrect,
+    timestamp: new Date().toISOString()
+  });
 
   renderPracticeQuestion();
 }
@@ -1861,6 +1864,7 @@ function renderPracticeComplete() {
       <p class="lede">You reached the end of the practice ladder.</p>
       <div class="mode-actions">
         <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="secondary-action" id="exportPracticeSummary">Export Practice Summary</button>
         <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
         <button type="button" class="secondary-action" id="backHome">Home</button>
       </div>
@@ -1871,8 +1875,111 @@ function renderPracticeComplete() {
     currentIndex = quiz.practice_questions.length - 1;
     renderPracticeQuestion();
   });
+  document.querySelector("#exportPracticeSummary").addEventListener("click", exportPracticeSummary);
   document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
   document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function exportPracticeSummary() {
+  const exportedAt = new Date().toISOString();
+
+  downloadFile(
+    buildPracticeParentSummary(exportedAt),
+    "text/plain",
+    buildPracticeParentSummaryFilename(exportedAt)
+  );
+}
+
+function buildPracticeParentSummary(exportedAt) {
+  const questions = buildPracticeQuestionSummaries();
+  const attemptedQuestions = questions.filter((question) => question.attempt_count > 0);
+  const notAttemptedQuestions = questions.filter((question) => question.status === "Not attempted");
+  const latestCorrectQuestions = questions.filter((question) => question.status === "Correct");
+  const repeatedAttemptQuestions = questions.filter((question) => question.attempt_count > 1);
+  const openedSolutionQuestions = questions.filter((question) => question.worked_solution_opened);
+  const latestNotCorrectQuestions = questions.filter((question) => question.status === "Tried");
+  const totalAttempts = questions.reduce((total, question) => total + question.attempt_count, 0);
+  const totalHintsViewed = questions.reduce((total, question) => total + question.hints_viewed, 0);
+  const lines = [
+    "Asher Quiz Lab",
+    "Practice Summary",
+    "",
+    `Quiz: ${quiz.title}`,
+    `Topic: ${quiz.topic}`,
+    `Exported: ${formatSummaryTimestamp(exportedAt)}`,
+    "",
+    "Practice Usage Summary",
+    "----------------------",
+    `Total practice questions: ${questions.length}`,
+    `Questions attempted: ${attemptedQuestions.length}`,
+    `Questions not attempted: ${notAttemptedQuestions.length}`,
+    `Questions with latest correct attempt: ${latestCorrectQuestions.length}`,
+    `Total practice attempts: ${totalAttempts}`,
+    `Total hints viewed: ${totalHintsViewed}`,
+    `Worked solutions opened: ${openedSolutionQuestions.length}`,
+    "",
+    "Question Summary",
+    "----------------",
+    ...questions.flatMap(formatPracticeQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    "Questions not attempted",
+    ...formatPracticeReviewList(notAttemptedQuestions),
+    "",
+    "Questions not correct on latest attempt",
+    ...formatPracticeReviewList(latestNotCorrectQuestions),
+    "",
+    "Questions with repeated attempts",
+    ...formatPracticeReviewList(repeatedAttemptQuestions, (question) => `${formatAttemptCount(question.attempt_count)}`),
+    "",
+    "Questions where worked solution was opened",
+    ...formatPracticeReviewList(openedSolutionQuestions),
+    "",
+    "No correct answers, accepted answers, hint text, worked solutions, raw submitted answers, normalised submitted answers, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function buildPracticeQuestionSummaries() {
+  return quiz.practice_questions.map((question, index) => {
+    const state = practiceState[index];
+    const attempts = state.attempts ?? [];
+    const latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    const status = latestAttempt ? (latestAttempt.is_correct ? "Correct" : "Tried") : "Not attempted";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+      hints_viewed: state.hintsShown,
+      worked_solution_opened: state.solutionShown
+    };
+  });
+}
+
+function formatPracticeQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status}`,
+    `  Attempt count: ${formatAttemptCount(question.attempt_count)}`,
+    `  Latest feedback category: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Hints viewed: ${question.hints_viewed}`,
+    `  Worked solution opened: ${question.worked_solution_opened ? "Yes" : "No"}`
+  ];
+}
+
+function formatPracticeReviewList(questions, detailFormatter = null) {
+  if (questions.length === 0) {
+    return ["- none"];
+  }
+
+  return questions.map((question) => {
+    const detail = detailFormatter ? `: ${detailFormatter(question)}` : "";
+    return `- ${question.question_id}${detail}`;
+  });
 }
 
 function renderCheckpointQuestion() {
@@ -2190,6 +2297,15 @@ function buildJsonExportFilename(exportData) {
 
 function buildParentSummaryFilename(exportData) {
   return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildPracticeParentSummaryFilename(exportedAt) {
+  return `${buildExportFilenameBase({
+    exported_at: exportedAt,
+    quiz: {
+      quiz_id: quiz.quiz_id
+    }
+  })}-practice-parent-summary.txt`;
 }
 
 function buildExportFilenameBase(exportData) {
