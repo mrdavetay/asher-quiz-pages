@@ -1,0 +1,3142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Before → Change → After | Asher PSLE Quiz Lab</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #536170;
+  --line: #d8ded6;
+  --primary: #225e54;
+  --primary-dark: #18463f;
+  --accent: #d55f3a;
+  --checkpoint: #344b7a;
+  --success: #1f6d46;
+  --retry: #9a4b1f;
+  --shadow: 0 18px 45px rgba(28, 36, 48, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(34, 94, 84, 0.09), rgba(255, 255, 255, 0) 38%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 32px 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.completion-panel,
+.error-panel {
+  margin-top: clamp(24px, 8vh, 80px);
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.question-panel {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.eyebrow,
+.question-id,
+.progress-text,
+.attempt-count,
+.small-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.question-id {
+  margin: 0 0 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 4.8rem, 4.8rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 2.2rem, 2.2rem);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.topic-line {
+  margin: 12px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.calculator-policy {
+  display: inline-block;
+  margin: 14px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #d8c796;
+  border-radius: 6px;
+  background: #fff8df;
+  color: #5f4a12;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.instruction-callout {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #d8c796;
+  border-radius: 8px;
+  background: #fff8df;
+  color: #453409;
+}
+
+.instruction-callout p {
+  margin: 8px 0 0;
+}
+
+.instruction-callout p:first-child {
+  margin-top: 0;
+}
+
+.mode-actions,
+.support-actions,
+.navigation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action,
+.text-action,
+.final-action {
+  padding: 10px 16px;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-action:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-action {
+  background: #fff4ed;
+  color: #713316;
+  border: 1px solid #f2c3a8;
+}
+
+.final-action {
+  background: #8e2f2f;
+  color: #ffffff;
+}
+
+.final-action:hover {
+  background: #6f2424;
+}
+
+.text-action {
+  min-height: auto;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f0ec;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mode-pill.checkpoint {
+  background: #e9edf7;
+  color: var(--checkpoint);
+}
+
+.question-map {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.question-map-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.question-map-button {
+  display: grid;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  text-align: left;
+}
+
+.question-map-button span {
+  font-weight: 800;
+}
+
+.question-map-button small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.question-map-button.is-current {
+  border-color: var(--checkpoint);
+  outline: 3px solid rgba(52, 75, 122, 0.14);
+}
+
+.question-map-button.is-correct {
+  border-color: rgba(31, 109, 70, 0.45);
+  background: #eef8f1;
+}
+
+.question-map-button.is-tried {
+  border-color: rgba(154, 75, 31, 0.45);
+  background: #fff6ee;
+}
+
+.question-map-button.is-not-tried {
+  background: #ffffff;
+}
+
+.prompt {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f9faf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+}
+
+.answer-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.answer-form label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.answer-form input:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+}
+
+.feedback.is-retry {
+  color: var(--retry);
+}
+
+.hint-list,
+.summary-list {
+  margin: 20px 0 0;
+  padding-left: 22px;
+}
+
+.hint-list li,
+.summary-list li {
+  margin-top: 8px;
+}
+
+.worked-solution,
+.run-command {
+  margin: 20px 0 0;
+  padding: 16px;
+  overflow: auto;
+  background: #17202a;
+  color: #f7fbff;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.attempt-count {
+  min-height: 24px;
+  margin: 8px 0 0;
+}
+
+.summary-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .app {
+    padding: 18px 12px;
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .progress-text {
+    grid-column: 1 / -1;
+  }
+
+  .answer-form {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-form button,
+  .mode-actions button,
+  .support-actions button,
+  .navigation-actions button {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+    </style>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section class="panel hero-panel">
+        <p class="eyebrow">Asher PSLE Quiz Lab</p>
+        <h1>Loading quiz...</h1>
+      </section>
+    </main>
+    <script id="quiz-content-data" type="application/json">
+{
+  "quiz_id": "frp-module-2a-before-change-after-v1",
+  "title": "Before → Change → After",
+  "topic": "Fractions / Ratio / Percentage",
+  "module": "FRP Module 2A",
+  "version": "1.0",
+  "source_authority": "D_DAVE_REVIEWED_AI_DRAFT",
+  "practice_questions": [
+    {
+      "question_id": "FRP-M2A-B1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Bridge: Start → Left → Asked Reminder",
+      "section": "Bridge: Start → Left → Asked Reminder",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "A box had 60 pencils. 20 pencils were taken out. After that, 1/4 of the pencils left in the box were blue.\n\nThe 1/4 is about what?\n\nA. All 60 pencils\nB. The 40 pencils left\nC. The 20 pencils taken out\nD. The blue pencils only",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "the 40 pencils left",
+        "40 pencils left"
+      ],
+      "option_feedback_codes": {
+        "A": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "C": "WRONG_CATEGORY",
+        "D": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "CURRENT_AMOUNT_REMINDER",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "WRONG_CATEGORY"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Use the amount now.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Careful. Something changed before this clue.",
+        "WRONG_CATEGORY": "Check what the 1/4 is about.",
+        "INVALID_FORMAT": "Choose A, B, C, or D.",
+        "BLANK": "Give it a try. What changed first?"
+      },
+      "hints": [
+        "After that means something has already changed. What amount is in the box now?"
+      ],
+      "worked_solution": "20 pencils were taken out.\n\n60 - 20 = 40 pencils left.\n\nThe 1/4 is about the pencils left.\n\nAnswer: B. The 40 pencils left",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-B2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Bridge: Before → Change → After",
+      "section": "Bridge: Start → Left → Asked Reminder",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Amy and Ben had cards in the ratio 3 : 5.\n\nThen Ben gave some cards to Amy.\n\nIn our ratio-unit model, Amy gained 2 units and Ben lost 2 units.\n\nAfter the change, Amy had 25 cards.\n\nWhich statement is correct?\n\nA. Amy's 25 cards match her starting 3 units.\nB. Amy's 25 cards match her new 5 units.\nC. Ben's 25 cards match his starting 5 units.\nD. Ben's 25 cards match his new 3 units.",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "Amy's 25 cards match her new 5 units",
+        "Amy new 5 units"
+      ],
+      "option_feedback_codes": {
+        "A": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "C": "WRONG_CATEGORY",
+        "D": "WRONG_CURRENT_AMOUNT"
+      },
+      "error_tags": [
+        "NEW_AMOUNT_NOW",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "WRONG_CURRENT_AMOUNT",
+        "WRONG_CATEGORY"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Amy's 25 cards match her new 5 units.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Careful. Amy's amount changed before the 25-card clue.",
+        "WRONG_CURRENT_AMOUNT": "Check Amy's new units after receiving 2 units.",
+        "WRONG_CATEGORY": "Check whether the 25 cards belong to Amy or Ben.",
+        "INVALID_FORMAT": "Choose A, B, C, or D.",
+        "BLANK": "Give it a try. Match the clue to the new units."
+      },
+      "hints": [
+        "Amy gained 2 units, so her units changed. Match 25 cards to her new units."
+      ],
+      "worked_solution": "Amy started with 3 units.\n\nBen gave cards to Amy. In the ratio-unit model, Amy gained 2 units.\n\n3 + 2 = 5 units.\n\nThe 25 cards match Amy's new 5 units.\n\nAnswer: B",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L1-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 1: Read the Starting Ratio",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Ava and Ben had game cards in the ratio 4 : 7. Before anything changed, how many units did Ava and Ben have? Who had more?",
+      "expected_format": "short_text",
+      "canonical_answer": "Ava: 4 units. Ben: 7 units. Ben had more.",
+      "accepted_answers": [
+        "Ava: 4 units. Ben: 7 units. Ben had more.",
+        "Ava 4 units Ben 7 units Ben had more",
+        "Ava 4 Ben 7 Ben had more",
+        "4 units 7 units Ben had more"
+      ],
+      "required_terms": [
+        [
+          "ava"
+        ],
+        [
+          "4"
+        ],
+        [
+          "ben"
+        ],
+        [
+          "7"
+        ],
+        [
+          "more"
+        ]
+      ],
+      "error_tags": [
+        "STARTING_RATIO_READER",
+        "WRONG_START_RATIO",
+        "WRONG_CATEGORY"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. That is the starting ratio.",
+        "WRONG_START_RATIO": "Check the order of the names.",
+        "WRONG_CATEGORY": "That unit belongs to the other person.",
+        "WRONG_VALUE": "Check the starting ratio and who had more.",
+        "BLANK": "Start with the ratio only."
+      },
+      "hints": [
+        "Do not change anything yet. Ratio roll call first."
+      ],
+      "worked_solution": "The ratio is Ava : Ben = 4 : 7.\n\nAva had 4 units. Ben had 7 units.\n\n7 units is more than 4 units.\n\nAnswer: Ava: 4 units. Ben: 7 units. Ben had more.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L1-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 1: Read the Starting Ratio",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Dina had 3 times as many bookmarks as Ethan. Before anything changed, what was the starting ratio of Dina : Ethan?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "3 : 1",
+      "accepted_answers": [
+        "3:1",
+        "3 : 1",
+        "3 to 1",
+        "3 units : 1 unit"
+      ],
+      "target_ratio_units": {
+        "left": 3,
+        "right": 1
+      },
+      "diagnostic_answers": {
+        "1:3": "WRONG_START_RATIO",
+        "1 : 3": "WRONG_START_RATIO",
+        "1 to 3": "WRONG_START_RATIO"
+      },
+      "error_tags": [
+        "STARTING_RATIO_READER",
+        "WRONG_START_RATIO",
+        "WRONG_CATEGORY"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Dina has 3 units and Ethan has 1 unit.",
+        "WRONG_START_RATIO": "Check who has 3 times as many.",
+        "WRONG_CATEGORY": "Check the order Dina : Ethan.",
+        "INVALID_FORMAT": "Write the answer as a ratio.",
+        "WRONG_CURRENT_AMOUNT": "Check the order Dina : Ethan."
+      },
+      "hints": [
+        "3 times as many means Dina has 3 units for every 1 unit Ethan has."
+      ],
+      "worked_solution": "Dina has 3 times Ethan's bookmarks.\n\nSo Dina has 3 units and Ethan has 1 unit.\n\nAnswer: 3 : 1",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L2-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 2: Who Changed?",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Ryan and Zoe had stickers in the ratio 5 : 3.\n\nThen Ryan gave some stickers to Zoe.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nWho changed, and how did the units change?",
+      "expected_format": "short_text",
+      "canonical_answer": "Ryan lost 2 units. Zoe gained 2 units.",
+      "accepted_answers": [
+        "Ryan lost 2 units. Zoe gained 2 units.",
+        "Ryan lost 2 units Zoe gained 2 units",
+        "Ryan gave 2 units to Zoe",
+        "Ryan -2 Zoe +2"
+      ],
+      "required_terms": [
+        [
+          "ryan"
+        ],
+        [
+          "zoe"
+        ],
+        [
+          "lost",
+          "gave",
+          "-2"
+        ],
+        [
+          "gained",
+          "received",
+          "+2"
+        ],
+        [
+          "2"
+        ]
+      ],
+      "diagnostic_answers": {
+        "Ryan gained 2 units. Zoe lost 2 units.": "TRANSFER_APPLIED_TO_WRONG_PERSON"
+      },
+      "error_tags": [
+        "CHANGE_FINDER",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "WRONG_CURRENT_AMOUNT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You found who changed.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Check who gave and who received.",
+        "WRONG_CURRENT_AMOUNT": "Check whether the amount was added or removed.",
+        "WRONG_VALUE": "Check who gave and who received.",
+        "BLANK": "Look for the action word first."
+      },
+      "hints": [
+        "The story says Ryan gave stickers to Zoe. Decide who goes down and who goes up."
+      ],
+      "worked_solution": "Ryan gave stickers to Zoe.\n\nIn the ratio-unit model, the transfer is worth 2 units.\n\nRyan lost 2 units. Zoe gained 2 units.\n\nAnswer: Ryan lost 2 units. Zoe gained 2 units.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L2-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 2: Who Changed?",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Max and Noor had marbles in the ratio 4 : 5.\n\nThen Noor used some marbles for a game.\n\nIn our ratio-unit model, the amount used is 3 units.\n\nWho changed? What happened to that person's amount?",
+      "expected_format": "short_text",
+      "canonical_answer": "Noor changed. Noor lost 3 units. Max stayed the same.",
+      "accepted_answers": [
+        "Noor changed. Noor lost 3 units. Max stayed the same.",
+        "Noor lost 3 units Max stayed the same",
+        "Noor used 3 units Max stayed the same",
+        "Noor -3 Max same"
+      ],
+      "required_terms": [
+        [
+          "noor"
+        ],
+        [
+          "lost",
+          "used",
+          "-3"
+        ],
+        [
+          "3"
+        ],
+        [
+          "max"
+        ],
+        [
+          "same",
+          "unchanged"
+        ]
+      ],
+      "diagnostic_answers": {
+        "Max lost 3 units. Noor stayed the same.": "TRANSFER_APPLIED_TO_WRONG_PERSON"
+      },
+      "error_tags": [
+        "CHANGE_FINDER",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "WRONG_CURRENT_AMOUNT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Noor's amount changed.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Check who used the marbles.",
+        "WRONG_CURRENT_AMOUNT": "Check whether the amount increased or decreased.",
+        "WRONG_VALUE": "Check who used the marbles and what happened.",
+        "BLANK": "Find the action word."
+      },
+      "hints": [
+        "Used means the amount goes down. Who used the marbles?"
+      ],
+      "worked_solution": "Noor used the marbles, so Noor changed.\n\nIn the ratio-unit model, the amount used is 3 units.\n\nNoor lost 3 units. Max stayed the same.\n\nAnswer: Noor changed. Noor lost 3 units. Max stayed the same.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L3-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 3: Update the Units",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Kai and Leo had stickers in the ratio 6 : 4.\n\nThen Kai gave some stickers to Leo.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nWhat are the new units of Kai : Leo after the change?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "4 : 6",
+      "accepted_answers": [
+        "4:6",
+        "4 : 6",
+        "4 to 6",
+        "4 units : 6 units"
+      ],
+      "target_ratio_units": {
+        "left": 4,
+        "right": 6
+      },
+      "diagnostic_answers": {
+        "2:3": "WRONG_CURRENT_AMOUNT",
+        "2 : 3": "WRONG_CURRENT_AMOUNT",
+        "2 to 3": "WRONG_CURRENT_AMOUNT",
+        "8:2": "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "8 : 2": "TRANSFER_APPLIED_TO_WRONG_PERSON"
+      },
+      "error_tags": [
+        "UNIT_UPDATER",
+        "WRONG_CURRENT_AMOUNT",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You updated the units.",
+        "WRONG_CURRENT_AMOUNT": "Something changed. What are the units now?",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Check who gave and who received.",
+        "CALCULATION_ERROR": "Check the add or subtract step.",
+        "INVALID_FORMAT": "Write the updated units like 4 : 6.",
+        "BLANK": "Start with the units before the change."
+      },
+      "hints": [
+        "Start with 6 : 4. Kai gives, so Kai goes down. Leo receives, so Leo goes up. Update the scoreboard."
+      ],
+      "worked_solution": "Start with Kai : Leo = 6 : 4.\n\nKai gave 2 units, so Kai has 6 - 2 = 4 units.\nLeo received 2 units, so Leo has 4 + 2 = 6 units.\n\nAnswer: 4 : 6",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L3-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 3: Update the Units",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Mia and Nat had pencils in the ratio 3 : 8.\n\nThen Nat gave some pencils to Mia.\n\nIn our ratio-unit model, the transfer is worth 3 units.\n\nWhat are the new units of Mia : Nat after the change?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "6 : 5",
+      "accepted_answers": [
+        "6:5",
+        "6 : 5",
+        "6 to 5",
+        "6 units : 5 units"
+      ],
+      "target_ratio_units": {
+        "left": 6,
+        "right": 5
+      },
+      "diagnostic_answers": {
+        "0:11": "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "0 : 11": "TRANSFER_APPLIED_TO_WRONG_PERSON"
+      },
+      "error_tags": [
+        "UNIT_UPDATER",
+        "WRONG_CURRENT_AMOUNT",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You updated the units after the change.",
+        "WRONG_CURRENT_AMOUNT": "Use the units after the change.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Check who gave and who received.",
+        "CALCULATION_ERROR": "Check the add or subtract step.",
+        "INVALID_FORMAT": "Write the updated units like 6 : 5.",
+        "BLANK": "Update each side carefully."
+      },
+      "hints": [
+        "Nat gives 3 units away. Mia receives those 3 units."
+      ],
+      "worked_solution": "Start with Mia : Nat = 3 : 8.\n\nNat gave 3 units, so Nat has 8 - 3 = 5 units.\nMia received 3 units, so Mia has 3 + 3 = 6 units.\n\nAnswer: 6 : 5",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L3-03",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 3: Update the Units",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Class A and Class B had badges in the ratio 7 : 5.\n\nThen Class A used some badges. Class B received more badges.\n\nIn our ratio-unit model, Class A's amount went down by 2 units and Class B's amount went up by 4 units.\n\nWhat are the new units of Class A : Class B?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "5 : 9",
+      "accepted_answers": [
+        "5:9",
+        "5 : 9",
+        "5 to 9",
+        "5 units : 9 units"
+      ],
+      "target_ratio_units": {
+        "left": 5,
+        "right": 9
+      },
+      "diagnostic_answers": {
+        "9:1": "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "9 : 1": "TRANSFER_APPLIED_TO_WRONG_PERSON"
+      },
+      "error_tags": [
+        "UNIT_UPDATER",
+        "WRONG_CURRENT_AMOUNT",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You updated both sides.",
+        "WRONG_CURRENT_AMOUNT": "Something changed. What are the units now?",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Check which class used and which class received.",
+        "CALCULATION_ERROR": "Check the add or subtract step.",
+        "INVALID_FORMAT": "Write the updated units like 5 : 9.",
+        "BLANK": "Update Class A first, then Class B."
+      },
+      "hints": [
+        "This is not one transfer. Update each class using the action in the sentence."
+      ],
+      "worked_solution": "Start with Class A : Class B = 7 : 5.\n\nClass A used 2 units, so Class A has 7 - 2 = 5 units.\nClass B received 4 units, so Class B has 5 + 4 = 9 units.\n\nAnswer: 5 : 9",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L4-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 4: New Amount Alert",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Ella and Finn had coins in the ratio 2 : 5.\n\nThen Finn gave some coins to Ella.\n\nIn our ratio-unit model, the transfer is worth 1 unit.\n\nAfter the change, Ella had 24 coins.\n\nWhich units should match the 24 coins?\n\nA. Ella's starting 2 units\nB. Ella's new 3 units\nC. Finn's starting 5 units\nD. Finn's new 4 units",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "Ella's new 3 units",
+        "Ella new 3 units"
+      ],
+      "option_feedback_codes": {
+        "A": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "C": "WRONG_CATEGORY",
+        "D": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "NEW_AMOUNT_ALERT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "WRONG_CURRENT_AMOUNT",
+        "WRONG_CATEGORY"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The 24 coins match Ella's new 3 units.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Careful. Ella's amount changed before the 24-coin clue.",
+        "WRONG_CURRENT_AMOUNT": "Check Ella's new amount now.",
+        "WRONG_CATEGORY": "Check whether the clue is about Ella or Finn.",
+        "INVALID_FORMAT": "Choose A, B, C, or D."
+      },
+      "hints": [
+        "Ella received 1 unit, so her units changed. Match 24 coins to her new units."
+      ],
+      "worked_solution": "Start with Ella : Finn = 2 : 5.\n\nFinn gave 1 unit to Ella, so Ella now has 3 units.\n\nThe 24 coins match Ella's new 3 units.\n\nAnswer: B",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L4-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 4: New Amount Alert",
+      "section": "Lower Ladder — Calculator Not Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Hugo and Isa had sweets in the ratio 7 : 4.\n\nThen Hugo ate some sweets.\n\nIn our ratio-unit model, Hugo's amount went down by 2 units.\n\nLater, the clue says, \"Isa has 15 fewer sweets than Hugo now.\"\n\nWhich units should be used for the 15-sweet difference?\n\nA. Starting units: 7 units and 4 units\nB. New units after Hugo ate sweets: 5 units and 4 units\nC. Hugo's starting 7 units only\nD. Isa's 4 units only",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "new units after Hugo ate sweets",
+        "5 units and 4 units"
+      ],
+      "option_feedback_codes": {
+        "A": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "C": "WRONG_CATEGORY",
+        "D": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "NEW_AMOUNT_ALERT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "WRONG_CURRENT_AMOUNT",
+        "WRONG_CATEGORY"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The difference uses the new units now.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Careful. Use the new amount now.",
+        "WRONG_CURRENT_AMOUNT": "Check Hugo's units after he ate 2 units.",
+        "WRONG_CATEGORY": "Check whether the clue is comparing both people or only one person.",
+        "INVALID_FORMAT": "Choose A, B, C, or D."
+      },
+      "hints": [
+        "Hugo ate sweets, so Hugo's units changed before the difference clue."
+      ],
+      "worked_solution": "Start with Hugo : Isa = 7 : 4.\n\nHugo ate 2 units, so Hugo now has 5 units. Isa stayed at 4 units.\n\nThe 15-sweet difference uses the new units now.\n\nAnswer: B",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L5-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 5: Use the Final Clue",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Chloe and Dan had stickers in the ratio 5 : 3.\n\nThen Chloe used some stickers.\n\nIn our ratio-unit model, Chloe's amount went down by 1 unit.\n\nAfter the change, they had 84 stickers altogether.\n\nAfter the change, how many total units match the 84 stickers?",
+      "expected_format": "numeric",
+      "canonical_answer": "7 units",
+      "accepted_answers": [
+        "7",
+        "7 units"
+      ],
+      "target_number": 7,
+      "diagnostic_answers": {
+        "8": "WRONG_CURRENT_AMOUNT",
+        "4": "INTERMEDIATE_NOT_FINAL",
+        "3": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "FINAL_CLUE_FINDER",
+        "WRONG_CURRENT_AMOUNT",
+        "INTERMEDIATE_NOT_FINAL",
+        "WRONG_CATEGORY",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The 84 stickers match 7 total units.",
+        "WRONG_CURRENT_AMOUNT": "Use the units after the change, not just the starting ratio.",
+        "INTERMEDIATE_NOT_FINAL": "That is useful, but match the total clue to the units.",
+        "WRONG_CATEGORY": "Check whether the clue is a total, difference, or one person's amount.",
+        "CALCULATION_ERROR": "Check the unit update.",
+        "INVALID_FORMAT": "Write a whole-number answer.",
+        "BLANK": "Update the units first, then count the total units."
+      },
+      "hints": [
+        "Update the units first. The total clue must match all the after-change units."
+      ],
+      "worked_solution": "Start with Chloe : Dan = 5 : 3.\n\nChloe used some stickers. In the ratio-unit model, Chloe's amount went down by 1 unit.\n\nThe after-change units are 4 : 3.\n\nTotal after-change units = 4 + 3 = 7.\n\nAnswer: 7 units",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L5-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 5: Use the Final Clue",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Ari and Bala had marbles in the ratio 8 : 3.\n\nThen Ari gave some marbles to Bala.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nAfter the change, Ari had 18 more marbles than Bala.\n\nAfter the change, how many units match the 18-marble difference?",
+      "expected_format": "numeric",
+      "canonical_answer": "1 unit",
+      "accepted_answers": [
+        "1",
+        "1 unit"
+      ],
+      "target_number": 1,
+      "diagnostic_answers": {
+        "5": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "6": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "FINAL_CLUE_FINDER",
+        "WRONG_CURRENT_AMOUNT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "WRONG_CATEGORY",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The 18-marble difference matches 1 unit.",
+        "WRONG_CURRENT_AMOUNT": "Use the after-change units for the difference.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "The story changed before the difference clue.",
+        "WRONG_CATEGORY": "Check whether the clue is a difference or a total.",
+        "CALCULATION_ERROR": "Check the unit difference.",
+        "INVALID_FORMAT": "Write a whole-number answer.",
+        "BLANK": "Update the units, then compare."
+      },
+      "hints": [
+        "Update the units first. Then compare Ari's new units with Bala's new units."
+      ],
+      "worked_solution": "Start with Ari : Bala = 8 : 3.\n\nAri gave 2 units to Bala, so the after-change units are 6 : 5.\n\nThe difference is 6 - 5 = 1 unit.\n\nAnswer: 1 unit",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L6-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 6: Find One Unit",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Noah and Owen had game cards in the ratio 7 : 2.\n\nThen Noah used some game cards.\n\nIn our ratio-unit model, Noah's amount went down by 1 unit.\n\nAfter the change, they had 80 game cards altogether.\n\nWhat is the value of 1 unit?",
+      "expected_format": "numeric",
+      "canonical_answer": "10 game cards",
+      "accepted_answers": [
+        "10",
+        "10 game cards"
+      ],
+      "target_number": 10,
+      "diagnostic_answers": {
+        "8": "INTERMEDIATE_NOT_FINAL",
+        "9": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "80": "INTERMEDIATE_NOT_FINAL"
+      },
+      "error_tags": [
+        "ONE_UNIT_FINDER",
+        "UNIT_VALUE_NOT_FINAL",
+        "WRONG_CURRENT_AMOUNT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "CALCULATION_ERROR",
+        "MISSING_UNIT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You found one unit.",
+        "UNIT_VALUE_NOT_FINAL": "Good step, but check if the question asks for more later.",
+        "WRONG_CURRENT_AMOUNT": "Check the updated units.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Use the after-change units.",
+        "INTERMEDIATE_NOT_FINAL": "That is useful, but it is not 1 unit.",
+        "CALCULATION_ERROR": "Check the division.",
+        "MISSING_UNIT": "Add the thing being counted.",
+        "INVALID_FORMAT": "Write a whole-number answer."
+      },
+      "hints": [
+        "Update the units first. Then match the total number of units to 80."
+      ],
+      "worked_solution": "Start with Noah : Owen = 7 : 2.\n\nNoah used some game cards. In the ratio-unit model, Noah's amount went down by 1 unit.\n\nThe after-change units are 6 : 2.\n\nTotal after-change units = 8.\n80 game cards match 8 units.\n\n80 ÷ 8 = 10.\n\nAnswer: 10 game cards",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L6-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 6: Find One Unit",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Piya and Qin had badges in the ratio 4 : 10.\n\nThen Qin gave some badges to Piya.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nAfter the change, Qin had 12 more badges than Piya.\n\nWhat is the value of 1 unit?",
+      "expected_format": "numeric",
+      "canonical_answer": "6 badges",
+      "accepted_answers": [
+        "6",
+        "6 badges"
+      ],
+      "target_number": 6,
+      "diagnostic_answers": {
+        "2": "INTERMEDIATE_NOT_FINAL",
+        "12": "INTERMEDIATE_NOT_FINAL",
+        "3": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL"
+      },
+      "error_tags": [
+        "ONE_UNIT_FINDER",
+        "WRONG_CURRENT_AMOUNT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "CALCULATION_ERROR",
+        "MISSING_UNIT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You found one unit.",
+        "WRONG_CURRENT_AMOUNT": "Check how many updated units match the difference.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "The units changed before the difference clue.",
+        "INTERMEDIATE_NOT_FINAL": "That is useful, but it is not 1 unit.",
+        "CALCULATION_ERROR": "Check the division.",
+        "MISSING_UNIT": "Add the thing being counted.",
+        "INVALID_FORMAT": "Write a whole-number answer."
+      },
+      "hints": [
+        "First update the units. Then ask how many units the difference represents."
+      ],
+      "worked_solution": "Start with Piya : Qin = 4 : 10.\n\nQin gave 2 units to Piya, so the after-change units are 6 : 8.\n\nDifference = 8 - 6 = 2 units.\n2 units = 12 badges.\n\n1 unit = 12 ÷ 2 = 6 badges.\n\nAnswer: 6 badges",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L7-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 7: Answer What Was Asked",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Sara and Tom had stickers in the ratio 4 : 7.\n\nThen Tom gave some stickers to Sara.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nAfter the change, Sara had 54 stickers.\n\nHow many stickers did Tom have at first?",
+      "expected_format": "numeric",
+      "canonical_answer": "63 stickers",
+      "accepted_answers": [
+        "63",
+        "63 stickers"
+      ],
+      "target_number": 63,
+      "diagnostic_answers": {
+        "9": "UNIT_VALUE_NOT_FINAL",
+        "45": "WRONG_FINAL_TARGET",
+        "54": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "ASKED_TARGET_CHECKER",
+        "UNIT_VALUE_NOT_FINAL",
+        "INTERMEDIATE_NOT_FINAL",
+        "WRONG_FINAL_TARGET",
+        "WRONG_CATEGORY",
+        "MISSING_UNIT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You answered what was asked.",
+        "UNIT_VALUE_NOT_FINAL": "Good step, but one unit is not the final answer.",
+        "INTERMEDIATE_NOT_FINAL": "Useful number, but check the final sentence again.",
+        "WRONG_FINAL_TARGET": "Check whether the question asks for before or after.",
+        "WRONG_CATEGORY": "Your number may belong to Sara, not Tom.",
+        "MISSING_UNIT": "Add the thing being counted.",
+        "INVALID_FORMAT": "Write a whole-number answer."
+      },
+      "hints": [
+        "Sara's 54 stickers is after the change. The question asks for Tom at first. Do not stop at the new amount."
+      ],
+      "worked_solution": "Start with Sara : Tom = 4 : 7.\n\nTom gave 2 units to Sara, so the after-change units are 6 : 5.\n\nSara after = 6 units = 54 stickers.\n1 unit = 54 ÷ 6 = 9 stickers.\n\nTom at first = 7 units.\n7 x 9 = 63.\n\nAnswer: 63 stickers",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L7-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 7: Answer What Was Asked",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Uma and Vik had coins in the ratio 9 : 5.\n\nThen Uma gave some coins to Vik.\n\nIn our ratio-unit model, the transfer is worth 3 units.\n\nAfter the change, they had 112 coins altogether.\n\nHow many coins did Vik have after the change?",
+      "expected_format": "numeric",
+      "canonical_answer": "64 coins",
+      "accepted_answers": [
+        "64",
+        "64 coins"
+      ],
+      "target_number": 64,
+      "diagnostic_answers": {
+        "8": "UNIT_VALUE_NOT_FINAL",
+        "40": "WRONG_FINAL_TARGET",
+        "48": "WRONG_CATEGORY",
+        "112": "INTERMEDIATE_NOT_FINAL"
+      },
+      "error_tags": [
+        "ASKED_TARGET_CHECKER",
+        "UNIT_VALUE_NOT_FINAL",
+        "INTERMEDIATE_NOT_FINAL",
+        "WRONG_FINAL_TARGET",
+        "WRONG_CATEGORY",
+        "MISSING_UNIT"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You answered the final target.",
+        "UNIT_VALUE_NOT_FINAL": "You found one unit, but that is not Vik's amount.",
+        "INTERMEDIATE_NOT_FINAL": "Useful number, but not the final answer yet.",
+        "WRONG_FINAL_TARGET": "Check whether Vik is before or after.",
+        "WRONG_CATEGORY": "Check whose amount is being asked.",
+        "MISSING_UNIT": "Add the thing being counted.",
+        "INVALID_FORMAT": "Write a whole-number answer."
+      },
+      "hints": [
+        "Find one unit from the after-change total. Then check whether Vik is before or after."
+      ],
+      "worked_solution": "Start with Uma : Vik = 9 : 5.\n\nUma gave 3 units to Vik, so the after-change units are 6 : 8.\n\nTotal after-change units = 14.\n112 coins match 14 units.\n\n1 unit = 112 ÷ 14 = 8 coins.\nVik after = 8 units.\n8 x 8 = 64.\n\nAnswer: 64 coins",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L8-01",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 8: Spot the Oops",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Lila and Mason had stickers in the ratio 3 : 5.\n\nThen Mason gave some stickers to Lila.\n\nIn our ratio-unit model, the transfer is worth 1 unit.\n\nA student said the new ratio is 3 : 4.\n\nWhat went wrong?\n\nA. They read the starting ratio wrongly.\nB. They subtracted from Mason but forgot to add to Lila.\nC. They used a calculator wrongly.\nD. They answered with the total.",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "subtracted from Mason but forgot to add to Lila",
+        "forgot to add to Lila"
+      ],
+      "option_feedback_codes": {
+        "A": "WRONG_START_RATIO",
+        "C": "WRONG_CATEGORY",
+        "D": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "SPOT_THE_OOPS",
+        "WRONG_CURRENT_AMOUNT",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "WRONG_START_RATIO"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You spotted the oops.",
+        "WRONG_CURRENT_AMOUNT": "Check both sides after the change.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Check who gave and who received.",
+        "WRONG_START_RATIO": "The starting ratio was read correctly. Look at the change.",
+        "WRONG_CATEGORY": "The main problem is the unit update.",
+        "INVALID_FORMAT": "Choose A, B, C, or D.",
+        "BLANK": "Use Before → Change → After."
+      },
+      "hints": [
+        "Detective mode: when one person gives, the other person receives."
+      ],
+      "worked_solution": "Mason gave 1 unit to Lila.\n\nMason should go from 5 to 4 units.\nLila should go from 3 to 4 units.\n\nThe student only changed Mason.\n\nAnswer: B. They subtracted from Mason but forgot to add to Lila.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L8-02",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 8: Spot the Oops",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Nora and Omar had cards in the ratio 6 : 4.\n\nThen Nora gave some cards to Omar.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nAfter the change, they had 80 cards altogether.\n\nA student said:\n\"There are 10 units, so 1 unit = 8. Omar has 4 units, so Omar has 32 cards after the change.\"\n\nWhat went wrong?\n\nA. They found one unit wrongly.\nB. They used Omar's starting units instead of Omar's after-change units.\nC. They forgot to add the total.\nD. They reversed the starting ratio.",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "used Omar's starting units instead of Omar's after-change units",
+        "used Omar starting units"
+      ],
+      "option_feedback_codes": {
+        "A": "UNIT_VALUE_NOT_FINAL",
+        "C": "WRONG_CATEGORY",
+        "D": "WRONG_START_RATIO"
+      },
+      "error_tags": [
+        "SPOT_THE_OOPS",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "UNIT_VALUE_NOT_FINAL",
+        "WRONG_FINAL_TARGET"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. They used the starting units instead of the new amount now.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "The story changed. Check Omar's new units.",
+        "UNIT_VALUE_NOT_FINAL": "The one-unit value is not the main problem here.",
+        "WRONG_FINAL_TARGET": "The target is Omar after the change.",
+        "WRONG_START_RATIO": "The starting ratio was not reversed.",
+        "WRONG_CATEGORY": "Check the after-change units.",
+        "INVALID_FORMAT": "Choose A, B, C, or D.",
+        "BLANK": "Check the after-change units."
+      },
+      "hints": [
+        "The one-unit value may be correct, but whose units should be used after the change?"
+      ],
+      "worked_solution": "Nora gave 2 units to Omar, so the after-change units are Nora : Omar = 4 : 6.\n\nThe total is still 10 units, so 1 unit = 8 is correct.\n\nOmar after has 6 units, not 4 units.\n\nAnswer: B",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-L8-03",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Level 8: Spot the Oops",
+      "section": "Higher Ladder — Calculator Allowed",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Pia and Ray had badges in the ratio 8 : 5.\n\nThen Pia gave some badges to Ray.\n\nIn our ratio-unit model, the transfer is worth 1 unit.\n\nAfter the change, Ray had 54 badges. The question asks: \"How many badges did Pia have at first?\"\n\nA student answered 54 badges.\n\nWhat went wrong?\n\nA. They answered the given after-change amount, not what was asked.\nB. They reversed the ratio.\nC. They forgot to subtract 1 from Ray.\nD. They found the total instead.",
+      "expected_format": "mcq",
+      "canonical_answer": "A",
+      "accepted_answers": [
+        "A",
+        "answered the given after-change amount, not what was asked",
+        "answered the wrong target"
+      ],
+      "option_feedback_codes": {
+        "B": "WRONG_START_RATIO",
+        "C": "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "D": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "SPOT_THE_OOPS",
+        "WRONG_FINAL_TARGET",
+        "WRONG_CATEGORY",
+        "INTERMEDIATE_NOT_FINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. They answered the wrong target.",
+        "WRONG_FINAL_TARGET": "Check before or after, and check who is being asked for.",
+        "WRONG_CATEGORY": "Ray's amount is not Pia's amount.",
+        "INTERMEDIATE_NOT_FINAL": "54 is useful, but it is not the requested answer.",
+        "WRONG_START_RATIO": "Check the final target before changing the ratio.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Ray received 1 unit. The main issue is the final target.",
+        "INVALID_FORMAT": "Choose A, B, C, or D.",
+        "BLANK": "What did the question ask for?"
+      },
+      "hints": [
+        "Read the final sentence again. It asks for Pia at first, not Ray after."
+      ],
+      "worked_solution": "Ray's 54 badges is the after-change clue.\n\nThe question asks for Pia at first, not Ray after.\n\nAnswer: A. They answered the given after-change amount, not what was asked.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ],
+  "checkpoint_questions": [
+    {
+      "question_id": "FRP-M2A-C1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Before → Change → After",
+      "section": "Final Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Asha and Beni had stickers in the ratio 5 : 3.\n\nThen Asha gave some stickers to Beni.\n\nIn our ratio-unit model, the transfer is worth 1 unit.\n\nWhat are the new units of Asha : Beni?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "4 : 4",
+      "accepted_answers": [
+        "4:4",
+        "4 : 4",
+        "4 to 4",
+        "4 units : 4 units"
+      ],
+      "target_ratio_units": {
+        "left": 4,
+        "right": 4
+      },
+      "diagnostic_answers": {
+        "1:1": "WRONG_CURRENT_AMOUNT",
+        "1 : 1": "WRONG_CURRENT_AMOUNT",
+        "1 to 1": "WRONG_CURRENT_AMOUNT",
+        "6:2": "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "6 : 2": "TRANSFER_APPLIED_TO_WRONG_PERSON"
+      },
+      "error_tags": [
+        "CHECKPOINT",
+        "UNIT_UPDATER",
+        "WRONG_START_RATIO",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "WRONG_CURRENT_AMOUNT",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_START_RATIO": "Try again: check the starting ratio.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Try again: check who changed.",
+        "WRONG_CURRENT_AMOUNT": "Try again: check the new units now.",
+        "CALCULATION_ERROR": "Try again: check the add or subtract step.",
+        "INVALID_FORMAT": "Try again: write the updated units like 4 : 4."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-C2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Before → Change → After",
+      "section": "Final Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Cara and Dean had marbles in the ratio 2 : 5.\n\nThen Dean gave some marbles to Cara.\n\nIn our ratio-unit model, the transfer is worth 1 unit.\n\nAfter the change, Cara had 36 marbles.\n\nHow many marbles did Dean have after the change?",
+      "expected_format": "numeric",
+      "canonical_answer": "48 marbles",
+      "accepted_answers": [
+        "48",
+        "48 marbles"
+      ],
+      "target_number": 48,
+      "diagnostic_answers": {
+        "12": "UNIT_VALUE_NOT_FINAL",
+        "60": "WRONG_FINAL_TARGET",
+        "36": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "CHECKPOINT",
+        "ASKED_TARGET_CHECKER",
+        "WRONG_CURRENT_AMOUNT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "UNIT_VALUE_NOT_FINAL",
+        "WRONG_FINAL_TARGET",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_CURRENT_AMOUNT": "Try again: check the new amount now.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Try again: the story changed before this clue.",
+        "UNIT_VALUE_NOT_FINAL": "Try again: this looks like one unit, not the final answer.",
+        "WRONG_FINAL_TARGET": "Try again: check what the question asked for.",
+        "WRONG_CATEGORY": "Try again: check whose amount is being asked.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-C3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Before → Change → After",
+      "section": "Final Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Eli and Faye had cards in the ratio 8 : 3.\n\nThen Eli gave some cards to Faye.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nAfter the change, Eli had 20 more cards than Faye.\n\nHow many cards did Faye have at first?",
+      "expected_format": "numeric",
+      "canonical_answer": "60 cards",
+      "accepted_answers": [
+        "60",
+        "60 cards"
+      ],
+      "target_number": 60,
+      "diagnostic_answers": {
+        "20": "UNIT_VALUE_NOT_FINAL",
+        "100": "WRONG_FINAL_TARGET",
+        "160": "WRONG_CATEGORY",
+        "120": "WRONG_CATEGORY"
+      },
+      "error_tags": [
+        "CHECKPOINT",
+        "ASKED_TARGET_CHECKER",
+        "WRONG_CURRENT_AMOUNT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "UNIT_VALUE_NOT_FINAL",
+        "WRONG_FINAL_TARGET",
+        "WRONG_CATEGORY",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_CURRENT_AMOUNT": "Try again: use the after-change units for the difference clue.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Try again: the story changed before the difference clue.",
+        "UNIT_VALUE_NOT_FINAL": "Try again: this looks like one unit, not the final answer.",
+        "WRONG_FINAL_TARGET": "Try again: check whether the question asks for before or after.",
+        "WRONG_CATEGORY": "Try again: check whose amount is being asked.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-C4",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Before → Change → After",
+      "section": "Final Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Gwen and Hari had water bottles in the ratio 4 : 7.\n\nThen Hari used some water bottles for a class activity.\n\nIn our ratio-unit model, Hari's amount went down by 2 units.\n\nAfter the change, they had 117 water bottles altogether.\n\nHow many water bottles did Hari have before the change?",
+      "expected_format": "numeric",
+      "canonical_answer": "91 water bottles",
+      "accepted_answers": [
+        "91",
+        "91 water bottles"
+      ],
+      "target_number": 91,
+      "diagnostic_answers": {
+        "13": "UNIT_VALUE_NOT_FINAL",
+        "65": "WRONG_FINAL_TARGET",
+        "52": "WRONG_CATEGORY",
+        "117": "INTERMEDIATE_NOT_FINAL"
+      },
+      "error_tags": [
+        "CHECKPOINT",
+        "ASKED_TARGET_CHECKER",
+        "WRONG_CURRENT_AMOUNT",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "UNIT_VALUE_NOT_FINAL",
+        "INTERMEDIATE_NOT_FINAL",
+        "WRONG_FINAL_TARGET",
+        "WRONG_CATEGORY",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_CURRENT_AMOUNT": "Try again: check the after-change units.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Try again: the story changed before the total clue.",
+        "UNIT_VALUE_NOT_FINAL": "Try again: this looks like one unit, not the final answer.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this looks like a halfway answer.",
+        "WRONG_FINAL_TARGET": "Try again: check whether the question asks before or after.",
+        "WRONG_CATEGORY": "Try again: check whose amount is being asked.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-C5",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Before → Change → After",
+      "section": "Final Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "prompt": "Iris and Jun had bookmarks in the ratio 3 : 4.\n\nThen Jun gave some bookmarks to Iris.\n\nIn our ratio-unit model, the transfer is worth 1 unit.\n\nAfter that, 1/2 of Iris's bookmarks were laminated. Iris had 36 laminated bookmarks.\n\nHow many bookmarks did Jun have at first?",
+      "expected_format": "numeric",
+      "canonical_answer": "72 bookmarks",
+      "accepted_answers": [
+        "72",
+        "72 bookmarks"
+      ],
+      "target_number": 72,
+      "diagnostic_answers": {
+        "18": "UNIT_VALUE_NOT_FINAL",
+        "36": "INTERMEDIATE_NOT_FINAL",
+        "96": "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL"
+      },
+      "error_tags": [
+        "CHECKPOINT",
+        "NEW_AMOUNT_ALERT",
+        "ASKED_TARGET_CHECKER",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+        "WRONG_CURRENT_AMOUNT",
+        "UNIT_VALUE_NOT_FINAL",
+        "WRONG_FINAL_TARGET",
+        "WRONG_CATEGORY",
+        "CALCULATION_ERROR"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL": "Try again: check what the 1/2 is about.",
+        "WRONG_CURRENT_AMOUNT": "Try again: check Iris's new amount now.",
+        "UNIT_VALUE_NOT_FINAL": "Try again: this looks like one unit, not the final answer.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this looks like a halfway answer.",
+        "WRONG_FINAL_TARGET": "Try again: check what the question asked for.",
+        "WRONG_CATEGORY": "Try again: check whether the answer belongs to Iris or Jun.",
+        "CALCULATION_ERROR": "Try again: check the calculation.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M2A-C6",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Final Checkpoint: Before → Change → After",
+      "section": "Final Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "prompt": "Ken and Lynn had cards in the ratio 7 : 5.\n\nThen Ken gave some cards to Lynn.\n\nIn our ratio-unit model, the transfer is worth 2 units.\n\nA student said the new ratio is 5 : 5.\n\nWhat went wrong?\n\nA. They read the starting ratio wrongly.\nB. They subtracted 2 units from Ken but forgot to add 2 units to Lynn.\nC. They used the total instead of the difference.\nD. They answered with one unit.",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": [
+        "B",
+        "subtracted 2 units from Ken but forgot to add 2 units to Lynn",
+        "forgot to add 2 units to Lynn"
+      ],
+      "option_feedback_codes": {
+        "A": "WRONG_START_RATIO",
+        "C": "WRONG_CATEGORY",
+        "D": "UNIT_VALUE_NOT_FINAL"
+      },
+      "error_tags": [
+        "CHECKPOINT",
+        "SPOT_THE_OOPS",
+        "WRONG_START_RATIO",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON",
+        "WRONG_CURRENT_AMOUNT",
+        "INTERMEDIATE_NOT_FINAL"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_START_RATIO": "Try again: check whether the starting ratio was read wrongly.",
+        "TRANSFER_APPLIED_TO_WRONG_PERSON": "Try again: check who gave and who received.",
+        "WRONG_CURRENT_AMOUNT": "Try again: check both new amounts now.",
+        "INTERMEDIATE_NOT_FINAL": "Try again: this is not mainly a halfway-answer issue.",
+        "UNIT_VALUE_NOT_FINAL": "Try again: this is not a one-unit issue.",
+        "WRONG_CATEGORY": "Try again: check whether the total or unit update is the problem.",
+        "INVALID_FORMAT": "Try again: choose A, B, C, or D."
+      },
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ]
+}
+    </script>
+    <script>
+  // validation.js
+const FEEDBACK_CODES = Object.freeze({
+  CORRECT: "CORRECT",
+  BLANK: "BLANK",
+  INVALID_FORMAT: "INVALID_FORMAT",
+  FRACTION_REQUIRED: "FRACTION_REQUIRED",
+  MIXED_NUMBER_REQUIRED: "MIXED_NUMBER_REQUIRED",
+  EQUIVALENT_NOT_SIMPLEST: "EQUIVALENT_NOT_SIMPLEST",
+  PLACE_VALUE_DENOMINATOR_ERROR: "PLACE_VALUE_DENOMINATOR_ERROR",
+  WRONG_VALUE: "WRONG_VALUE",
+  CALCULATION_ERROR: "CALCULATION_ERROR",
+  WRONG_START_RATIO: "WRONG_START_RATIO",
+  TRANSFER_APPLIED_TO_WRONG_PERSON: "TRANSFER_APPLIED_TO_WRONG_PERSON",
+  WRONG_CURRENT_AMOUNT: "WRONG_CURRENT_AMOUNT",
+  USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+  UNIT_VALUE_NOT_FINAL: "UNIT_VALUE_NOT_FINAL",
+  WRONG_BASE_ORIGINAL: "WRONG_BASE_ORIGINAL",
+  WRONG_BASE_REMAINDER: "WRONG_BASE_REMAINDER",
+  WRONG_LEFTOVER_STAGE: "WRONG_LEFTOVER_STAGE",
+  INTERMEDIATE_NOT_FINAL: "INTERMEDIATE_NOT_FINAL",
+  WRONG_FINAL_TARGET: "WRONG_FINAL_TARGET",
+  WRONG_CATEGORY: "WRONG_CATEGORY",
+  MISSING_UNIT: "MISSING_UNIT"
+});
+
+const PLACE_VALUE_DENOMINATORS = new Set([10, 100, 1000]);
+
+function normaliseAnswer(input) {
+  return String(input ?? "")
+    .replace(/\u2044/g, "/")
+    .trim()
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+/g, " ");
+}
+
+function getFeedbackMessage(code, mode, expectedFormat = "fraction", question = null) {
+  const mixedFormat = expectedFormat.includes("mixed");
+  const questionFeedback = question?.feedback_by_code?.[code];
+
+  if (questionFeedback) return questionFeedback;
+
+  if (code === FEEDBACK_CODES.CORRECT) return "Correct.";
+  if (code === FEEDBACK_CODES.BLANK) return mode === "Practice" ? "Try typing an answer." : "Try again.";
+  if (code === FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST) {
+    return mode === "Practice"
+      ? "Equivalent, but not in simplest form. Try simplifying it."
+      : "Try again: equivalent but not in simplest form.";
+  }
+  if (code === FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR) {
+    return mode === "Practice"
+      ? "Try again: check the decimal place value."
+      : "Try again: check the decimal place value.";
+  }
+  if (code === FEEDBACK_CODES.MIXED_NUMBER_REQUIRED || (code === FEEDBACK_CODES.INVALID_FORMAT && mixedFormat)) {
+    return "Try again: write your answer as a mixed number.";
+  }
+  if (code === FEEDBACK_CODES.INVALID_FORMAT && expectedFormat === "numeric") {
+    return "Try again: use a whole-number answer.";
+  }
+  if (code === FEEDBACK_CODES.FRACTION_REQUIRED || code === FEEDBACK_CODES.INVALID_FORMAT) {
+    return "Try again: answer must be written as a fraction.";
+  }
+  if (code === FEEDBACK_CODES.WRONG_BASE_ORIGINAL) return "Try again: check what the fraction is about.";
+  if (code === FEEDBACK_CODES.WRONG_BASE_REMAINDER) return "Try again: check what we started with.";
+  if (code === FEEDBACK_CODES.WRONG_LEFTOVER_STAGE) return "Try again: check what is left.";
+  if (code === FEEDBACK_CODES.WRONG_START_RATIO) return "Try again: check the starting ratio.";
+  if (code === FEEDBACK_CODES.TRANSFER_APPLIED_TO_WRONG_PERSON) return "Try again: check who changed.";
+  if (code === FEEDBACK_CODES.WRONG_CURRENT_AMOUNT) return "Try again: check the new amount now.";
+  if (code === FEEDBACK_CODES.USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL) return "Try again: the story changed before this clue.";
+  if (code === FEEDBACK_CODES.UNIT_VALUE_NOT_FINAL) return "Try again: this looks like one unit, not the final answer.";
+  if (code === FEEDBACK_CODES.INTERMEDIATE_NOT_FINAL) return "Try again: this looks like a halfway answer.";
+  if (code === FEEDBACK_CODES.WRONG_FINAL_TARGET) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.WRONG_CATEGORY) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.MISSING_UNIT) return "Try again: include the unit or group.";
+  if (code === FEEDBACK_CODES.CALCULATION_ERROR) return "Try again: check the calculation.";
+
+  return "Try again.";
+}
+
+function validateQuestionAnswer(question, rawInput) {
+  const answer = normaliseAnswer(rawInput);
+
+  if (!answer) {
+    return result(FEEDBACK_CODES.BLANK, answer);
+  }
+
+  if (question.expected_format === "three_denominators") {
+    return validateDenominatorSequence(question, answer);
+  }
+
+  if (question.expected_format === "denominator_only") {
+    return validateDenominatorOnly(question, answer);
+  }
+
+  if (question.expected_format === "mcq") {
+    return validateMcq(question, answer);
+  }
+
+  if (question.expected_format === "numeric") {
+    return validateNumeric(question, answer);
+  }
+
+  if (question.expected_format === "short_text") {
+    return validateShortText(question, answer);
+  }
+
+  if (question.expected_format === "ratio_units") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "error_explanation_plus_fraction") {
+    return validateErrorExplanation(question, answer);
+  }
+
+  if (question.expected_format === "yes_no_plus_mixed_number") {
+    return validateYesNoMixed(question, answer);
+  }
+
+  if (question.expected_format === "mixed_number") {
+    return validateMixedNumber(question, answer);
+  }
+
+  return validateFraction(question, answer);
+}
+
+function validateDenominatorSequence(question, answer) {
+  const numbers = answer.split(/[,\s]+/).filter(Boolean);
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).replace(/\s*,\s*/g, ",")) ?? [];
+  const compact = answer.replace(/\s*,\s*/g, ",");
+
+  if (accepted.includes(compact) || arraysEqual(numbers, ["10", "100", "1000"])) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateDenominatorOnly(question, answer) {
+  if (question.accepted_answers?.includes(answer)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateMcq(question, answer) {
+  const cleaned = answer.toUpperCase().replace(/\.$/, "");
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).toUpperCase()) ?? [];
+
+  if (accepted.includes(cleaned)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const optionFeedbackCode = question.option_feedback_codes?.[cleaned];
+  if (optionFeedbackCode && FEEDBACK_CODES[optionFeedbackCode]) {
+    return result(FEEDBACK_CODES[optionFeedbackCode], answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  if (/^[A-D]$/i.test(cleaned)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+}
+
+function validateNumeric(question, answer) {
+  const parsed = parseWholeNumberAnswer(answer);
+
+  if (!parsed.ok) {
+    return result(parsed.code, answer);
+  }
+
+  const targetNumber = getTargetNumber(question);
+  if (!Number.isInteger(targetNumber)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.value === targetNumber) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, String(parsed.value));
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.CALCULATION_ERROR, answer);
+}
+
+function validateShortText(question, answer) {
+  const accepted = question.accepted_answers?.map((item) => normaliseTextAnswer(item)) ?? [];
+  const normalisedText = normaliseTextAnswer(answer);
+
+  if (accepted.includes(normalisedText) || matchesRequiredTerms(question, normalisedText)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateRatioUnits(question, answer) {
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseRatioUnits(answer);
+  if (!parsed.ok) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const target = question.target_ratio_units;
+  if (!target || !Number.isInteger(target.left) || !Number.isInteger(target.right)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.left === target.left && parsed.right === target.right) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (parsed.left * target.right === parsed.right * target.left) {
+    return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+}
+
+function validateErrorExplanation(question, answer) {
+  const hasFinalFraction = hasTargetFractionToken(question, answer);
+  const hasMistakeEvidence = hasP10MistakeEvidence(answer);
+
+  if (hasFinalFraction && hasMistakeEvidence) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const parsedFraction = parseFraction(answer);
+  if (parsedFraction.ok && !isFractionPartSimplest(parsedFraction.value)) {
+    return evaluateFractionValue(question, parsedFraction.value, "fraction", answer);
+  }
+
+  if (hasFractionToken(answer, "48/100")) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  if (answer.includes("48/10") || answer.includes("24/5")) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateYesNoMixed(question, answer) {
+  const hasFinalMixedNumber = hasTargetMixedNumberToken(question, answer);
+  const hasNotSimplestSignal = hasP11NotSimplestSignal(answer);
+
+  if (hasFinalMixedNumber && hasNotSimplestSignal) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (hasFinalMixedNumber) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (question.equivalent_not_simplest_examples?.some((item) => answer.includes(normaliseAnswer(item)))) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function validateFraction(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.FRACTION_REQUIRED, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseFraction(answer);
+  if (!parsed.ok) {
+    return result(parsed.code ?? FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return evaluateFractionValue(question, parsed.value, "fraction", answer);
+}
+
+function validateMixedNumber(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  if (mixed.code === FEEDBACK_CODES.INVALID_FORMAT && mixed.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  if (fraction.code === FEEDBACK_CODES.INVALID_FORMAT && fraction.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function evaluateFractionValue(question, parsed, parsedFormat, normalised) {
+  const target = targetToImproperFraction(question.target_value);
+
+  if (!target) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  const input = toImproperFraction(parsed);
+
+  if (sameValue(input, target)) {
+    if (parsedFormat === "improper_for_mixed") {
+      return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, normalised);
+    }
+
+    if (!isFractionPartSimplest(parsed)) {
+      return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, normalised);
+    }
+
+    return result(FEEDBACK_CODES.CORRECT, normalised);
+  }
+
+  if (parsedFormat === "mixed_number" && parsed.whole !== question.target_value?.whole) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  if (looksLikePlaceValueError(question, parsed)) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, normalised);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+}
+
+function parseFraction(answer) {
+  const match = answer.match(/^(\d+)\/(\d+)$/);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (numerator <= 0 || denominator <= 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole: 0,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseMixedNumber(answer) {
+  const match = answer.match(/^(\d+)(?:\s+and)?\s+(\d+)\/(\d+)$/i);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+
+  const whole = Number(match[1]);
+  const numerator = Number(match[2]);
+  const denominator = Number(match[3]);
+
+  if (!Number.isInteger(whole) || !Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (whole <= 0 || numerator <= 0 || denominator <= 0 || numerator >= denominator) {
+    return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseRatioUnits(answer) {
+  const match = answer
+    .toLowerCase()
+    .match(/^(\d+)\s*(?:units?)?\s*(?::|to)\s*(\d+)\s*(?:units?)?$/);
+
+  if (!match) return { ok: false };
+
+  const left = Number(match[1]);
+  const right = Number(match[2]);
+
+  if (!Number.isInteger(left) || !Number.isInteger(right) || left <= 0 || right <= 0) {
+    return { ok: false };
+  }
+
+  return {
+    ok: true,
+    left,
+    right
+  };
+}
+
+function targetToImproperFraction(target) {
+  if (!target) return null;
+
+  return {
+    numerator: target.whole * target.denominator + target.numerator,
+    denominator: target.denominator
+  };
+}
+
+function toImproperFraction(value) {
+  return {
+    numerator: value.whole * value.denominator + value.numerator,
+    denominator: value.denominator
+  };
+}
+
+function sameValue(left, right) {
+  return left.numerator * right.denominator === right.numerator * left.denominator;
+}
+
+function isFractionPartSimplest(value) {
+  return gcd(value.numerator, value.denominator) === 1;
+}
+
+function looksLikePlaceValueError(question, parsed) {
+  if (!question.place_value_denominator) return false;
+  if (!PLACE_VALUE_DENOMINATORS.has(parsed.denominator)) return false;
+
+  return parsed.denominator !== question.place_value_denominator;
+}
+
+function getDiagnosticFeedbackCode(question, answer) {
+  const diagnostics = question.diagnostic_answers ?? {};
+  const candidates = [answer, normaliseAnswer(answer), normaliseAnswer(answer).toLowerCase(), normaliseAnswer(answer).toUpperCase()];
+
+  for (const candidate of candidates) {
+    const code = diagnostics[candidate];
+    if (code && FEEDBACK_CODES[code]) {
+      return FEEDBACK_CODES[code];
+    }
+  }
+
+  return "";
+}
+
+function normaliseTextAnswer(value) {
+  return normaliseAnswer(value)
+    .toLowerCase()
+    .replace(/[:.,;]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function matchesRequiredTerms(question, normalisedText) {
+  const requiredTerms = question.required_terms ?? [];
+
+  return requiredTerms.length > 0 && requiredTerms.every((group) => group.some((term) => normalisedText.includes(term)));
+}
+
+function parseWholeNumberAnswer(answer) {
+  const match = answer.match(/^(\d+)(.*)$/);
+
+  if (!match) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const rest = match[2].trim();
+  if (rest && (/^[\d./+\-*=/]/.test(rest) || /\d+\s*\/\s*\d+/.test(rest) || /\d+\.\d+/.test(rest))) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const value = Number(match[1]);
+  if (!Number.isInteger(value)) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return { ok: true, value };
+}
+
+function getTargetNumber(question) {
+  if (Number.isInteger(question.target_number)) return question.target_number;
+  if (Number.isInteger(question.expected_numeric_value)) return question.expected_numeric_value;
+
+  const canonical = normaliseAnswer(question.canonical_answer ?? "");
+  const match = canonical.match(/^(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function hasTargetFractionToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole !== 0) return false;
+
+  return hasFractionToken(answer, `${target.numerator}/${target.denominator}`);
+}
+
+function hasTargetMixedNumberToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole <= 0) return false;
+
+  const mixedNumber = `${target.whole} ${target.numerator}/${target.denominator}`;
+  const mixedNumberWithAnd = `${target.whole} and ${target.numerator}/${target.denominator}`;
+
+  return hasPhraseToken(answer, mixedNumber) || hasPhraseToken(answer, mixedNumberWithAnd);
+}
+
+function hasP10MistakeEvidence(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    hasFractionToken(answer, "48/100") ||
+    /\bnot\s+48\/10\b/.test(lower) ||
+    /\bdenominator\b.{0,30}\b100\b/.test(lower) ||
+    /\bhundredths?\b/.test(lower)
+  );
+}
+
+function hasP11NotSimplestSignal(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    /\bno\b/.test(lower) ||
+    /\bnot\s+(?:in\s+)?simplest(?:\s+form)?\b/.test(lower) ||
+    /\bnot\s+simplified\b/.test(lower)
+  );
+}
+
+function hasFractionToken(answer, fraction) {
+  return hasPhraseToken(answer, fraction);
+}
+
+function hasPhraseToken(answer, phrase) {
+  const escaped = escapeRegExp(phrase);
+  const tokenPattern = new RegExp(`(^|[^\\d])${escaped}([^\\d]|$)`, "i");
+
+  return tokenPattern.test(answer);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasDecimalNumber(answer) {
+  return /\d+\.\d+/.test(answer);
+}
+
+function gcd(left, right) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+
+  while (b !== 0) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+
+  return a;
+}
+
+function arraysEqual(left, right) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function result(code, normalised) {
+  return {
+    code,
+    isCorrect: code === FEEDBACK_CODES.CORRECT,
+    normalised
+  };
+}
+
+  // logging.js
+const REMOTE_LOGGING_ENDPOINT = "";
+
+const checkpointLoggingConfig = {
+  remoteEndpoint: REMOTE_LOGGING_ENDPOINT
+};
+
+const CHECKPOINT_ATTEMPT_EVENT = "checkpoint_attempt";
+const SCHEMA_VERSION = "0.1";
+const SOURCE = "browser-local-first";
+
+function logCheckpointAttempt(session, attempt) {
+  try {
+    if (!session?.sessionId || !session?.quizId) {
+      return { ok: false, error: "Missing checkpoint session details." };
+    }
+
+    if (!attempt?.question_id || !Number.isInteger(attempt?.attempt_number)) {
+      return { ok: false, error: "Missing checkpoint attempt details." };
+    }
+
+    const endpoint = checkpointLoggingConfig.remoteEndpoint.trim();
+
+    if (!endpoint) {
+      return { ok: true, mode: "local-only" };
+    }
+
+    const payload = buildCheckpointAttemptPayload(session, attempt);
+
+    // Optional remote logging integration point. Blank by default for the static export workflow.
+    // Remote logging is fire-and-forget so it never blocks local checkpoint flow.
+    sendCheckpointAttempt(endpoint, payload);
+    return { ok: true, mode: "remote-queued" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown logging error."
+    };
+  }
+}
+
+function buildCheckpointAttemptPayload(session, attempt) {
+  return {
+    event_type: CHECKPOINT_ATTEMPT_EVENT,
+    schema_version: SCHEMA_VERSION,
+    session_id: session.sessionId,
+    quiz_id: session.quizId,
+    question_id: attempt.question_id,
+    attempt_number: attempt.attempt_number,
+    raw_input: attempt.raw_input,
+    normalised_input: attempt.normalised_input ?? "",
+    feedback_code: attempt.feedback_code,
+    is_correct: attempt.is_correct,
+    attempt_timestamp: attempt.timestamp,
+    client_timezone: getClientTimezone(),
+    source: SOURCE
+  };
+}
+
+async function sendCheckpointAttempt(endpoint, payload) {
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.warn("Checkpoint remote logging failed.", error);
+  }
+}
+
+function getClientTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+}
+
+  // progress.js
+const STORAGE_KEY_PREFIX = "asher-quiz-lab";
+
+function createCheckpointSession(quizId) {
+  return {
+    sessionId: `${quizId}-${Date.now()}`,
+    quizId,
+    startedAt: new Date().toISOString(),
+    attempts: []
+  };
+}
+
+function recordCheckpointAttempt(session, questionId, rawInput, feedbackCode, isCorrect, normalisedInput) {
+  const attemptNumber = session.attempts.filter((attempt) => attempt.question_id === questionId).length + 1;
+  const attempt = {
+    question_id: questionId,
+    attempt_number: attemptNumber,
+    raw_input: rawInput,
+    normalised_input: normalisedInput ?? "",
+    feedback_code: feedbackCode,
+    is_correct: isCorrect,
+    timestamp: new Date().toISOString()
+  };
+
+  session.attempts.push(attempt);
+  saveCheckpointSession(session);
+  logCheckpointAttempt(session, attempt);
+  return attempt;
+}
+
+function getCheckpointAttemptCounts(session, questionIds) {
+  return questionIds.map((questionId) => ({
+    question_id: questionId,
+    attempts: session.attempts.filter((attempt) => attempt.question_id === questionId).length
+  }));
+}
+
+function saveCheckpointSession(session) {
+  try {
+    window.localStorage.setItem(getStorageKey(session.quizId), JSON.stringify(session));
+  } catch {
+    // Local storage is helpful for Dave review, but the quiz should still run without it.
+  }
+}
+
+function clearCheckpointSession(quizId) {
+  try {
+    window.localStorage.removeItem(getStorageKey(quizId));
+  } catch {
+    // Ignore storage failures in local prototype mode.
+  }
+}
+
+function getStorageKey(quizId) {
+  return `${STORAGE_KEY_PREFIX}.${quizId}`;
+}
+
+  // quiz-engine.js
+const DEFAULT_QUIZ_ID = "decimals-to-fractions-v1";
+const QUIZ_REGISTRY = Object.freeze({
+  "decimals-to-fractions-v1": {
+    quizId: "decimals-to-fractions-v1",
+    contentPath: "content/math/decimals-to-fractions-v1.json"
+  },
+  "frp-module-1a-start-left-asked-v1": {
+    quizId: "frp-module-1a-start-left-asked-v1",
+    contentPath: "content/math/frp-module-1a-start-left-asked-v1.json"
+  },
+  "frp-module-2a-before-change-after-v1": {
+    quizId: "frp-module-2a-before-change-after-v1",
+    contentPath: "content/math/frp-module-2a-before-change-after-v1.json"
+  }
+});
+const FINAL_CHECKPOINT_WARNING =
+  "After this, your checkpoint will be locked. You will not be able to change your answers or try again.";
+const CHECKPOINT_EXPORT_SCHEMA_VERSION = "1.0";
+const CHECKPOINT_EXPORT_SOURCE = "static-html-export";
+
+const app = document.querySelector("#app");
+
+let quiz = null;
+let activeMode = "home";
+let currentIndex = 0;
+let checkpointSession = null;
+let checkpointLocked = false;
+let practiceState = [];
+let checkpointState = [];
+
+init();
+
+async function init() {
+  const quizConfig = getRequestedQuizConfig();
+
+  try {
+    quiz = await loadQuizContent(quizConfig);
+    document.title = `${quiz.title} | Asher PSLE Quiz Lab`;
+    renderHome();
+  } catch (error) {
+    renderLoadError(error);
+  }
+}
+
+async function loadQuizContent(quizConfig) {
+  const embeddedQuizData = document.querySelector("#quiz-content-data");
+  if (embeddedQuizData) return JSON.parse(embeddedQuizData.textContent);
+
+  const response = await fetch(quizConfig.contentPath);
+  if (!response.ok) throw new Error(`Could not load ${quizConfig.contentPath}`);
+
+  return response.json();
+}
+
+function getRequestedQuizConfig() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedQuizId = params.get("quiz") || DEFAULT_QUIZ_ID;
+
+  return QUIZ_REGISTRY[requestedQuizId] ?? QUIZ_REGISTRY[DEFAULT_QUIZ_ID];
+}
+
+function renderHome() {
+  activeMode = "home";
+  currentIndex = 0;
+
+  app.innerHTML = `
+    <section class="panel hero-panel">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${quiz.title}</h1>
+      <p class="topic-line">${quiz.topic}</p>
+      <p class="lede">Practise the method first, then try the checkpoint without hints.</p>
+      ${renderInstructionCallout()}
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startPractice">Start Practice</button>
+        <button type="button" class="secondary-action" id="startCheckpoint">Start Checkpoint</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startPractice").addEventListener("click", startPractice);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+}
+
+function startPractice() {
+  activeMode = "Practice";
+  currentIndex = 0;
+  practiceState = createQuestionState(quiz.practice_questions);
+  renderPracticeQuestion();
+}
+
+function startCheckpoint() {
+  activeMode = "Checkpoint";
+  currentIndex = 0;
+  checkpointLocked = false;
+  checkpointState = createQuestionState(quiz.checkpoint_questions);
+  clearCheckpointSession(quiz.quiz_id);
+  checkpointSession = createCheckpointSession(quiz.quiz_id);
+  renderCheckpointQuestion();
+}
+
+function createQuestionState(questions) {
+  return questions.map(() => ({
+    input: "",
+    feedbackCode: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    attempts: [],
+    hintsShown: 0,
+    solutionShown: false
+  }));
+}
+
+function renderPracticeQuestion() {
+  const question = quiz.practice_questions[currentIndex];
+  const state = practiceState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.practice_questions.length}`;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill">Practice</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.practice_questions, practiceState, currentIndex, "Practice")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        <form class="answer-form" id="answerForm">
+          <label for="answerInput">Answer</label>
+          <input id="answerInput" name="answer" autocomplete="off" />
+          <button type="submit" class="primary-action">Submit Answer</button>
+        </form>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="practiceStatus"></p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="hintButton">Hint</button>
+          <button type="button" class="secondary-action" id="solutionButton">Worked Solution</button>
+        </div>
+        <ol class="hint-list" id="hintList" hidden></ol>
+        <pre class="worked-solution" id="workedSolution" hidden></pre>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="primary-action" id="nextQuestion">${currentIndex === quiz.practice_questions.length - 1 ? "Finish Practice" : "Next"}</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+
+  renderFeedback(state, "Practice");
+  renderPracticeSupport(question, state);
+  bindQuestionMap(renderPracticeQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
+  document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  input.focus();
+}
+
+function submitPracticeAnswer(event, question, state) {
+  event.preventDefault();
+
+  const input = document.querySelector("#answerInput");
+  const validation = validateQuestionAnswer(question, input.value);
+
+  state.input = input.value;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+  state.attempts.push({
+    attempt_number: state.attempts.length + 1,
+    feedback_code: validation.code,
+    is_correct: validation.isCorrect,
+    timestamp: new Date().toISOString()
+  });
+
+  renderPracticeQuestion();
+}
+
+function renderPracticeSupport(question, state) {
+  const hintList = document.querySelector("#hintList");
+  const hintButton = document.querySelector("#hintButton");
+  const solution = document.querySelector("#workedSolution");
+
+  if (state.hintsShown > 0) {
+    hintList.hidden = false;
+    question.hints.slice(0, state.hintsShown).forEach((hint) => {
+      const item = document.createElement("li");
+      item.textContent = hint;
+      hintList.append(item);
+    });
+  }
+
+  hintButton.disabled = state.hintsShown >= question.hints.length;
+
+  if (state.solutionShown) {
+    solution.textContent = question.worked_solution;
+    solution.hidden = false;
+  }
+}
+
+function showNextHint(question, state) {
+  state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showWorkedSolution(question, state) {
+  state.solutionShown = true;
+  renderPracticeQuestion();
+}
+
+function goToPreviousPracticeQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderPracticeQuestion();
+}
+
+function goToNextPracticeQuestion() {
+  if (currentIndex === quiz.practice_questions.length - 1) {
+    renderPracticeComplete();
+    return;
+  }
+
+  currentIndex += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeComplete() {
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Practice complete</p>
+      <h1>Nice work.</h1>
+      <p class="lede">You reached the end of the practice ladder.</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="secondary-action" id="exportPracticeSummary">Export Parent Practice Summary</button>
+        <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#resumePractice").addEventListener("click", () => {
+    currentIndex = quiz.practice_questions.length - 1;
+    renderPracticeQuestion();
+  });
+  document.querySelector("#exportPracticeSummary").addEventListener("click", exportPracticeSummary);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function exportPracticeSummary() {
+  const exportedAt = new Date().toISOString();
+
+  downloadFile(
+    buildPracticeParentSummary(exportedAt),
+    "text/plain",
+    buildPracticeParentSummaryFilename(exportedAt)
+  );
+}
+
+function buildPracticeParentSummary(exportedAt) {
+  const questions = buildPracticeQuestionSummaries();
+  const attemptedQuestions = questions.filter((question) => question.attempt_count > 0);
+  const notAttemptedQuestions = questions.filter((question) => question.status === "Not attempted");
+  const latestCorrectQuestions = questions.filter((question) => question.status === "Correct");
+  const repeatedAttemptQuestions = questions.filter((question) => question.attempt_count > 1);
+  const openedSolutionQuestions = questions.filter((question) => question.worked_solution_opened);
+  const latestNotCorrectQuestions = questions.filter((question) => question.status === "Tried");
+  const totalAttempts = questions.reduce((total, question) => total + question.attempt_count, 0);
+  const totalHintsViewed = questions.reduce((total, question) => total + question.hints_viewed, 0);
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Practice Summary",
+    "",
+    `Quiz: ${quiz.title}`,
+    `Topic: ${quiz.topic}`,
+    `Exported: ${formatSummaryTimestamp(exportedAt)}`,
+    "",
+    "Practice Usage Summary",
+    "----------------------",
+    `Total practice questions: ${questions.length}`,
+    `Questions attempted: ${attemptedQuestions.length}`,
+    `Questions not attempted: ${notAttemptedQuestions.length}`,
+    `Questions with latest correct attempt: ${latestCorrectQuestions.length}`,
+    `Total practice attempts: ${totalAttempts}`,
+    `Total hints viewed: ${totalHintsViewed}`,
+    `Worked solutions opened: ${openedSolutionQuestions.length}`,
+    "",
+    "Question Summary",
+    "----------------",
+    ...questions.flatMap(formatPracticeQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    "Questions not attempted",
+    ...formatPracticeReviewList(notAttemptedQuestions),
+    "",
+    "Questions not correct on latest attempt",
+    ...formatPracticeReviewList(latestNotCorrectQuestions),
+    "",
+    "Questions with repeated attempts",
+    ...formatPracticeReviewList(repeatedAttemptQuestions, (question) => `${formatAttemptCount(question.attempt_count)}`),
+    "",
+    "Questions where worked solution was opened",
+    ...formatPracticeReviewList(openedSolutionQuestions),
+    "",
+    "No correct answers, accepted answers, hint text, worked solutions, raw submitted answers, normalised submitted answers, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function buildPracticeQuestionSummaries() {
+  return quiz.practice_questions.map((question, index) => {
+    const state = practiceState[index];
+    const attempts = state.attempts ?? [];
+    const latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    const status = latestAttempt ? (latestAttempt.is_correct ? "Correct" : "Tried") : "Not attempted";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+      hints_viewed: state.hintsShown,
+      worked_solution_opened: state.solutionShown
+    };
+  });
+}
+
+function formatPracticeQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status}`,
+    `  Attempt count: ${formatAttemptCount(question.attempt_count)}`,
+    `  Latest feedback category: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Hints viewed: ${question.hints_viewed}`,
+    `  Worked solution opened: ${question.worked_solution_opened ? "Yes" : "No"}`
+  ];
+}
+
+function formatPracticeReviewList(questions, detailFormatter = null) {
+  if (questions.length === 0) {
+    return ["- none"];
+  }
+
+  return questions.map((question) => {
+    const detail = detailFormatter ? `: ${detailFormatter(question)}` : "";
+    return `- ${question.question_id}${detail}`;
+  });
+}
+
+function renderCheckpointQuestion() {
+  const question = quiz.checkpoint_questions[currentIndex];
+  const state = checkpointState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.checkpoint_questions.length}`;
+  const attemptCount = getAttemptCount(question.question_id);
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill checkpoint">Checkpoint</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.checkpoint_questions, checkpointState, currentIndex, "Checkpoint")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        <form class="answer-form" id="answerForm">
+          <label for="answerInput">Answer</label>
+          <input id="answerInput" name="answer" autocomplete="off" ${checkpointLocked ? "disabled" : ""} />
+          <button type="submit" class="primary-action" id="submitButton" ${checkpointLocked ? "disabled" : ""}>Submit Answer</button>
+        </form>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="attemptCount">Attempts recorded: ${attemptCount}</p>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="secondary-action" id="nextQuestion">Next</button>
+          <button type="button" class="final-action" id="finalCheckpoint" ${checkpointLocked ? "disabled" : ""}>Submit Final Checkpoint</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+
+  renderFeedback(state, "Checkpoint");
+  bindQuestionMap(renderCheckpointQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitCheckpointAnswer(event, question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousCheckpointQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextCheckpointQuestion);
+  document.querySelector("#finalCheckpoint").addEventListener("click", submitFinalCheckpoint);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  document.querySelector("#nextQuestion").disabled = currentIndex === quiz.checkpoint_questions.length - 1;
+  if (!checkpointLocked) input.focus();
+}
+
+function submitCheckpointAnswer(event, question, state) {
+  event.preventDefault();
+  if (checkpointLocked) return;
+
+  const input = document.querySelector("#answerInput");
+  const validation = validateQuestionAnswer(question, input.value);
+  const attempt = recordCheckpointAttempt(
+    checkpointSession,
+    question.question_id,
+    input.value,
+    validation.code,
+    validation.isCorrect,
+    validation.normalised
+  );
+
+  state.input = input.value;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  document.querySelector("#attemptCount").textContent = `Attempts recorded: ${attempt.attempt_number}`;
+  renderCheckpointQuestion();
+}
+
+function goToPreviousCheckpointQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderCheckpointQuestion();
+}
+
+function goToNextCheckpointQuestion() {
+  if (currentIndex === quiz.checkpoint_questions.length - 1) return;
+
+  currentIndex += 1;
+  renderCheckpointQuestion();
+}
+
+function submitFinalCheckpoint() {
+  if (checkpointLocked) return;
+  if (!window.confirm(FINAL_CHECKPOINT_WARNING)) return;
+
+  checkpointLocked = true;
+  checkpointSession.lockedAt = new Date().toISOString();
+  saveCheckpointSession(checkpointSession);
+  renderCheckpointComplete();
+}
+
+function renderCheckpointComplete() {
+  const questionIds = quiz.checkpoint_questions.map((question) => question.question_id);
+  const attemptCounts = getCheckpointAttemptCounts(checkpointSession, questionIds);
+  const summaries = quiz.checkpoint_questions.map((question) => {
+    const latestAttempt = getLatestAttempt(question.question_id);
+    const attempts = attemptCounts.find((item) => item.question_id === question.question_id)?.attempts ?? 0;
+    const status = getSummaryStatus(latestAttempt);
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempts,
+      isCorrect: status === "Correct"
+    };
+  });
+  const score = summaries.filter((item) => item.isCorrect).length;
+  const exportData = buildCheckpointExport(summaries, score);
+
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Checkpoint complete</p>
+      <h1>Finished.</h1>
+      <p class="lede">Score: ${score} / ${quiz.checkpoint_questions.length}</p>
+      <ul class="summary-list" id="summaryList"></ul>
+      <p class="summary-note">No answers are shown here. Review mistakes with Dad or tutor.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="exportParentSummary">Export Parent Checkpoint Summary</button>
+        <button type="button" class="secondary-action" id="exportResults">Export Checkpoint JSON Data</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  const summaryList = document.querySelector("#summaryList");
+  summaries.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.question_id}: ${item.status}, ${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+    summaryList.append(row);
+  });
+
+  document.querySelector("#exportParentSummary").addEventListener("click", () => exportParentSummary(exportData));
+  document.querySelector("#exportResults").addEventListener("click", () => exportCheckpointResults(exportData));
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function buildCheckpointExport(summaries, score) {
+  return {
+    export_schema_version: CHECKPOINT_EXPORT_SCHEMA_VERSION,
+    exported_at: new Date().toISOString(),
+    source: CHECKPOINT_EXPORT_SOURCE,
+    quiz: {
+      quiz_id: quiz.quiz_id,
+      title: quiz.title,
+      topic: quiz.topic,
+      version: quiz.version
+    },
+    checkpoint: {
+      session_id: checkpointSession.sessionId,
+      started_at: checkpointSession.startedAt,
+      locked_at: checkpointSession.lockedAt ?? "",
+      score,
+      total_questions: quiz.checkpoint_questions.length,
+      questions: summaries.map((summary) => {
+        const latestAttempt = getLatestAttempt(summary.question_id);
+
+        return {
+          question_id: summary.question_id,
+          status: summary.status,
+          is_correct: summary.isCorrect,
+          attempt_count: summary.attempts,
+          latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+          latest_attempt_timestamp: latestAttempt?.timestamp ?? ""
+        };
+      }),
+      attempts: checkpointSession.attempts.map((attempt) => ({
+        question_id: attempt.question_id,
+        attempt_number: attempt.attempt_number,
+        feedback_code: attempt.feedback_code,
+        is_correct: attempt.is_correct,
+        timestamp: attempt.timestamp
+      }))
+    }
+  };
+}
+
+function exportCheckpointResults(exportData) {
+  downloadFile(JSON.stringify(exportData, null, 2), "application/json", buildJsonExportFilename(exportData));
+}
+
+function exportParentSummary(exportData) {
+  downloadFile(buildParentSummary(exportData), "text/plain", buildParentSummaryFilename(exportData));
+}
+
+function buildParentSummary(exportData) {
+  const checkpoint = exportData.checkpoint;
+  const reviewQuestions = checkpoint.questions.filter((question) => question.status !== "Correct");
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Checkpoint Summary",
+    "",
+    `Quiz: ${exportData.quiz.title}`,
+    `Topic: ${exportData.quiz.topic}`,
+    `Completed: ${formatSummaryTimestamp(checkpoint.locked_at || exportData.exported_at)}`,
+    `Score: ${checkpoint.score} / ${checkpoint.total_questions}`,
+    "",
+    getParentEncouragement(checkpoint.score, checkpoint.total_questions),
+    "",
+    "Question Summary",
+    "----------------",
+    ...checkpoint.questions.flatMap(formatParentQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    ...formatReviewList(reviewQuestions),
+    "",
+    "No correct answers, hints, worked solutions, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function formatParentQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status} (${formatAttemptCount(question.attempt_count)})`,
+    `  Latest feedback: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`
+  ];
+}
+
+function formatReviewList(questions) {
+  if (questions.length === 0) {
+    return ["- No checkpoint questions marked for review."];
+  }
+
+  return questions.map(
+    (question) =>
+      `- ${question.question_id}: ${question.status}; ${formatAttemptCount(question.attempt_count)}.`
+  );
+}
+
+function getParentEncouragement(score, totalQuestions) {
+  if (score === totalQuestions) {
+    return "Great focus. Every checkpoint question was finished correct.";
+  }
+
+  if (score >= Math.ceil(totalQuestions / 2)) {
+    return "Good work. There are a few questions to review together.";
+  }
+
+  if (score > 0) {
+    return "Good effort. This gives Dad or tutor a clear review list.";
+  }
+
+  return "Thanks for giving it a go. Use this as a calm review list.";
+}
+
+function formatFeedbackCodeForParent(code) {
+  const labels = {
+    CORRECT: "Correct",
+    BLANK: "Blank or not submitted",
+    INVALID_FORMAT: "Check the answer format",
+    FRACTION_REQUIRED: "Answer needed as a fraction",
+    MIXED_NUMBER_REQUIRED: "Answer needed as a mixed number",
+    EQUIVALENT_NOT_SIMPLEST: "Equivalent, but not in simplest form",
+    PLACE_VALUE_DENOMINATOR_ERROR: "Check the decimal place value",
+    WRONG_VALUE: "Try again",
+    CALCULATION_ERROR: "Check the calculation",
+    WRONG_START_RATIO: "Check the starting ratio",
+    TRANSFER_APPLIED_TO_WRONG_PERSON: "Check who changed",
+    WRONG_CURRENT_AMOUNT: "Check the new amount now",
+    USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "Use the new amount now",
+    UNIT_VALUE_NOT_FINAL: "One unit, not final answer",
+    WRONG_BASE_ORIGINAL: "Check what the fraction is about",
+    WRONG_BASE_REMAINDER: "Check what we started with",
+    WRONG_LEFTOVER_STAGE: "Check what is left",
+    INTERMEDIATE_NOT_FINAL: "Halfway answer",
+    WRONG_FINAL_TARGET: "Check the final target",
+    WRONG_CATEGORY: "Check what the question asked for",
+    MISSING_UNIT: "Include the unit or group"
+  };
+
+  return labels[code] ?? "Review needed";
+}
+
+function formatAttemptCount(count) {
+  return `${count} attempt${count === 1 ? "" : "s"}`;
+}
+
+function formatSummaryTimestamp(timestamp) {
+  if (!timestamp) return "";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}
+
+function downloadFile(content, type, filename) {
+  const blob = new Blob([content], {
+    type
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function buildJsonExportFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}.json`;
+}
+
+function buildParentSummaryFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildPracticeParentSummaryFilename(exportedAt) {
+  return `${buildExportFilenameBase({
+    exported_at: exportedAt,
+    quiz: {
+      quiz_id: quiz.quiz_id
+    }
+  })}-practice-parent-summary.txt`;
+}
+
+function buildExportFilenameBase(exportData) {
+  const quizId = exportData.quiz.quiz_id.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+  const timestamp = exportData.exported_at.replace(/[:.]/g, "-");
+
+  return `asher-quiz-lab-${quizId}-${timestamp}`;
+}
+
+function renderQuestionMap(questions, states, activeIndex, mode) {
+  const buttons = questions.map((question, index) => {
+    const status = getMapStatus(states[index], index === activeIndex);
+    const classNames = ["question-map-button", `is-${status.className}`];
+    if (index === activeIndex) classNames.push("is-current");
+
+    return `
+      <button type="button" class="${classNames.join(" ")}" data-question-index="${index}" aria-current="${index === activeIndex ? "step" : "false"}">
+        <span>${question.question_id}</span>
+        <small>${status.label}</small>
+      </button>
+    `;
+  }).join("");
+
+  return `
+    <nav class="question-map" aria-label="${mode} question list">
+      <p class="question-map-title">Questions</p>
+      <div class="question-map-grid">${buttons}</div>
+    </nav>
+  `;
+}
+
+function renderCalculatorPolicy(question) {
+  if (!question.calculator_policy) return "";
+
+  return `<p class="calculator-policy">${escapeHtml(question.calculator_policy)}</p>`;
+}
+
+function renderInstructionCallout() {
+  if (!quizHasCalculatorPolicy()) return "";
+
+  return `
+    <div class="instruction-callout">
+      <p><strong><u>Check the calculator instruction for every question.</u></strong></p>
+      <p>If it says <strong><u>Calculator: Not allowed</u></strong>, do it without a calculator and write your working on foolscap paper.</p>
+      <p>If it says <strong><u>Calculator: Allowed</u></strong>, you may use a calculator, but only after choosing the correct steps.</p>
+      <p>The calculator can help with arithmetic. It cannot read the story. No licence, no driving.</p>
+    </div>
+  `;
+}
+
+function quizHasCalculatorPolicy() {
+  return [...(quiz.practice_questions ?? []), ...(quiz.checkpoint_questions ?? [])].some(
+    (question) => question.calculator_policy
+  );
+}
+
+function bindQuestionMap(renderFunction) {
+  document.querySelectorAll(".question-map-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentIndex = Number(button.dataset.questionIndex);
+      renderFunction();
+    });
+  });
+}
+
+function getMapStatus(state, isCurrent) {
+  if (isCurrent) return { label: "Current", className: "current" };
+  if (!state.submitted) return { label: "Not tried", className: "not-tried" };
+  if (state.isCorrect) return { label: "Correct", className: "correct" };
+  return { label: "Tried", className: "tried" };
+}
+
+function escapeHtml(value) {
+  const replacements = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  };
+
+  return String(value).replace(/[&<>"']/g, (character) => replacements[character]);
+}
+
+function renderFeedback(state, mode) {
+  const feedback = document.querySelector("#feedback");
+  const status = mode === "Practice" ? document.querySelector("#practiceStatus") : null;
+
+  if (!state.submitted) {
+    feedback.textContent = "";
+    if (status) status.textContent = "Not submitted yet.";
+    return;
+  }
+
+  feedback.textContent = state.feedbackMessage;
+  feedback.className = state.isCorrect ? "feedback is-correct" : "feedback is-retry";
+  if (status) status.textContent = state.isCorrect ? "Latest answer: correct." : "Latest answer: try again.";
+}
+
+function getAttemptCount(questionId) {
+  return checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId).length;
+}
+
+function getLatestAttempt(questionId) {
+  const attempts = checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId);
+  return attempts.length ? attempts[attempts.length - 1] : null;
+}
+
+function getSummaryStatus(latestAttempt) {
+  if (!latestAttempt || latestAttempt.feedback_code === "BLANK") return "Blank";
+  return latestAttempt.is_correct ? "Correct" : "Incorrect";
+}
+
+function renderLoadError(error) {
+  app.innerHTML = `
+    <section class="panel error-panel">
+      <p class="eyebrow">Local setup needed</p>
+      <h1>Quiz content did not load.</h1>
+      <p class="lede">Run a local server from the repo root, then open the local URL.</p>
+      <pre class="run-command">python -m http.server 8000</pre>
+      <p class="small-note">Then open http://localhost:8000/</p>
+    </section>
+  `;
+
+  console.error(error);
+}
+    </script>
+  </body>
+</html>
