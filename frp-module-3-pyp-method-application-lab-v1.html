@@ -1,0 +1,2979 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FRP Module 3 — PYP Method Application Lab | Asher PSLE Quiz Lab</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #536170;
+  --line: #d8ded6;
+  --primary: #225e54;
+  --primary-dark: #18463f;
+  --accent: #d55f3a;
+  --checkpoint: #344b7a;
+  --success: #1f6d46;
+  --retry: #9a4b1f;
+  --shadow: 0 18px 45px rgba(28, 36, 48, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(34, 94, 84, 0.09), rgba(255, 255, 255, 0) 38%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 32px 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.completion-panel,
+.error-panel {
+  margin-top: clamp(24px, 8vh, 80px);
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.question-panel {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.eyebrow,
+.question-id,
+.progress-text,
+.attempt-count,
+.small-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.question-id {
+  margin: 0 0 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 4.8rem, 4.8rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 2.2rem, 2.2rem);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.topic-line {
+  margin: 12px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.calculator-policy {
+  display: inline-block;
+  margin: 14px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #d8c796;
+  border-radius: 6px;
+  background: #fff8df;
+  color: #5f4a12;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.instruction-callout {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #d8c796;
+  border-radius: 8px;
+  background: #fff8df;
+  color: #453409;
+}
+
+.instruction-callout p {
+  margin: 8px 0 0;
+}
+
+.instruction-callout p:first-child {
+  margin-top: 0;
+}
+
+.module-intro,
+.content-note,
+.thinking-section,
+.checkpoint-instruction,
+.audit-section {
+  margin: 20px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9faf7;
+}
+
+.module-intro {
+  max-width: 68ch;
+}
+
+.content-note h3,
+.thinking-section h3,
+.audit-section h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.content-note p,
+.thinking-section p,
+.checkpoint-instruction p,
+.module-intro p {
+  margin: 10px 0 0;
+}
+
+.content-note p:first-child,
+.thinking-section p:first-child,
+.checkpoint-instruction p:first-child,
+.module-intro p:first-child {
+  margin-top: 0;
+}
+
+.thinking-section ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.thinking-section li {
+  margin-top: 12px;
+}
+
+.checkpoint-instruction {
+  border-color: #cbd4e8;
+  background: #f4f7ff;
+  color: #27375e;
+  font-weight: 700;
+}
+
+.checkpoint-gate {
+  margin-top: 22px;
+}
+
+.audit-section {
+  display: grid;
+  gap: 12px;
+  background: #fbfcf8;
+}
+
+.audit-instruction {
+  padding: 12px 14px;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 6px;
+  background: #f4f7ff;
+  color: #27375e;
+}
+
+.audit-instruction h3 {
+  margin-bottom: 6px;
+}
+
+.audit-instruction p {
+  margin: 6px 0 0;
+}
+
+.audit-instruction p:first-of-type {
+  margin-top: 0;
+}
+
+.audit-field,
+.answer-part-field {
+  display: grid;
+  gap: 6px;
+}
+
+.audit-field span,
+.answer-part-field span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.audit-field select,
+.audit-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.audit-field textarea {
+  resize: vertical;
+}
+
+.mode-actions,
+.support-actions,
+.navigation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action,
+.text-action,
+.final-action {
+  padding: 10px 16px;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-action:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-action {
+  background: #fff4ed;
+  color: #713316;
+  border: 1px solid #f2c3a8;
+}
+
+.final-action {
+  background: #8e2f2f;
+  color: #ffffff;
+}
+
+.final-action:hover {
+  background: #6f2424;
+}
+
+.text-action {
+  min-height: auto;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f0ec;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mode-pill.checkpoint {
+  background: #e9edf7;
+  color: var(--checkpoint);
+}
+
+.question-map {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.question-map-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.question-map-button {
+  display: grid;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  text-align: left;
+}
+
+.question-map-button span {
+  font-weight: 800;
+}
+
+.question-map-button small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.question-map-button.is-current {
+  border-color: var(--checkpoint);
+  outline: 3px solid rgba(52, 75, 122, 0.14);
+}
+
+.question-map-button.is-correct {
+  border-color: rgba(31, 109, 70, 0.45);
+  background: #eef8f1;
+}
+
+.question-map-button.is-tried {
+  border-color: rgba(154, 75, 31, 0.45);
+  background: #fff6ee;
+}
+
+.question-map-button.is-not-tried {
+  background: #ffffff;
+}
+
+.prompt {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f9faf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+}
+
+.answer-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.answer-form label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.answer-form input:focus,
+.audit-field select:focus,
+.audit-field textarea:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.multi-part-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+}
+
+.feedback.is-retry {
+  color: var(--retry);
+}
+
+.hint-list,
+.summary-list {
+  margin: 20px 0 0;
+  padding-left: 22px;
+}
+
+.hint-list li,
+.summary-list li {
+  margin-top: 8px;
+}
+
+.worked-solution,
+.run-command {
+  margin: 20px 0 0;
+  padding: 16px;
+  overflow: auto;
+  background: #17202a;
+  color: #f7fbff;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.attempt-count {
+  min-height: 24px;
+  margin: 8px 0 0;
+}
+
+.summary-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .app {
+    padding: 18px 12px;
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .progress-text {
+    grid-column: 1 / -1;
+  }
+
+  .answer-form {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-form button,
+  .mode-actions button,
+  .support-actions button,
+  .navigation-actions button {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section class="panel hero-panel">
+        <p class="eyebrow">Asher PSLE Quiz Lab</p>
+        <h1>Loading quiz...</h1>
+      </section>
+    </main>
+    <script id="quiz-content-data" type="application/json">
+{
+  "quiz_id": "frp-module-3-pyp-method-application-lab-v1",
+  "title": "FRP Module 3 — PYP Method Application Lab",
+  "topic": "Fractions / Ratio / Percentage",
+  "module": "FRP Module 3",
+  "version": "1.0",
+  "source_authority": "D_DAVE_REVIEWED_AI_DRAFT",
+  "learner_lede": "This module is your PSLE-style method training lab.",
+  "learner_intro": "Welcome to FRP Module 3.\n\nThis module is your PSLE-style method training lab.\n\nYou will see questions that look more like real exam questions. Some are shorter. Some are longer. Some look friendly, then quietly hide a trap like a ninja in a maths worksheet.\n\nFor every question, ask:\n- What is the question asking?\n- What is the current whole or current ratio?\n- Did anything change?\n- Which amount does the next fraction or percentage apply to?\n- Am I answering the first amount, final amount, difference, total, or ratio?\n\nUse foolscap paper. Draw models. Show your working. Calculator rules are stated for each question.",
+  "practice_questions": [
+    {
+      "question_id": "FRP-M3-P1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Flour, Muffins and Pies: Which Whole Are You Using?",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Rosyth 2025 Prelim P1B Q24",
+      "source_summary": "Mary had a bag of flour. She used a fraction of it for muffins, then used a fraction of the remainder for pies. A final amount of flour was left. The question asks for the amount of flour she had at first.",
+      "learner_purpose": "This question trains you to notice when the whole has changed.\n\nThe first fraction is taken from the original bag. The second fraction is taken from the remainder, not from the original bag.\n\nTiny sentence. Big trap. Very PSLE. Classic.",
+      "prompt": "Mary had a bag of flour.\n\nShe used 1/4 of the flour for muffins.\n\nShe then used 2/5 of the remaining flour for pies.\n\nAfter that, she had 1/5 kg of flour left.\n\nHow much flour did Mary have at first?",
+      "expected_format": "fraction_optional_unit",
+      "canonical_answer": "4/9 kg",
+      "accepted_answers": [
+        "4/9",
+        "4/9 kg"
+      ],
+      "target_value": {
+        "whole": 0,
+        "numerator": 4,
+        "denominator": 9
+      },
+      "allowed_unit_tokens": [
+        "kg",
+        "kilogram",
+        "kilograms"
+      ],
+      "error_tags": [
+        "CHANGING_BASE",
+        "FRACTION_OF_REMAINDER",
+        "WORK_BACKWARDS",
+        "CURRENT_WHOLE",
+        "FINAL_TARGET_CHECK",
+        "WRONG_BASE",
+        "CALCULATION_ERROR_AFTER_CORRECT_SETUP"
+      ],
+      "parent_summary_tags": [
+        "changing base",
+        "fraction of remainder",
+        "work backwards",
+        "current whole",
+        "final target check"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. You found the original amount.",
+        "FRACTION_REQUIRED": "Write the answer as a fraction. You may include kg.",
+        "INVALID_FORMAT": "Write the answer as a fraction. You may include kg.",
+        "WRONG_VALUE": "Check which whole the second fraction uses.",
+        "CALCULATION_ERROR": "Your setup may be close. Check the backwards step.",
+        "BLANK": "Start with what was left after muffins."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Block 1 — First change",
+          "prompt": "Mary used 1/4 of the flour for muffins. What fraction of the original bag was left after making muffins?"
+        },
+        {
+          "title": "Block 2 — Second change uses the new base",
+          "prompt": "Mary used 2/5 of the remaining flour for pies. What fraction of the remaining flour was left after making pies?"
+        },
+        {
+          "title": "Block 3 — Work backwards",
+          "prompt": "The leftover flour was 1/5 kg. If this leftover amount is 9/20 of the original bag, what was the original bag?"
+        }
+      ],
+      "hints": [
+        "After using part of the flour, the remainder becomes the new amount for the next step.",
+        "The 2/5 is not 2/5 of the original bag. It is 2/5 of the amount after muffins.",
+        "Use 3/5 x 3/4 to find the leftover fraction of the original bag."
+      ],
+      "worked_solution": "Original bag = 1 whole\n\nUsed for muffins = 1/4\nRemaining after muffins = 3/4\n\nUsed for pies = 2/5 of the remaining flour\nLeft after pies = 3/5 of the remaining flour\n\nLeft after pies:\n3/5 x 3/4 = 9/20 of original bag\n\n9/20 of original bag = 1/5 kg\n\n1 whole = 1/5 ÷ 9/20\n        = 1/5 x 20/9\n        = 4/9 kg\n\nASCII model:\nOriginal bag = 1 whole\n\nAfter muffins:\n[used 1/4][remaining 3/4]\n\nOf the remaining 3/4:\npies use 2/5\nleft = 3/5 of the remaining 3/4\n\nLeft = 3/5 x 3/4 = 9/20 of original bag\n\nFinal target check:\nQuestion asks: amount of flour Mary had at first.\nAnswer should be the original amount, not the leftover amount.",
+      "final_target_check": "Question asks: amount of flour Mary had at first.\nAnswer should be the original amount, not the leftover amount.",
+      "source_authority": "C_REPUTABLE_ASSESSMENT_SOURCE"
+    },
+    {
+      "question_id": "FRP-M3-P2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Eraser Transfer: Reverse the Story",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Rosyth 2025 Prelim P1B Q25",
+      "source_summary": "Thiran and Nick had erasers. Thiran gave a fraction of his erasers to Nick. After that, a ratio between Nick's new number of erasers and Thiran's remaining erasers was given. The question asks for the ratio of Thiran's erasers to Nick's erasers at first.",
+      "learner_purpose": "This question trains you to move between:\n\nat first -> transfer happens -> after transfer\n\nThen you reverse the transfer to find the original ratio.\n\nThis is the smaller cousin of Method Card C. Same family, less drama.",
+      "prompt": "Thiran and Nick had some erasers at first.\n\nThiran gave 1/5 of his erasers to Nick.\n\nAfter that, Nick : Thiran = 3 : 1.\n\nWhat was the ratio of Thiran's erasers to Nick's erasers at first?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "5 : 11",
+      "accepted_answers": [
+        "5:11",
+        "5 : 11",
+        "5 to 11"
+      ],
+      "target_ratio_units": {
+        "left": 5,
+        "right": 11
+      },
+      "diagnostic_answers": {
+        "3:1": "WRONG_FINAL_TARGET",
+        "3 : 1": "WRONG_FINAL_TARGET",
+        "11:5": "WRONG_START_RATIO",
+        "11 : 5": "WRONG_START_RATIO"
+      },
+      "error_tags": [
+        "RATIO_TRANSFER",
+        "BEFORE_AFTER_MODEL",
+        "REVERSE_TRANSFER",
+        "ORIGINAL_RATIO",
+        "ANSWER_STAGE_CHECK",
+        "RATIO_REVERSED",
+        "WRONG_STAGE"
+      ],
+      "parent_summary_tags": [
+        "ratio transfer",
+        "before-after model",
+        "reverse transfer",
+        "original ratio",
+        "answer-stage check"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. That is the ratio at first.",
+        "WRONG_FINAL_TARGET": "That is the final ratio. The question asks for the ratio at first.",
+        "WRONG_START_RATIO": "Check the order Thiran : Nick.",
+        "WRONG_CURRENT_AMOUNT": "Check the transfer before returning to the original ratio.",
+        "INVALID_FORMAT": "Write the answer as a ratio, like 5 : 11.",
+        "BLANK": "Start from the final ratio, then reverse the transfer."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Block 1 — Understand the final ratio",
+          "prompt": "At the end, Nick : Thiran = 3 : 1. Who had more erasers at the end?"
+        },
+        {
+          "title": "Block 2 — Reverse Thiran's transfer",
+          "prompt": "Thiran gave away 1/5 of his erasers. What fraction of his original erasers did he have left?"
+        },
+        {
+          "title": "Block 3 — Return to the original ratio",
+          "prompt": "At the end, Thiran has 4 units left and Nick has 12 units. What were their amounts at first before the 1 unit was transferred?"
+        }
+      ],
+      "hints": [
+        "The ratio given is the final ratio, not the ratio at first.",
+        "Use 5 parts for Thiran's original amount because he gave away 1 out of 5 parts.",
+        "If Thiran's remaining 4/5 is represented by 4 units, then the amount he gave away is 1 unit."
+      ],
+      "worked_solution": "At the end:\nNick : Thiran = 3 : 1\n\nUse:\nNick = 12 units\nThiran = 4 units\n\nThiran gave away 1/5 of his original erasers.\nSo Thiran's remaining 4 units = 4/5 of his original amount.\n\nTransfer = 1 unit.\n\nAt first:\nThiran = 4 + 1 = 5 units\nNick = 12 - 1 = 11 units\n\nThiran : Nick = 5 : 11\n\nASCII model:\nAt the end:\nNick   : [u][u][u] [u][u][u] [u][u][u] [u][u][u] = 12u\nThiran : [u][u][u][u] = 4u\n\nThiran gave away 1/5 of his original erasers.\nSo 4u is what he had after giving away 1u.\n\nAt first:\nThiran = 4u + 1u = 5u\nNick   = 12u - 1u = 11u\n\nFinal target check:\nQuestion asks: ratio at first.\nAnswer should be before-transfer ratio, not final ratio.",
+      "final_target_check": "Question asks: ratio at first.\nAnswer should be before-transfer ratio, not final ratio.",
+      "source_authority": "C_REPUTABLE_ASSESSMENT_SOURCE"
+    },
+    {
+      "question_id": "FRP-M3-P3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Plastic and Glass Beads: Percentages Have Bases",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Rosyth 2025 Prelim P2 Q12",
+      "source_summary": "Mdm Siti had plastic and glass beads. At first, a percentage of the beads were plastic and the rest were glass. She added plastic and glass beads. In the end, a different percentage of the beads were plastic. The number of glass beads at the end was twice the number of glass beads at first. Part (a) asks for the ratio of plastic beads at first to plastic beads at the end. Part (b) asks how many glass beads were added.",
+      "learner_purpose": "This question trains you to convert percentages into ratios and keep track of which total each percentage belongs to.\n\nThe first percentage uses the starting total. The final percentage uses the final total. Do not mix them up, or the beads will start a rebellion.",
+      "prompt": "Mdm Siti had plastic and glass beads.\n\nAt first, 65% of the beads were plastic and the rest were glass.\n\nShe added 288 plastic and glass beads altogether.\n\nIn the end, 75% of the beads were plastic.\n\nThe number of glass beads at the end was twice the number of glass beads at first.\n\n(a) What is the ratio of the number of plastic beads at first to the number of plastic beads at the end?\n\n(b) How many glass beads were added?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 13 : 42; (b) 56",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Ratio of plastic beads at first to plastic beads at the end",
+          "expected_format": "ratio_units",
+          "canonical_answer": "13 : 42",
+          "target_ratio_units": {
+            "left": 13,
+            "right": 42
+          }
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Number of glass beads added",
+          "expected_format": "numeric",
+          "canonical_answer": "56",
+          "target_number": 56
+        }
+      ],
+      "error_tags": [
+        "PERCENTAGE_TO_RATIO",
+        "FINAL_PERCENTAGE_BASE",
+        "RATIO_SCALING",
+        "ADDED_QUANTITY",
+        "MULTI_STEP_FRP",
+        "FINAL_TARGET_CHECK",
+        "WRONG_BASE",
+        "DID_NOT_SCALE_UNITS"
+      ],
+      "parent_summary_tags": [
+        "percentage to ratio",
+        "final percentage base",
+        "ratio scaling",
+        "added quantity",
+        "multi-step FRP",
+        "final target check"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Both final answers match the question targets.",
+        "BLANK": "Try both parts.",
+        "INVALID_FORMAT": "Check the answer format for each part.",
+        "WRONG_CURRENT_AMOUNT": "Check the ratio units and which percentage base you used.",
+        "CALCULATION_ERROR": "Check the scaling and final calculation.",
+        "WRONG_VALUE": "Check each final answer against the part asked."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Block 1 — Convert the first percentage",
+          "prompt": "At first, 65% of the beads were plastic. What percentage were glass? Convert plastic : glass at first into a ratio."
+        },
+        {
+          "title": "Block 2 — Convert the final percentage",
+          "prompt": "In the end, 75% of the beads were plastic. What percentage were glass? Convert plastic : glass at the end into a ratio."
+        },
+        {
+          "title": "Block 3 — Link first and final glass beads",
+          "prompt": "The final number of glass beads was twice the number of glass beads at first. How can you scale the ratios so this relationship is shown?"
+        },
+        {
+          "title": "Block 4 — Use the added total",
+          "prompt": "Compare the total units at first and at the end. Use the total number of beads added to find 1 unit. Then find the number of glass beads added."
+        }
+      ],
+      "hints": [
+        "A percentage split can become a ratio split.",
+        "The final percentage is based on the final total number of beads.",
+        "At first Plastic : Glass = 13 : 7. At the end Plastic : Glass = 3 : 1.",
+        "Since final glass is twice first glass, scale final glass from 7u to 14u."
+      ],
+      "worked_solution": "At first:\nPlastic : Glass = 65 : 35 = 13 : 7\nTotal = 20 units\n\nAt the end:\nPlastic : Glass = 75 : 25 = 3 : 1\n\nFinal glass is twice first glass.\nFirst glass = 7u\nFinal glass = 14u\n\nSo final ratio becomes:\nPlastic : Glass = 42u : 14u\nTotal = 56u\n\n(a)\nPlastic at first : Plastic at the end\n= 13u : 42u\n= 13 : 42\n\n(b)\nIncrease in total beads:\n56u - 20u = 36u\n\n36u = 288\n1u = 8\n\nGlass beads added:\n14u - 7u = 7u\n7u = 56\n\nASCII ratio table:\nAt first:\nPlastic : Glass = 13 : 7\nTotal = 20 units\n\nAt the end:\nPlastic : Glass = 42 : 14\nTotal = 56 units\n\nFinal glass is twice first glass:\n7u -> 14u\n\nIncrease:\n56u - 20u = 36u\n\nFinal target check:\nPart (a): asks for ratio of plastic at first to plastic at the end.\nPart (b): asks how many glass beads were added.\nDo not answer total beads added for part (b).",
+      "final_target_check": "Part (a): asks for ratio of plastic at first to plastic at the end.\nPart (b): asks how many glass beads were added.\nDo not answer total beads added for part (b).",
+      "source_authority": "C_REPUTABLE_ASSESSMENT_SOURCE"
+    }
+  ],
+  "checkpoint_questions": [
+    {
+      "question_id": "FRP-M3-C1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Tom's Spending: The Remainder Trap Returns",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Rosyth 2025 Prelim P2 Q6",
+      "source_summary": "Tom spent a fixed amount on markers, then spent a fraction of his remaining money on pens. The rest was spent on notebooks. The amount spent on notebooks was a fraction of the total amount he had at first. The question asks how much money he had at first.",
+      "prompt": "Tom had some money at first.\n\nHe spent $105 on markers.\n\nHe then spent 1/5 of his remaining money on pens.\n\nHe spent the rest of his money on notebooks.\n\nThe amount spent on notebooks was 1/2 of the total amount of money he had at first.\n\nHow much money did Tom have at first?",
+      "expected_format": "numeric",
+      "canonical_answer": "$280",
+      "accepted_answers": [
+        "280",
+        "$280"
+      ],
+      "target_number": 280,
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nDo not type your answer yet.\nShow your working clearly.\nDraw a model or write equations if it helps.\n\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Ratio units",
+            "C. Fraction of remainder",
+            "D. Percentage method",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount after / left",
+            "C. Total spent on one item",
+            "D. Difference",
+            "E. Fraction / percentage",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Table",
+            "E. Equations only",
+            "F. I did not draw/model anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "CHANGING_BASE",
+        "FRACTION_OF_REMAINDER",
+        "WORK_BACKWARDS",
+        "AMOUNT_AT_FIRST",
+        "WRONG_BASE",
+        "ANSWERED_WRONG_TARGET",
+        "CALCULATION_ERROR_AFTER_CORRECT_SETUP"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "changing base",
+        "fraction of remainder",
+        "work backwards",
+        "amount at first",
+        "transfer from Practice Q1"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "BLANK": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole-number money answer.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again."
+      },
+      "hints": [],
+      "worked_solution": "Tom's total money = 1 whole\n\nNotebooks = 1/2 of total.\nSo markers + pens = 1/2 of total.\n\nAfter spending $105 on markers,\nTom spent 1/5 of the remaining money on pens.\n\nLet total = T.\n\nRemaining after markers = T - 105\nPens = 1/5 x (T - 105)\n\nMarkers + pens = 1/2 T\n\n105 + 1/5(T - 105) = 1/2T\n\nT = $280",
+      "source_authority": "C_REPUTABLE_ASSESSMENT_SOURCE"
+    },
+    {
+      "question_id": "FRP-M3-C2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Paul and Zalim: Full Ratio Transfer Challenge",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Dave-approved original adaptation",
+      "prompt": "Paul and Zalim had some money at first.\n\nPaul had 4 times as much money as Zalim.\n\nPaul gave 1/4 of his money to Zalim.\n\nZalim then spent 1/4 of the money he had after receiving the money from Paul.\n\nIn the end, Paul had $90 more than Zalim.\n\n(a) How much money did Paul give to Zalim?\n\n(b) How much money did Paul and Zalim have altogether at first?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) $60; (b) $300",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) How much money did Paul give to Zalim?",
+          "expected_format": "numeric",
+          "canonical_answer": "$60",
+          "target_number": 60
+        },
+        {
+          "part_id": "b",
+          "label": "(b) How much money did Paul and Zalim have altogether at first?",
+          "expected_format": "numeric",
+          "canonical_answer": "$300",
+          "target_number": 300
+        }
+      ],
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nThis is a full transfer question.\nTrack each stage carefully:\n- at first\n- after Paul gives money\n- after Zalim spends money\n- in the end\n\nDo not type your answer yet.\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Ratio units",
+            "C. Fraction of remainder",
+            "D. Percentage method",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount transferred",
+            "B. Amount left at the end",
+            "C. Total amount at first",
+            "D. Difference",
+            "E. Fraction / percentage / ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Table",
+            "E. Equations only",
+            "F. I did not draw/model anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "METHOD_CARD_C",
+        "RATIO_TRANSFER",
+        "FRACTION_OF_CHANGED_AMOUNT",
+        "FINAL_DIFFERENCE",
+        "ORIGINAL_TOTAL",
+        "TRANSFERRED_AMOUNT",
+        "BEFORE_AFTER_MODEL",
+        "ANSWER_STAGE_CHECK",
+        "WRONG_STAGE",
+        "RATIO_REVERSED"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "Method Card C",
+        "ratio transfer",
+        "fraction of changed amount",
+        "final difference",
+        "original total",
+        "transferred amount",
+        "before-after model",
+        "answer-stage check"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "BLANK": "Try again.",
+        "INVALID_FORMAT": "Try again: use whole-number money answers.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again."
+      },
+      "hints": [],
+      "worked_solution": "At first:\nPaul : Zalim = 4 : 1\n\nUse 16u : 4u so that 1/4 of Paul's money is easy to find.\n\nPaul gives 1/4 of 16u = 4u to Zalim.\n\nAfter the transfer:\nPaul = 16u - 4u = 12u\nZalim = 4u + 4u = 8u\n\nZalim spends 1/4 of his new amount.\n1/4 of 8u = 2u\n\nZalim left = 8u - 2u = 6u\n\nIn the end:\nPaul = 12u\nZalim = 6u\n\nDifference = 12u - 6u = 6u\n\n6u = $90\n1u = $15\n\n(a) Paul gave 4u.\n4u = 4 x $15 = $60\n\n(b) Total at first = 16u + 4u = 20u.\n20u = 20 x $15 = $300\n\nASCII model:\nAt first:\n\nPaul : [u][u][u][u] [u][u][u][u] [u][u][u][u] [u][u][u][u] = 16u\nZalim: [u][u][u][u] = 4u\n\nPaul gives 1/4 of his money to Zalim:\n1/4 of 16u = 4u\n\nAfter transfer:\n\nPaul : [u][u][u][u] [u][u][u][u] [u][u][u][u] = 12u\nZalim: [u][u][u][u] + [u][u][u][u] = 8u\n\nZalim spends 1/4 of 8u:\n1/4 of 8u = 2u\n\nFinal:\n\nPaul : 12u\nZalim: 6u\nDifference: 6u = $90",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-M3-C3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Muffins and Tarts: Percentage to Ratio, Then Units",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Rosyth 2025 Prelim P2 Q17",
+      "source_summary": "Michael bought packets of muffins and boxes of tarts. Each packet has the same number of muffins, and each box has the same number of tarts. Each box has more tarts than there are muffins in one packet. A percentage of all the muffins and tarts were muffins. Part (a) asks how many muffins were bought. Part (b) asks for the ratio of muffins in one packet to tarts in one box.",
+      "prompt": "Michael bought 17 packets of muffins and 5 boxes of tarts.\n\nEach packet had the same number of muffins.\n\nEach box had the same number of tarts.\n\nEach box had 9 more tarts than the number of muffins in one packet.\n\n68% of all the muffins and tarts were muffins.\n\n(a) How many muffins were bought?\n\n(b) What is the ratio of the number of muffins in one packet to the number of tarts in one box?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 255; (b) 5 : 8",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) How many muffins were bought?",
+          "expected_format": "numeric",
+          "canonical_answer": "255",
+          "target_number": 255
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Ratio of muffins in one packet to tarts in one box",
+          "expected_format": "ratio_units",
+          "canonical_answer": "5 : 8",
+          "target_ratio_units": {
+            "left": 5,
+            "right": 8
+          }
+        }
+      ],
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nYou may use a ratio table, unit method, equations, or a model.\nShow how the percentage information connects to the muffin and tart quantities.\n\nDo not type your answer yet.\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Ratio units",
+            "C. Fraction of remainder",
+            "D. Percentage method",
+            "E. Table / listing",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount after / left",
+            "C. Total amount",
+            "D. Difference",
+            "E. Fraction / percentage / ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Table",
+            "E. Equations only",
+            "F. I did not draw/model anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "PERCENTAGE_TO_RATIO",
+        "RATIO_UNITS",
+        "FINAL_PERCENTAGE_BASE",
+        "PACKET_BOX_COMPARISON",
+        "UNIT_COMPARISON",
+        "DID_NOT_SCALE_UNITS",
+        "ANSWERED_WRONG_TARGET"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "percentage to ratio",
+        "ratio units",
+        "final percentage base",
+        "packet-box comparison",
+        "unit comparison"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "BLANK": "Try again.",
+        "INVALID_FORMAT": "Try again: check each answer format.",
+        "WRONG_CURRENT_AMOUNT": "Try again.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again."
+      },
+      "hints": [],
+      "worked_solution": "Let muffins in 1 packet = u.\nThen tarts in 1 box = u + 9.\n\n                   Muffins        Tarts\nNo. of packets       17            5\nQty each              u          u + 9\nTotal                17u        5u + 45\n\nMuffins are 68% of total.\nSo muffins : tarts = 68 : 32 = 17 : 8\n\n17u : (5u + 45) = 17 : 8\n\nSince 17u matches 17 parts,\n5u + 45 = 8u\n\n3u = 45\nu = 15\n\n(a)\nTotal muffins = 17u = 17 x 15 = 255\n\nTarts per box = u + 9 = 15 + 9 = 24\n\n(b)\nMuffins in 1 packet : Tarts in 1 box\n= 15 : 24\n= 5 : 8",
+      "source_authority": "C_REPUTABLE_ASSESSMENT_SOURCE"
+    }
+  ]
+}
+
+    </script>
+    <script>
+const FEEDBACK_CODES = Object.freeze({
+  CORRECT: "CORRECT",
+  BLANK: "BLANK",
+  INVALID_FORMAT: "INVALID_FORMAT",
+  FRACTION_REQUIRED: "FRACTION_REQUIRED",
+  MIXED_NUMBER_REQUIRED: "MIXED_NUMBER_REQUIRED",
+  EQUIVALENT_NOT_SIMPLEST: "EQUIVALENT_NOT_SIMPLEST",
+  PLACE_VALUE_DENOMINATOR_ERROR: "PLACE_VALUE_DENOMINATOR_ERROR",
+  WRONG_VALUE: "WRONG_VALUE",
+  CALCULATION_ERROR: "CALCULATION_ERROR",
+  WRONG_START_RATIO: "WRONG_START_RATIO",
+  TRANSFER_APPLIED_TO_WRONG_PERSON: "TRANSFER_APPLIED_TO_WRONG_PERSON",
+  WRONG_CURRENT_AMOUNT: "WRONG_CURRENT_AMOUNT",
+  USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+  UNIT_VALUE_NOT_FINAL: "UNIT_VALUE_NOT_FINAL",
+  WRONG_BASE_ORIGINAL: "WRONG_BASE_ORIGINAL",
+  WRONG_BASE_REMAINDER: "WRONG_BASE_REMAINDER",
+  WRONG_LEFTOVER_STAGE: "WRONG_LEFTOVER_STAGE",
+  INTERMEDIATE_NOT_FINAL: "INTERMEDIATE_NOT_FINAL",
+  WRONG_FINAL_TARGET: "WRONG_FINAL_TARGET",
+  WRONG_CATEGORY: "WRONG_CATEGORY",
+  MISSING_UNIT: "MISSING_UNIT"
+});
+
+const PLACE_VALUE_DENOMINATORS = new Set([10, 100, 1000]);
+
+function normaliseAnswer(input) {
+  return String(input ?? "")
+    .replace(/\u2044/g, "/")
+    .trim()
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+/g, " ");
+}
+
+function getFeedbackMessage(code, mode, expectedFormat = "fraction", question = null) {
+  const mixedFormat = expectedFormat.includes("mixed");
+  const questionFeedback = question?.feedback_by_code?.[code];
+
+  if (questionFeedback) return questionFeedback;
+
+  if (code === FEEDBACK_CODES.CORRECT) return "Correct.";
+  if (code === FEEDBACK_CODES.BLANK) return mode === "Practice" ? "Try typing an answer." : "Try again.";
+  if (code === FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST) {
+    return mode === "Practice"
+      ? "Equivalent, but not in simplest form. Try simplifying it."
+      : "Try again: equivalent but not in simplest form.";
+  }
+  if (code === FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR) {
+    return mode === "Practice"
+      ? "Try again: check the decimal place value."
+      : "Try again: check the decimal place value.";
+  }
+  if (code === FEEDBACK_CODES.MIXED_NUMBER_REQUIRED || (code === FEEDBACK_CODES.INVALID_FORMAT && mixedFormat)) {
+    return "Try again: write your answer as a mixed number.";
+  }
+  if (code === FEEDBACK_CODES.INVALID_FORMAT && expectedFormat === "numeric") {
+    return "Try again: use a whole-number answer.";
+  }
+  if (code === FEEDBACK_CODES.FRACTION_REQUIRED || code === FEEDBACK_CODES.INVALID_FORMAT) {
+    return "Try again: answer must be written as a fraction.";
+  }
+  if (code === FEEDBACK_CODES.WRONG_BASE_ORIGINAL) return "Try again: check what the fraction is about.";
+  if (code === FEEDBACK_CODES.WRONG_BASE_REMAINDER) return "Try again: check what we started with.";
+  if (code === FEEDBACK_CODES.WRONG_LEFTOVER_STAGE) return "Try again: check what is left.";
+  if (code === FEEDBACK_CODES.WRONG_START_RATIO) return "Try again: check the starting ratio.";
+  if (code === FEEDBACK_CODES.TRANSFER_APPLIED_TO_WRONG_PERSON) return "Try again: check who changed.";
+  if (code === FEEDBACK_CODES.WRONG_CURRENT_AMOUNT) return "Try again: check the new amount now.";
+  if (code === FEEDBACK_CODES.USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL) return "Try again: the story changed before this clue.";
+  if (code === FEEDBACK_CODES.UNIT_VALUE_NOT_FINAL) return "Try again: this looks like one unit, not the final answer.";
+  if (code === FEEDBACK_CODES.INTERMEDIATE_NOT_FINAL) return "Try again: this looks like a halfway answer.";
+  if (code === FEEDBACK_CODES.WRONG_FINAL_TARGET) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.WRONG_CATEGORY) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.MISSING_UNIT) return "Try again: include the unit or group.";
+  if (code === FEEDBACK_CODES.CALCULATION_ERROR) return "Try again: check the calculation.";
+
+  return "Try again.";
+}
+
+function validateQuestionAnswer(question, rawInput) {
+  if (question.expected_format === "multi_part") {
+    return validateMultiPartQuestion(question, rawInput);
+  }
+
+  const answer = normaliseAnswer(rawInput);
+
+  if (!answer) {
+    return result(FEEDBACK_CODES.BLANK, answer);
+  }
+
+  if (question.expected_format === "three_denominators") {
+    return validateDenominatorSequence(question, answer);
+  }
+
+  if (question.expected_format === "denominator_only") {
+    return validateDenominatorOnly(question, answer);
+  }
+
+  if (question.expected_format === "mcq") {
+    return validateMcq(question, answer);
+  }
+
+  if (question.expected_format === "numeric") {
+    return validateNumeric(question, answer);
+  }
+
+  if (question.expected_format === "ratio") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "short_text") {
+    return validateShortText(question, answer);
+  }
+
+  if (question.expected_format === "ratio_units") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "error_explanation_plus_fraction") {
+    return validateErrorExplanation(question, answer);
+  }
+
+  if (question.expected_format === "yes_no_plus_mixed_number") {
+    return validateYesNoMixed(question, answer);
+  }
+
+  if (question.expected_format === "mixed_number") {
+    return validateMixedNumber(question, answer);
+  }
+
+  if (question.expected_format === "fraction_optional_unit") {
+    return validateFractionWithOptionalUnit(question, answer);
+  }
+
+  return validateFraction(question, answer);
+}
+
+function validateMultiPartQuestion(question, rawInput) {
+  if (!question.answer_parts?.length) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, {});
+  }
+
+  const answers = rawInput && typeof rawInput === "object" ? rawInput : {};
+  const partResults = (question.answer_parts ?? []).map((part) => {
+    const partQuestion = {
+      ...question,
+      ...part,
+      expected_format: part.expected_format,
+      feedback_by_code: part.feedback_by_code ?? question.feedback_by_code,
+      answer_parts: undefined
+    };
+
+    return {
+      part_id: part.part_id,
+      result: validateQuestionAnswer(partQuestion, answers[part.part_id] ?? "")
+    };
+  });
+  const normalised = Object.fromEntries(partResults.map((part) => [part.part_id, part.result.normalised]));
+  const firstIssue = partResults.find((part) => !part.result.isCorrect);
+
+  if (firstIssue) {
+    return result(firstIssue.result.code, normalised);
+  }
+
+  return result(FEEDBACK_CODES.CORRECT, normalised);
+}
+
+function validateDenominatorSequence(question, answer) {
+  const numbers = answer.split(/[,\s]+/).filter(Boolean);
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).replace(/\s*,\s*/g, ",")) ?? [];
+  const compact = answer.replace(/\s*,\s*/g, ",");
+
+  if (accepted.includes(compact) || arraysEqual(numbers, ["10", "100", "1000"])) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateDenominatorOnly(question, answer) {
+  if (question.accepted_answers?.includes(answer)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateMcq(question, answer) {
+  const cleaned = answer.toUpperCase().replace(/\.$/, "");
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).toUpperCase()) ?? [];
+
+  if (accepted.includes(cleaned)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const optionFeedbackCode = question.option_feedback_codes?.[cleaned];
+  if (optionFeedbackCode && FEEDBACK_CODES[optionFeedbackCode]) {
+    return result(FEEDBACK_CODES[optionFeedbackCode], answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  if (/^[A-D]$/i.test(cleaned)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+}
+
+function validateNumeric(question, answer) {
+  const parsed = parseWholeNumberAnswer(answer);
+
+  if (!parsed.ok) {
+    return result(parsed.code, answer);
+  }
+
+  const targetNumber = getTargetNumber(question);
+  if (!Number.isInteger(targetNumber)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.value === targetNumber) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, String(parsed.value));
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.CALCULATION_ERROR, answer);
+}
+
+function validateShortText(question, answer) {
+  const accepted = question.accepted_answers?.map((item) => normaliseTextAnswer(item)) ?? [];
+  const normalisedText = normaliseTextAnswer(answer);
+
+  if (accepted.includes(normalisedText) || matchesRequiredTerms(question, normalisedText)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateRatioUnits(question, answer) {
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseRatioUnits(answer);
+  if (!parsed.ok) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const target = question.target_ratio_units;
+  if (!target || !Number.isInteger(target.left) || !Number.isInteger(target.right)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.left === target.left && parsed.right === target.right) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (parsed.left * target.right === parsed.right * target.left) {
+    return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+}
+
+function validateErrorExplanation(question, answer) {
+  const hasFinalFraction = hasTargetFractionToken(question, answer);
+  const hasMistakeEvidence = hasP10MistakeEvidence(answer);
+
+  if (hasFinalFraction && hasMistakeEvidence) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const parsedFraction = parseFraction(answer);
+  if (parsedFraction.ok && !isFractionPartSimplest(parsedFraction.value)) {
+    return evaluateFractionValue(question, parsedFraction.value, "fraction", answer);
+  }
+
+  if (hasFractionToken(answer, "48/100")) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  if (answer.includes("48/10") || answer.includes("24/5")) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateYesNoMixed(question, answer) {
+  const hasFinalMixedNumber = hasTargetMixedNumberToken(question, answer);
+  const hasNotSimplestSignal = hasP11NotSimplestSignal(answer);
+
+  if (hasFinalMixedNumber && hasNotSimplestSignal) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (hasFinalMixedNumber) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (question.equivalent_not_simplest_examples?.some((item) => answer.includes(normaliseAnswer(item)))) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function validateFraction(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.FRACTION_REQUIRED, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseFraction(answer);
+  if (!parsed.ok) {
+    return result(parsed.code ?? FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return evaluateFractionValue(question, parsed.value, "fraction", answer);
+}
+
+function validateFractionWithOptionalUnit(question, answer) {
+  return validateFraction(question, stripOptionalUnit(answer, question.allowed_unit_tokens ?? []));
+}
+
+function validateMixedNumber(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  if (mixed.code === FEEDBACK_CODES.INVALID_FORMAT && mixed.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  if (fraction.code === FEEDBACK_CODES.INVALID_FORMAT && fraction.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function evaluateFractionValue(question, parsed, parsedFormat, normalised) {
+  const target = targetToImproperFraction(question.target_value);
+
+  if (!target) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  const input = toImproperFraction(parsed);
+
+  if (sameValue(input, target)) {
+    if (parsedFormat === "improper_for_mixed") {
+      return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, normalised);
+    }
+
+    if (!isFractionPartSimplest(parsed)) {
+      return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, normalised);
+    }
+
+    return result(FEEDBACK_CODES.CORRECT, normalised);
+  }
+
+  if (parsedFormat === "mixed_number" && parsed.whole !== question.target_value?.whole) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  if (looksLikePlaceValueError(question, parsed)) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, normalised);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+}
+
+function parseFraction(answer) {
+  const match = answer.match(/^(\d+)\/(\d+)$/);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (numerator <= 0 || denominator <= 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole: 0,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseMixedNumber(answer) {
+  const match = answer.match(/^(\d+)(?:\s+and)?\s+(\d+)\/(\d+)$/i);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+
+  const whole = Number(match[1]);
+  const numerator = Number(match[2]);
+  const denominator = Number(match[3]);
+
+  if (!Number.isInteger(whole) || !Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (whole <= 0 || numerator <= 0 || denominator <= 0 || numerator >= denominator) {
+    return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseRatioUnits(answer) {
+  const match = answer
+    .toLowerCase()
+    .match(/^(\d+)\s*(?:units?)?\s*(?::|to)\s*(\d+)\s*(?:units?)?$/);
+
+  if (!match) return { ok: false };
+
+  const left = Number(match[1]);
+  const right = Number(match[2]);
+
+  if (!Number.isInteger(left) || !Number.isInteger(right) || left <= 0 || right <= 0) {
+    return { ok: false };
+  }
+
+  return {
+    ok: true,
+    left,
+    right
+  };
+}
+
+function targetToImproperFraction(target) {
+  if (!target) return null;
+
+  return {
+    numerator: target.whole * target.denominator + target.numerator,
+    denominator: target.denominator
+  };
+}
+
+function toImproperFraction(value) {
+  return {
+    numerator: value.whole * value.denominator + value.numerator,
+    denominator: value.denominator
+  };
+}
+
+function sameValue(left, right) {
+  return left.numerator * right.denominator === right.numerator * left.denominator;
+}
+
+function isFractionPartSimplest(value) {
+  return gcd(value.numerator, value.denominator) === 1;
+}
+
+function looksLikePlaceValueError(question, parsed) {
+  if (!question.place_value_denominator) return false;
+  if (!PLACE_VALUE_DENOMINATORS.has(parsed.denominator)) return false;
+
+  return parsed.denominator !== question.place_value_denominator;
+}
+
+function getDiagnosticFeedbackCode(question, answer) {
+  const diagnostics = question.diagnostic_answers ?? {};
+  const candidates = [answer, normaliseAnswer(answer), normaliseAnswer(answer).toLowerCase(), normaliseAnswer(answer).toUpperCase()];
+
+  for (const candidate of candidates) {
+    const code = diagnostics[candidate];
+    if (code && FEEDBACK_CODES[code]) {
+      return FEEDBACK_CODES[code];
+    }
+  }
+
+  return "";
+}
+
+function normaliseTextAnswer(value) {
+  return normaliseAnswer(value)
+    .toLowerCase()
+    .replace(/[:.,;]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function matchesRequiredTerms(question, normalisedText) {
+  const requiredTerms = question.required_terms ?? [];
+
+  return requiredTerms.length > 0 && requiredTerms.every((group) => group.some((term) => normalisedText.includes(term)));
+}
+
+function parseWholeNumberAnswer(answer) {
+  const cleanedAnswer = answer.replace(/^\$\s*/, "");
+  const match = cleanedAnswer.match(/^(\d+)(.*)$/);
+
+  if (!match) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const rest = match[2].trim();
+  if (rest && (/^[\d./+\-*=/]/.test(rest) || /\d+\s*\/\s*\d+/.test(rest) || /\d+\.\d+/.test(rest))) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const value = Number(match[1]);
+  if (!Number.isInteger(value)) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return { ok: true, value };
+}
+
+function stripOptionalUnit(answer, allowedUnitTokens) {
+  if (!allowedUnitTokens.length) return answer;
+
+  const unitPattern = allowedUnitTokens.map((unit) => escapeRegExp(unit)).join("|");
+  const match = answer.match(new RegExp(`^(.+?)\\s*(?:${unitPattern})\\.?$`, "i"));
+
+  return match ? match[1].trim() : answer;
+}
+
+function getTargetNumber(question) {
+  if (Number.isInteger(question.target_number)) return question.target_number;
+  if (Number.isInteger(question.expected_numeric_value)) return question.expected_numeric_value;
+
+  const canonical = normaliseAnswer(question.canonical_answer ?? "");
+  const match = canonical.match(/^(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function hasTargetFractionToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole !== 0) return false;
+
+  return hasFractionToken(answer, `${target.numerator}/${target.denominator}`);
+}
+
+function hasTargetMixedNumberToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole <= 0) return false;
+
+  const mixedNumber = `${target.whole} ${target.numerator}/${target.denominator}`;
+  const mixedNumberWithAnd = `${target.whole} and ${target.numerator}/${target.denominator}`;
+
+  return hasPhraseToken(answer, mixedNumber) || hasPhraseToken(answer, mixedNumberWithAnd);
+}
+
+function hasP10MistakeEvidence(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    hasFractionToken(answer, "48/100") ||
+    /\bnot\s+48\/10\b/.test(lower) ||
+    /\bdenominator\b.{0,30}\b100\b/.test(lower) ||
+    /\bhundredths?\b/.test(lower)
+  );
+}
+
+function hasP11NotSimplestSignal(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    /\bno\b/.test(lower) ||
+    /\bnot\s+(?:in\s+)?simplest(?:\s+form)?\b/.test(lower) ||
+    /\bnot\s+simplified\b/.test(lower)
+  );
+}
+
+function hasFractionToken(answer, fraction) {
+  return hasPhraseToken(answer, fraction);
+}
+
+function hasPhraseToken(answer, phrase) {
+  const escaped = escapeRegExp(phrase);
+  const tokenPattern = new RegExp(`(^|[^\\d])${escaped}([^\\d]|$)`, "i");
+
+  return tokenPattern.test(answer);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasDecimalNumber(answer) {
+  return /\d+\.\d+/.test(answer);
+}
+
+function gcd(left, right) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+
+  while (b !== 0) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+
+  return a;
+}
+
+function arraysEqual(left, right) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function result(code, normalised) {
+  return {
+    code,
+    isCorrect: code === FEEDBACK_CODES.CORRECT,
+    normalised
+  };
+}
+
+const REMOTE_LOGGING_ENDPOINT = "";
+
+const checkpointLoggingConfig = {
+  remoteEndpoint: REMOTE_LOGGING_ENDPOINT
+};
+
+const CHECKPOINT_ATTEMPT_EVENT = "checkpoint_attempt";
+const SCHEMA_VERSION = "0.1";
+const SOURCE = "browser-local-first";
+
+function logCheckpointAttempt(session, attempt) {
+  try {
+    if (!session?.sessionId || !session?.quizId) {
+      return { ok: false, error: "Missing checkpoint session details." };
+    }
+
+    if (!attempt?.question_id || !Number.isInteger(attempt?.attempt_number)) {
+      return { ok: false, error: "Missing checkpoint attempt details." };
+    }
+
+    const endpoint = checkpointLoggingConfig.remoteEndpoint.trim();
+
+    if (!endpoint) {
+      return { ok: true, mode: "local-only" };
+    }
+
+    const payload = buildCheckpointAttemptPayload(session, attempt);
+
+    // Optional remote logging integration point. Blank by default for the static export workflow.
+    // Remote logging is fire-and-forget so it never blocks local checkpoint flow.
+    sendCheckpointAttempt(endpoint, payload);
+    return { ok: true, mode: "remote-queued" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown logging error."
+    };
+  }
+}
+
+function buildCheckpointAttemptPayload(session, attempt) {
+  return {
+    event_type: CHECKPOINT_ATTEMPT_EVENT,
+    schema_version: SCHEMA_VERSION,
+    session_id: session.sessionId,
+    quiz_id: session.quizId,
+    question_id: attempt.question_id,
+    attempt_number: attempt.attempt_number,
+    raw_input: attempt.raw_input,
+    normalised_input: attempt.normalised_input ?? "",
+    feedback_code: attempt.feedback_code,
+    is_correct: attempt.is_correct,
+    attempt_timestamp: attempt.timestamp,
+    client_timezone: getClientTimezone(),
+    source: SOURCE
+  };
+}
+
+async function sendCheckpointAttempt(endpoint, payload) {
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.warn("Checkpoint remote logging failed.", error);
+  }
+}
+
+function getClientTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+}
+
+const STORAGE_KEY_PREFIX = "asher-quiz-lab";
+
+function createCheckpointSession(quizId) {
+  return {
+    sessionId: `${quizId}-${Date.now()}`,
+    quizId,
+    startedAt: new Date().toISOString(),
+    attempts: []
+  };
+}
+
+function recordCheckpointAttempt(session, questionId, rawInput, feedbackCode, isCorrect, normalisedInput) {
+  const attemptNumber = session.attempts.filter((attempt) => attempt.question_id === questionId).length + 1;
+  const attempt = {
+    question_id: questionId,
+    attempt_number: attemptNumber,
+    raw_input: rawInput,
+    normalised_input: normalisedInput ?? "",
+    feedback_code: feedbackCode,
+    is_correct: isCorrect,
+    timestamp: new Date().toISOString()
+  };
+
+  session.attempts.push(attempt);
+  saveCheckpointSession(session);
+  logCheckpointAttempt(session, attempt);
+  return attempt;
+}
+
+function getCheckpointAttemptCounts(session, questionIds) {
+  return questionIds.map((questionId) => ({
+    question_id: questionId,
+    attempts: session.attempts.filter((attempt) => attempt.question_id === questionId).length
+  }));
+}
+
+function saveCheckpointSession(session) {
+  try {
+    window.localStorage.setItem(getStorageKey(session.quizId), JSON.stringify(session));
+  } catch {
+    // Local storage is helpful for Dave review, but the quiz should still run without it.
+  }
+}
+
+function clearCheckpointSession(quizId) {
+  try {
+    window.localStorage.removeItem(getStorageKey(quizId));
+  } catch {
+    // Ignore storage failures in local prototype mode.
+  }
+}
+
+function getStorageKey(quizId) {
+  return `${STORAGE_KEY_PREFIX}.${quizId}`;
+}
+
+const DEFAULT_QUIZ_ID = "decimals-to-fractions-v1";
+const QUIZ_REGISTRY = Object.freeze({
+  "decimals-to-fractions-v1": {
+    quizId: "decimals-to-fractions-v1",
+    contentPath: "content/math/decimals-to-fractions-v1.json"
+  },
+  "frp-module-1a-start-left-asked-v1": {
+    quizId: "frp-module-1a-start-left-asked-v1",
+    contentPath: "content/math/frp-module-1a-start-left-asked-v1.json"
+  },
+  "frp-module-2a-before-change-after-v1": {
+    quizId: "frp-module-2a-before-change-after-v1",
+    contentPath: "content/math/frp-module-2a-before-change-after-v1.json"
+  },
+  "frp-module-3-pyp-method-application-lab-v1": {
+    quizId: "frp-module-3-pyp-method-application-lab-v1",
+    contentPath: "content/math/frp-module-3-pyp-method-application-lab-v1.json"
+  }
+});
+const FINAL_CHECKPOINT_WARNING =
+  "After this, your checkpoint will be locked. You will not be able to change your answers or try again.";
+const CHECKPOINT_EXPORT_SCHEMA_VERSION = "1.0";
+const CHECKPOINT_EXPORT_SOURCE = "static-html-export";
+
+const app = document.querySelector("#app");
+
+let quiz = null;
+let activeMode = "home";
+let currentIndex = 0;
+let checkpointSession = null;
+let checkpointLocked = false;
+let practiceState = [];
+let checkpointState = [];
+
+init();
+
+async function init() {
+  const quizConfig = getRequestedQuizConfig();
+
+  try {
+    quiz = await loadQuizContent(quizConfig);
+    document.title = `${quiz.title} | Asher PSLE Quiz Lab`;
+    renderHome();
+  } catch (error) {
+    renderLoadError(error);
+  }
+}
+
+async function loadQuizContent(quizConfig) {
+  const embeddedQuizData = document.querySelector("#quiz-content-data");
+  if (embeddedQuizData) return JSON.parse(embeddedQuizData.textContent);
+
+  const response = await fetch(quizConfig.contentPath);
+  if (!response.ok) throw new Error(`Could not load ${quizConfig.contentPath}`);
+
+  return response.json();
+}
+
+function getRequestedQuizConfig() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedQuizId = params.get("quiz") || DEFAULT_QUIZ_ID;
+
+  return QUIZ_REGISTRY[requestedQuizId] ?? QUIZ_REGISTRY[DEFAULT_QUIZ_ID];
+}
+
+function renderHome() {
+  activeMode = "home";
+  currentIndex = 0;
+
+  app.innerHTML = `
+    <section class="panel hero-panel">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${quiz.title}</h1>
+      <p class="topic-line">${quiz.topic}</p>
+      <p class="lede">${escapeHtml(quiz.learner_lede ?? "Practise the method first, then try the checkpoint without hints.")}</p>
+      ${renderModuleIntro()}
+      ${renderInstructionCallout()}
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startPractice">Start Practice</button>
+        <button type="button" class="secondary-action" id="startCheckpoint">Start Checkpoint</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startPractice").addEventListener("click", startPractice);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+}
+
+function startPractice() {
+  activeMode = "Practice";
+  currentIndex = 0;
+  practiceState = createQuestionState(quiz.practice_questions);
+  renderPracticeQuestion();
+}
+
+function startCheckpoint() {
+  activeMode = "Checkpoint";
+  currentIndex = 0;
+  checkpointLocked = false;
+  checkpointState = createQuestionState(quiz.checkpoint_questions);
+  clearCheckpointSession(quiz.quiz_id);
+  checkpointSession = createCheckpointSession(quiz.quiz_id);
+  renderCheckpointQuestion();
+}
+
+function createQuestionState(questions) {
+  return questions.map((question) => ({
+    input: getInitialInputState(question),
+    feedbackCode: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    attempts: [],
+    hintsShown: 0,
+    solutionShown: false,
+    workingCompleted: false,
+    auditResponses: {}
+  }));
+}
+
+function renderPracticeQuestion() {
+  const question = quiz.practice_questions[currentIndex];
+  const state = practiceState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.practice_questions.length}`;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill">Practice</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.practice_questions, practiceState, currentIndex, "Practice")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderPracticeThinkingBlocks(question)}
+        ${renderAnswerForm(question, false)}
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="practiceStatus"></p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="hintButton">Hint</button>
+          <button type="button" class="secondary-action" id="solutionButton">Worked Solution</button>
+        </div>
+        <ol class="hint-list" id="hintList" hidden></ol>
+        <pre class="worked-solution" id="workedSolution" hidden></pre>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="primary-action" id="nextQuestion">${currentIndex === quiz.practice_questions.length - 1 ? "Finish Practice" : "Next"}</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  bindAnswerInputs(question, state);
+
+  renderFeedback(state, "Practice");
+  renderPracticeSupport(question, state);
+  bindQuestionMap(renderPracticeQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
+  document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  focusFirstAnswerInput();
+}
+
+function submitPracticeAnswer(event, question, state) {
+  event.preventDefault();
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+  state.attempts.push({
+    attempt_number: state.attempts.length + 1,
+    feedback_code: validation.code,
+    is_correct: validation.isCorrect,
+    timestamp: new Date().toISOString()
+  });
+
+  renderPracticeQuestion();
+}
+
+function renderPracticeSupport(question, state) {
+  const hintList = document.querySelector("#hintList");
+  const hintButton = document.querySelector("#hintButton");
+  const solution = document.querySelector("#workedSolution");
+
+  if (state.hintsShown > 0) {
+    hintList.hidden = false;
+    question.hints.slice(0, state.hintsShown).forEach((hint) => {
+      const item = document.createElement("li");
+      item.textContent = hint;
+      hintList.append(item);
+    });
+  }
+
+  hintButton.disabled = state.hintsShown >= question.hints.length;
+
+  if (state.solutionShown) {
+    solution.textContent = question.worked_solution;
+    solution.hidden = false;
+  }
+}
+
+function showNextHint(question, state) {
+  state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showWorkedSolution(question, state) {
+  state.solutionShown = true;
+  renderPracticeQuestion();
+}
+
+function goToPreviousPracticeQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderPracticeQuestion();
+}
+
+function goToNextPracticeQuestion() {
+  if (currentIndex === quiz.practice_questions.length - 1) {
+    renderPracticeComplete();
+    return;
+  }
+
+  currentIndex += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeComplete() {
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Practice complete</p>
+      <h1>Nice work.</h1>
+      <p class="lede">You reached the end of the practice ladder.</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="secondary-action" id="exportPracticeSummary">Export Parent Practice Summary</button>
+        <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#resumePractice").addEventListener("click", () => {
+    currentIndex = quiz.practice_questions.length - 1;
+    renderPracticeQuestion();
+  });
+  document.querySelector("#exportPracticeSummary").addEventListener("click", exportPracticeSummary);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function exportPracticeSummary() {
+  const exportedAt = new Date().toISOString();
+
+  downloadFile(
+    buildPracticeParentSummary(exportedAt),
+    "text/plain",
+    buildPracticeParentSummaryFilename(exportedAt)
+  );
+}
+
+function buildPracticeParentSummary(exportedAt) {
+  const questions = buildPracticeQuestionSummaries();
+  const attemptedQuestions = questions.filter((question) => question.attempt_count > 0);
+  const notAttemptedQuestions = questions.filter((question) => question.status === "Not attempted");
+  const latestCorrectQuestions = questions.filter((question) => question.status === "Correct");
+  const repeatedAttemptQuestions = questions.filter((question) => question.attempt_count > 1);
+  const openedSolutionQuestions = questions.filter((question) => question.worked_solution_opened);
+  const latestNotCorrectQuestions = questions.filter((question) => question.status === "Tried");
+  const totalAttempts = questions.reduce((total, question) => total + question.attempt_count, 0);
+  const totalHintsViewed = questions.reduce((total, question) => total + question.hints_viewed, 0);
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Practice Summary",
+    "",
+    `Quiz: ${quiz.title}`,
+    `Topic: ${quiz.topic}`,
+    `Exported: ${formatSummaryTimestamp(exportedAt)}`,
+    "",
+    "Practice Usage Summary",
+    "----------------------",
+    `Total practice questions: ${questions.length}`,
+    `Questions attempted: ${attemptedQuestions.length}`,
+    `Questions not attempted: ${notAttemptedQuestions.length}`,
+    `Questions with latest correct attempt: ${latestCorrectQuestions.length}`,
+    `Total practice attempts: ${totalAttempts}`,
+    `Total hints viewed: ${totalHintsViewed}`,
+    `Worked solutions opened: ${openedSolutionQuestions.length}`,
+    "",
+    "Question Summary",
+    "----------------",
+    ...questions.flatMap(formatPracticeQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    "Questions not attempted",
+    ...formatPracticeReviewList(notAttemptedQuestions),
+    "",
+    "Questions not correct on latest attempt",
+    ...formatPracticeReviewList(latestNotCorrectQuestions),
+    "",
+    "Questions with repeated attempts",
+    ...formatPracticeReviewList(repeatedAttemptQuestions, (question) => `${formatAttemptCount(question.attempt_count)}`),
+    "",
+    "Questions where worked solution was opened",
+    ...formatPracticeReviewList(openedSolutionQuestions),
+    "",
+    "No correct answers, accepted answers, hint text, worked solutions, raw submitted answers, normalised submitted answers, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function buildPracticeQuestionSummaries() {
+  return quiz.practice_questions.map((question, index) => {
+    const state = practiceState[index];
+    const attempts = state.attempts ?? [];
+    const latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    const status = latestAttempt ? (latestAttempt.is_correct ? "Correct" : "Tried") : "Not attempted";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+      hints_viewed: state.hintsShown,
+      worked_solution_opened: state.solutionShown,
+      parent_summary_tags: question.parent_summary_tags ?? []
+    };
+  });
+}
+
+function formatPracticeQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status}`,
+    `  Attempt count: ${formatAttemptCount(question.attempt_count)}`,
+    `  Latest feedback category: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`,
+    `  Hints viewed: ${question.hints_viewed}`,
+    `  Worked solution opened: ${question.worked_solution_opened ? "Yes" : "No"}`
+  ];
+}
+
+function formatPracticeReviewList(questions, detailFormatter = null) {
+  if (questions.length === 0) {
+    return ["- none"];
+  }
+
+  return questions.map((question) => {
+    const detail = detailFormatter ? `: ${detailFormatter(question)}` : "";
+    return `- ${question.question_id}${detail}`;
+  });
+}
+
+function renderCheckpointQuestion() {
+  const question = quiz.checkpoint_questions[currentIndex];
+  const state = checkpointState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.checkpoint_questions.length}`;
+  const attemptCount = getAttemptCount(question.question_id);
+  const needsWorkingConfirmation = usesWorkingConfirmation(question);
+  const showAnswerEntry = !needsWorkingConfirmation || state.workingCompleted;
+  const showCheckpointSolution = needsWorkingConfirmation && state.isCorrect && question.worked_solution;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill checkpoint">Checkpoint</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.checkpoint_questions, checkpointState, currentIndex, "Checkpoint")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderCheckpointInstruction(question)}
+        ${!showAnswerEntry ? renderWorkingConfirmation(question) : ""}
+        ${showAnswerEntry ? renderAuditFields(question, state) : ""}
+        ${showAnswerEntry ? renderAnswerForm(question, checkpointLocked) : ""}
+        ${showAnswerEntry ? `<p class="feedback" id="feedback" aria-live="polite"></p>` : ""}
+        <p class="attempt-count" id="attemptCount">Attempts recorded: ${attemptCount}</p>
+        ${showCheckpointSolution ? `<pre class="worked-solution checkpoint-solution">${escapeHtml(question.worked_solution)}</pre>` : ""}
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="secondary-action" id="nextQuestion">Next</button>
+          <button type="button" class="final-action" id="finalCheckpoint" ${checkpointLocked ? "disabled" : ""}>Submit Final Checkpoint</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+
+  if (showAnswerEntry) {
+    bindAnswerInputs(question, state);
+    bindAuditInputs(question, state);
+    renderFeedback(state, "Checkpoint");
+    document.querySelector("#answerForm").addEventListener("submit", (event) => submitCheckpointAnswer(event, question, state));
+  } else {
+    document.querySelector("#workingDoneButton").addEventListener("click", () => {
+      state.workingCompleted = true;
+      renderCheckpointQuestion();
+    });
+  }
+
+  bindQuestionMap(renderCheckpointQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousCheckpointQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextCheckpointQuestion);
+  document.querySelector("#finalCheckpoint").addEventListener("click", submitFinalCheckpoint);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  document.querySelector("#nextQuestion").disabled = currentIndex === quiz.checkpoint_questions.length - 1;
+  if (!checkpointLocked && showAnswerEntry) focusFirstAnswerInput();
+}
+
+function submitCheckpointAnswer(event, question, state) {
+  event.preventDefault();
+  if (checkpointLocked) return;
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  recordCheckpointAttempt(
+    checkpointSession,
+    question.question_id,
+    inputValue,
+    validation.code,
+    validation.isCorrect,
+    validation.normalised
+  );
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  renderCheckpointQuestion();
+}
+
+function goToPreviousCheckpointQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderCheckpointQuestion();
+}
+
+function goToNextCheckpointQuestion() {
+  if (currentIndex === quiz.checkpoint_questions.length - 1) return;
+
+  currentIndex += 1;
+  renderCheckpointQuestion();
+}
+
+function submitFinalCheckpoint() {
+  if (checkpointLocked) return;
+  if (!window.confirm(FINAL_CHECKPOINT_WARNING)) return;
+
+  checkpointLocked = true;
+  checkpointSession.lockedAt = new Date().toISOString();
+  saveCheckpointSession(checkpointSession);
+  renderCheckpointComplete();
+}
+
+function renderCheckpointComplete() {
+  const questionIds = quiz.checkpoint_questions.map((question) => question.question_id);
+  const attemptCounts = getCheckpointAttemptCounts(checkpointSession, questionIds);
+  const summaries = quiz.checkpoint_questions.map((question) => {
+    const latestAttempt = getLatestAttempt(question.question_id);
+    const attempts = attemptCounts.find((item) => item.question_id === question.question_id)?.attempts ?? 0;
+    const status = getSummaryStatus(latestAttempt);
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempts,
+      isCorrect: status === "Correct"
+    };
+  });
+  const score = summaries.filter((item) => item.isCorrect).length;
+  const exportData = buildCheckpointExport(summaries, score);
+
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Checkpoint complete</p>
+      <h1>Finished.</h1>
+      <p class="lede">Score: ${score} / ${quiz.checkpoint_questions.length}</p>
+      <ul class="summary-list" id="summaryList"></ul>
+      <p class="summary-note">No answers are shown here. Review mistakes with Dad or tutor.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="exportParentSummary">Export Parent Checkpoint Summary</button>
+        <button type="button" class="secondary-action" id="exportResults">Export Checkpoint JSON Data</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  const summaryList = document.querySelector("#summaryList");
+  summaries.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.question_id}: ${item.status}, ${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+    summaryList.append(row);
+  });
+
+  document.querySelector("#exportParentSummary").addEventListener("click", () => exportParentSummary(exportData));
+  document.querySelector("#exportResults").addEventListener("click", () => exportCheckpointResults(exportData));
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function buildCheckpointExport(summaries, score) {
+  return {
+    export_schema_version: CHECKPOINT_EXPORT_SCHEMA_VERSION,
+    exported_at: new Date().toISOString(),
+    source: CHECKPOINT_EXPORT_SOURCE,
+    quiz: {
+      quiz_id: quiz.quiz_id,
+      title: quiz.title,
+      topic: quiz.topic,
+      version: quiz.version
+    },
+    checkpoint: {
+      session_id: checkpointSession.sessionId,
+      started_at: checkpointSession.startedAt,
+      locked_at: checkpointSession.lockedAt ?? "",
+      score,
+      total_questions: quiz.checkpoint_questions.length,
+      questions: summaries.map((summary) => {
+        const latestAttempt = getLatestAttempt(summary.question_id);
+        const question = quiz.checkpoint_questions.find((item) => item.question_id === summary.question_id);
+
+        return {
+          question_id: summary.question_id,
+          status: summary.status,
+          is_correct: summary.isCorrect,
+          attempt_count: summary.attempts,
+          parent_summary_tags: question?.parent_summary_tags ?? [],
+          latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+          latest_attempt_timestamp: latestAttempt?.timestamp ?? ""
+        };
+      }),
+      attempts: checkpointSession.attempts.map((attempt) => ({
+        question_id: attempt.question_id,
+        attempt_number: attempt.attempt_number,
+        feedback_code: attempt.feedback_code,
+        is_correct: attempt.is_correct,
+        timestamp: attempt.timestamp
+      }))
+    }
+  };
+}
+
+function exportCheckpointResults(exportData) {
+  downloadFile(JSON.stringify(exportData, null, 2), "application/json", buildJsonExportFilename(exportData));
+}
+
+function exportParentSummary(exportData) {
+  downloadFile(buildParentSummary(exportData), "text/plain", buildParentSummaryFilename(exportData));
+}
+
+function buildParentSummary(exportData) {
+  const checkpoint = exportData.checkpoint;
+  const reviewQuestions = checkpoint.questions.filter((question) => question.status !== "Correct");
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Checkpoint Summary",
+    "",
+    `Quiz: ${exportData.quiz.title}`,
+    `Topic: ${exportData.quiz.topic}`,
+    `Completed: ${formatSummaryTimestamp(checkpoint.locked_at || exportData.exported_at)}`,
+    `Score: ${checkpoint.score} / ${checkpoint.total_questions}`,
+    "",
+    getParentEncouragement(checkpoint.score, checkpoint.total_questions),
+    "",
+    "Question Summary",
+    "----------------",
+    ...checkpoint.questions.flatMap(formatParentQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    ...formatReviewList(reviewQuestions),
+    "",
+    "No correct answers, hints, worked solutions, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function formatParentQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status} (${formatAttemptCount(question.attempt_count)})`,
+    `  Latest feedback: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`
+  ];
+}
+
+function formatReviewList(questions) {
+  if (questions.length === 0) {
+    return ["- No checkpoint questions marked for review."];
+  }
+
+  return questions.map(
+    (question) =>
+      `- ${question.question_id}: ${question.status}; ${formatAttemptCount(question.attempt_count)}.`
+  );
+}
+
+function getParentEncouragement(score, totalQuestions) {
+  if (score === totalQuestions) {
+    return "Great focus. Every checkpoint question was finished correct.";
+  }
+
+  if (score >= Math.ceil(totalQuestions / 2)) {
+    return "Good work. There are a few questions to review together.";
+  }
+
+  if (score > 0) {
+    return "Good effort. This gives Dad or tutor a clear review list.";
+  }
+
+  return "Thanks for giving it a go. Use this as a calm review list.";
+}
+
+function formatFeedbackCodeForParent(code) {
+  const labels = {
+    CORRECT: "Correct",
+    BLANK: "Blank or not submitted",
+    INVALID_FORMAT: "Check the answer format",
+    FRACTION_REQUIRED: "Answer needed as a fraction",
+    MIXED_NUMBER_REQUIRED: "Answer needed as a mixed number",
+    EQUIVALENT_NOT_SIMPLEST: "Equivalent, but not in simplest form",
+    PLACE_VALUE_DENOMINATOR_ERROR: "Check the decimal place value",
+    WRONG_VALUE: "Try again",
+    CALCULATION_ERROR: "Check the calculation",
+    WRONG_START_RATIO: "Check the starting ratio",
+    TRANSFER_APPLIED_TO_WRONG_PERSON: "Check who changed",
+    WRONG_CURRENT_AMOUNT: "Check the new amount now",
+    USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "Use the new amount now",
+    UNIT_VALUE_NOT_FINAL: "One unit, not final answer",
+    WRONG_BASE_ORIGINAL: "Check what the fraction is about",
+    WRONG_BASE_REMAINDER: "Check what we started with",
+    WRONG_LEFTOVER_STAGE: "Check what is left",
+    INTERMEDIATE_NOT_FINAL: "Halfway answer",
+    WRONG_FINAL_TARGET: "Check the final target",
+    WRONG_CATEGORY: "Check what the question asked for",
+    MISSING_UNIT: "Include the unit or group"
+  };
+
+  return labels[code] ?? "Review needed";
+}
+
+function formatAttemptCount(count) {
+  return `${count} attempt${count === 1 ? "" : "s"}`;
+}
+
+function formatParentSummaryTags(tags) {
+  return tags?.length ? tags.join("; ") : "none";
+}
+
+function formatSummaryTimestamp(timestamp) {
+  if (!timestamp) return "";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}
+
+function downloadFile(content, type, filename) {
+  const blob = new Blob([content], {
+    type
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function buildJsonExportFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}.json`;
+}
+
+function buildParentSummaryFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildPracticeParentSummaryFilename(exportedAt) {
+  return `${buildExportFilenameBase({
+    exported_at: exportedAt,
+    quiz: {
+      quiz_id: quiz.quiz_id
+    }
+  })}-practice-parent-summary.txt`;
+}
+
+function buildExportFilenameBase(exportData) {
+  const quizId = exportData.quiz.quiz_id.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+  const timestamp = exportData.exported_at.replace(/[:.]/g, "-");
+
+  return `asher-quiz-lab-${quizId}-${timestamp}`;
+}
+
+function renderQuestionMap(questions, states, activeIndex, mode) {
+  const buttons = questions.map((question, index) => {
+    const status = getMapStatus(states[index], index === activeIndex);
+    const classNames = ["question-map-button", `is-${status.className}`];
+    if (index === activeIndex) classNames.push("is-current");
+
+    return `
+      <button type="button" class="${classNames.join(" ")}" data-question-index="${index}" aria-current="${index === activeIndex ? "step" : "false"}">
+        <span>${question.question_id}</span>
+        <small>${status.label}</small>
+      </button>
+    `;
+  }).join("");
+
+  return `
+    <nav class="question-map" aria-label="${mode} question list">
+      <p class="question-map-title">Questions</p>
+      <div class="question-map-grid">${buttons}</div>
+    </nav>
+  `;
+}
+
+function renderCalculatorPolicy(question) {
+  if (!question.calculator_policy) return "";
+
+  return `<p class="calculator-policy">${escapeHtml(question.calculator_policy)}</p>`;
+}
+
+function renderModuleIntro() {
+  if (!quiz.learner_intro) return "";
+
+  return `
+    <div class="module-intro">
+      ${formatTextBlock(quiz.learner_intro)}
+    </div>
+  `;
+}
+
+function renderQuestionOverview(question) {
+  const sections = [];
+
+  if (question.source_summary) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Source Summary</h3>
+        ${formatTextBlock(question.source_summary)}
+      </section>
+    `);
+  }
+
+  if (question.learner_purpose) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Purpose</h3>
+        ${formatTextBlock(question.learner_purpose)}
+      </section>
+    `);
+  }
+
+  return sections.join("");
+}
+
+function renderPracticeThinkingBlocks(question) {
+  const thinkingBlocks = question.thinking_blocks ?? [];
+  const blockList = thinkingBlocks.map((block) => `
+    <li>
+      <strong>${escapeHtml(block.title)}</strong>
+      <p>${escapeHtml(block.prompt)}</p>
+    </li>
+  `).join("");
+  const blocksMarkup = blockList
+    ? `
+      <section class="thinking-section">
+        <h3>Thinking Blocks</h3>
+        <ol>${blockList}</ol>
+      </section>
+    `
+    : "";
+  const finalTargetMarkup = question.final_target_check
+    ? `
+      <section class="content-note final-target-check">
+        <h3>Final Target Check</h3>
+        ${formatTextBlock(question.final_target_check)}
+      </section>
+    `
+    : "";
+
+  return `${blocksMarkup}${finalTargetMarkup}`;
+}
+
+function renderCheckpointInstruction(question) {
+  if (!question.checkpoint_instruction) return "";
+
+  return `
+    <section class="checkpoint-instruction">
+      ${formatTextBlock(question.checkpoint_instruction)}
+    </section>
+  `;
+}
+
+function renderWorkingConfirmation(question) {
+  return `
+    <div class="checkpoint-gate">
+      <button type="button" class="primary-action" id="workingDoneButton">
+        ${escapeHtml(question.working_confirmation_label ?? "I have finished my working")}
+      </button>
+    </div>
+  `;
+}
+
+function renderAuditInstructions() {
+  return `
+    <section class="audit-instruction">
+      <h3>How to answer these review questions</h3>
+      <p>Before typing your final answer, answer these quick review questions honestly.</p>
+      <p>They are not trick questions and they are not part of your score.</p>
+      <p>Choose what you actually used in your foolscap working.</p>
+      <p>If you are not sure, choose "Other / not sure".</p>
+      <p>This helps Dad see how you thought through the question, not just whether the final answer was correct.</p>
+    </section>
+  `;
+}
+
+function renderAuditFields(question, state) {
+  const fields = question.audit_fields ?? [];
+  if (!fields.length) return "";
+
+  const fieldMarkup = fields.map((field) => {
+    const value = state.auditResponses[field.field_id] ?? "";
+    const label = escapeHtml(field.label);
+
+    if (field.type === "textarea") {
+      return `
+        <label class="audit-field">
+          <span>${label}</span>
+          <textarea data-audit-field="${escapeHtml(field.field_id)}" rows="3">${escapeHtml(value)}</textarea>
+        </label>
+      `;
+    }
+
+    const options = (field.options ?? []).map(
+      (option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`
+    ).join("");
+
+    return `
+      <label class="audit-field">
+        <span>${label}</span>
+        <select data-audit-field="${escapeHtml(field.field_id)}">
+          <option value="">Choose one</option>
+          ${options}
+        </select>
+      </label>
+    `;
+  }).join("");
+
+  return `
+    <section class="audit-section">
+      ${renderAuditInstructions()}
+      <h3>Quick Review</h3>
+      ${fieldMarkup}
+    </section>
+  `;
+}
+
+function renderAnswerForm(question, disabled) {
+  const disabledAttribute = disabled ? "disabled" : "";
+
+  if (isMultiPartQuestion(question)) {
+    const fields = question.answer_parts.map((part) => `
+      <label class="answer-part-field" for="answerInput-${escapeHtml(part.part_id)}">
+        <span>${escapeHtml(part.label)}</span>
+        <input id="answerInput-${escapeHtml(part.part_id)}" data-answer-input data-answer-part="${escapeHtml(part.part_id)}" name="answer-${escapeHtml(part.part_id)}" autocomplete="off" ${disabledAttribute} />
+      </label>
+    `).join("");
+
+    return `
+      <form class="answer-form multi-part-answer-form" id="answerForm">
+        ${fields}
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  return `
+    <form class="answer-form" id="answerForm">
+      <label for="answerInput">${escapeHtml(question.answer_label ?? "Answer")}</label>
+      <input id="answerInput" data-answer-input name="answer" autocomplete="off" ${disabledAttribute} />
+      <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+    </form>
+  `;
+}
+
+function bindAnswerInputs(question, state) {
+  if (isMultiPartQuestion(question)) {
+    question.answer_parts.forEach((part) => {
+      const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+      input.value = state.input[part.part_id] ?? "";
+      input.addEventListener("input", () => {
+        state.input = {
+          ...state.input,
+          [part.part_id]: input.value
+        };
+      });
+    });
+    return;
+  }
+
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+}
+
+function bindAuditInputs(question, state) {
+  (question.audit_fields ?? []).forEach((field) => {
+    const input = document.querySelector(`[data-audit-field="${cssEscape(field.field_id)}"]`);
+    if (!input) return;
+
+    input.value = state.auditResponses[field.field_id] ?? "";
+    input.addEventListener("input", () => {
+      state.auditResponses = {
+        ...state.auditResponses,
+        [field.field_id]: input.value
+      };
+    });
+  });
+}
+
+function getAnswerInputValue(question) {
+  if (isMultiPartQuestion(question)) {
+    return Object.fromEntries(
+      question.answer_parts.map((part) => {
+        const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+        return [part.part_id, input?.value ?? ""];
+      })
+    );
+  }
+
+  return document.querySelector("#answerInput")?.value ?? "";
+}
+
+function focusFirstAnswerInput() {
+  document.querySelector("[data-answer-input]")?.focus();
+}
+
+function getInitialInputState(question) {
+  if (!isMultiPartQuestion(question)) return "";
+
+  return Object.fromEntries((question.answer_parts ?? []).map((part) => [part.part_id, ""]));
+}
+
+function isMultiPartQuestion(question) {
+  return question.expected_format === "multi_part" && Array.isArray(question.answer_parts);
+}
+
+function usesWorkingConfirmation(question) {
+  return Boolean(question.requires_working_confirmation || question.audit_fields?.length);
+}
+
+function formatTextBlock(value) {
+  return escapeHtml(value)
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+function cssEscape(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+}
+
+function renderInstructionCallout() {
+  if (!quizHasCalculatorPolicy()) return "";
+
+  return `
+    <div class="instruction-callout">
+      <p><strong><u>Check the calculator instruction for every question.</u></strong></p>
+      <p>If it says <strong><u>Calculator: Not allowed</u></strong>, do it without a calculator and write your working on foolscap paper.</p>
+      <p>If it says <strong><u>Calculator: Allowed</u></strong>, you may use a calculator, but only after choosing the correct steps.</p>
+      <p>The calculator can help with arithmetic. It cannot read the story. No licence, no driving.</p>
+    </div>
+  `;
+}
+
+function quizHasCalculatorPolicy() {
+  return [...(quiz.practice_questions ?? []), ...(quiz.checkpoint_questions ?? [])].some(
+    (question) => question.calculator_policy
+  );
+}
+
+function bindQuestionMap(renderFunction) {
+  document.querySelectorAll(".question-map-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentIndex = Number(button.dataset.questionIndex);
+      renderFunction();
+    });
+  });
+}
+
+function getMapStatus(state, isCurrent) {
+  if (isCurrent) return { label: "Current", className: "current" };
+  if (!state.submitted) return { label: "Not tried", className: "not-tried" };
+  if (state.isCorrect) return { label: "Correct", className: "correct" };
+  return { label: "Tried", className: "tried" };
+}
+
+function escapeHtml(value) {
+  const replacements = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  };
+
+  return String(value).replace(/[&<>"']/g, (character) => replacements[character]);
+}
+
+function renderFeedback(state, mode) {
+  const feedback = document.querySelector("#feedback");
+  const status = mode === "Practice" ? document.querySelector("#practiceStatus") : null;
+
+  if (!state.submitted) {
+    feedback.textContent = "";
+    if (status) status.textContent = "Not submitted yet.";
+    return;
+  }
+
+  feedback.textContent = state.feedbackMessage;
+  feedback.className = state.isCorrect ? "feedback is-correct" : "feedback is-retry";
+  if (status) status.textContent = state.isCorrect ? "Latest answer: correct." : "Latest answer: try again.";
+}
+
+function getAttemptCount(questionId) {
+  return checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId).length;
+}
+
+function getLatestAttempt(questionId) {
+  const attempts = checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId);
+  return attempts.length ? attempts[attempts.length - 1] : null;
+}
+
+function getSummaryStatus(latestAttempt) {
+  if (!latestAttempt || latestAttempt.feedback_code === "BLANK") return "Blank";
+  return latestAttempt.is_correct ? "Correct" : "Incorrect";
+}
+
+function renderLoadError(error) {
+  app.innerHTML = `
+    <section class="panel error-panel">
+      <p class="eyebrow">Local setup needed</p>
+      <h1>Quiz content did not load.</h1>
+      <p class="lede">Run a local server from the repo root, then open the local URL.</p>
+      <pre class="run-command">python -m http.server 8000</pre>
+      <p class="small-note">Then open http://localhost:8000/</p>
+    </section>
+  `;
+
+  console.error(error);
+}
+
+    </script>
+  </body>
+</html>
