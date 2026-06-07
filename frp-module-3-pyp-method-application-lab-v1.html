@@ -157,6 +157,7 @@ h2 {
 
 .module-intro,
 .content-note,
+.practice-mini-lesson,
 .thinking-section,
 .checkpoint-instruction,
 .audit-section {
@@ -172,6 +173,7 @@ h2 {
 }
 
 .content-note h3,
+.practice-mini-lesson h3,
 .thinking-section h3,
 .audit-section h3 {
   margin: 0 0 10px;
@@ -179,6 +181,7 @@ h2 {
 }
 
 .content-note p,
+.practice-mini-lesson p,
 .thinking-section p,
 .checkpoint-instruction p,
 .module-intro p {
@@ -186,6 +189,7 @@ h2 {
 }
 
 .content-note p:first-child,
+.practice-mini-lesson p:first-child,
 .thinking-section p:first-child,
 .checkpoint-instruction p:first-child,
 .module-intro p:first-child {
@@ -206,6 +210,12 @@ h2 {
   background: #f4f7ff;
   color: #27375e;
   font-weight: 700;
+}
+
+.practice-mini-lesson {
+  border-color: #d9c27c;
+  background: #fff9e8;
+  color: #3f3420;
 }
 
 .checkpoint-gate {
@@ -470,6 +480,19 @@ h2 {
   margin-top: 8px;
 }
 
+.model-clue {
+  margin: 18px 0 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid #cbd4e8;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 8px;
+  background: #f4f7ff;
+  color: #27375e;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
 .worked-solution,
 .run-command {
   margin: 20px 0 0;
@@ -551,6 +574,10 @@ h2 {
       "source": "Rosyth 2025 Prelim P1B Q24",
       "source_summary": "Mary had a bag of flour. She used a fraction of it for muffins, then used a fraction of the remainder for pies. A final amount of flour was left. The question asks for the amount of flour she had at first.",
       "learner_purpose": "This question trains you to notice when the whole has changed.\n\nThe first fraction is taken from the original bag. The second fraction is taken from the remainder, not from the original bag.\n\nTiny sentence. Big trap. Very PSLE. Classic.",
+      "mini_lesson": {
+        "title": "Mini-lesson: In fraction questions, \"of\" usually means \"×\"",
+        "body": "When a maths question says:\n1/2 of a whole popsicle\n\nit means:\ntake 1/2 × 1 whole popsicle.\n\nWhole popsicle:\n[        1 whole        ]\n\n1/2 of it:\n[   1/2   ][   1/2   ]\n\nSo:\n1/2 of 1 = 1/2 × 1 = 1/2\n\nNow imagine only 1/2 of the popsicle is left.\n\nOriginal popsicle:\n[ 1/2 left ][ 1/2 eaten ]\n\nIf you take 1/2 of the part left, you are taking:\n\n1/2 of 1/2\n= 1/2 × 1/2\n= 1/4 of the original popsicle\n\nVisual:\nOriginal popsicle:\n[ 1/4 ][ 1/4 ][ 1/4 ][ 1/4 ]\n\nLeft half:\n[ 1/4 ][ 1/4 ]\n\n1/2 of the left half:\n[ 1/4 ]\n\nIn the flour question:\nAfter muffins, 3/4 of the flour is left.\n\nThe flour left after pies is:\n3/5 of the remaining flour.\n\nThat means:\n3/5 of 3/4\n= 3/5 × 3/4"
+      },
       "prompt": "Mary had a bag of flour.\n\nShe used 1/4 of the flour for muffins.\n\nShe then used 2/5 of the remaining flour for pies.\n\nAfter that, she had 1/5 kg of flour left.\n\nHow much flour did Mary have at first?",
       "expected_format": "fraction_optional_unit",
       "canonical_answer": "4/9 kg",
@@ -606,12 +633,13 @@ h2 {
           "prompt": "The leftover flour was 1/5 kg. If this leftover amount is 9/20 of the original bag, what was the original bag?"
         }
       ],
+      "model_clue": "Original bag = 1 whole\n\n[ used for muffins: 1/4 ][          remaining: 3/4          ]\n\nThe remaining 3/4 is the new amount.\nSplit the remaining 3/4 into 5 equal groups:\n\n                         [ pie ][ pie ][ left ][ left ][ left ]\n\nPies used = 2/5 of the remaining flour.\nFlour left = 3/5 of the remaining flour.\n\nSo the final left amount is:\n3/5 of 3/4 of the original bag\n= 3/5 × 3/4",
       "hints": [
         "After using part of the flour, the remainder becomes the new amount for the next step.",
         "The 2/5 is not 2/5 of the original bag. It is 2/5 of the amount after muffins.",
         "Use 3/5 x 3/4 to find the leftover fraction of the original bag."
       ],
-      "worked_solution": "Original bag = 1 whole\n\nUsed for muffins = 1/4\nRemaining after muffins = 3/4\n\nUsed for pies = 2/5 of the remaining flour\nLeft after pies = 3/5 of the remaining flour\n\nLeft after pies:\n3/5 x 3/4 = 9/20 of original bag\n\n9/20 of original bag = 1/5 kg\n\n1 whole = 1/5 ÷ 9/20\n        = 1/5 x 20/9\n        = 4/9 kg\n\nASCII model:\nOriginal bag = 1 whole\n\nAfter muffins:\n[used 1/4][remaining 3/4]\n\nOf the remaining 3/4:\npies use 2/5\nleft = 3/5 of the remaining 3/4\n\nLeft = 3/5 x 3/4 = 9/20 of original bag\n\nFinal target check:\nQuestion asks: amount of flour Mary had at first.\nAnswer should be the original amount, not the leftover amount.",
+      "worked_solution": "After muffins:\nRemaining = 1 - 1/4 = 3/4\n\nAfter pies:\nLeft = 1 - 2/5 = 3/5 of the remaining flour\n\nSo flour left:\n3/5 of 3/4 means 3/5 × 3/4\n3/5 × 3/4 = 9/20 of the original bag\n\n9/20 of original bag = 1/5 kg\n\nOriginal bag = 1/5 ÷ 9/20\n             = 1/5 × 20/9\n             = 4/9 kg\n\nCompact model:\nOriginal bag = 1 whole\n\n[ used for muffins: 1/4 ][          remaining: 3/4          ]\n\nRemaining 3/4 split into 5 equal groups:\n                         [ pie ][ pie ][ left ][ left ][ left ]\n\nLeft = 3/5 of the remaining 3/4\n     = 3/5 × 3/4\n     = 9/20 of the original bag\n\nFinal target check:\nQuestion asks: amount of flour Mary had at first.\nAnswer should be the original amount, not the leftover amount.",
       "final_target_check": "Question asks: amount of flour Mary had at first.\nAnswer should be the original amount, not the leftover amount.",
       "source_authority": "C_REPUTABLE_ASSESSMENT_SOURCE"
     },
@@ -681,6 +709,7 @@ h2 {
           "prompt": "At the end, Thiran has 4 units left and Nick has 12 units. What were their amounts at first before the 1 unit was transferred?"
         }
       ],
+      "model_clue": "At the end:\nNick : Thiran = 3 : 1\n\nUse bigger units so Thiran's 4/5 left is easy to see.\n\nEnd:\nNick   : [u][u][u] [u][u][u] [u][u][u] [u][u][u] = 12u\nThiran : [u][u][u][u] = 4u\n\nThiran gave away 1/5 of his original erasers.\nSo Thiran's 4u left represents 4/5 of his original amount.\n\nThe transferred amount = 1u.\n\nReverse the transfer:\nThiran gets 1u back.\nNick gives 1u back.",
       "hints": [
         "The ratio given is the final ratio, not the ratio at first.",
         "Use 5 parts for Thiran's original amount because he gave away 1 out of 5 parts.",
@@ -766,6 +795,7 @@ h2 {
           "prompt": "Compare the total units at first and at the end. Use the total number of beads added to find 1 unit. Then find the number of glass beads added."
         }
       ],
+      "model_clue": "Convert each percentage split into a ratio first.\n\nAt first:\nPlastic : Glass = 65 : 35 = 13 : 7\n\nAt the end:\nPlastic : Glass = 75 : 25 = 3 : 1\n\nRemember: 65% uses the starting total. 75% uses the final total. Do not mix the two bases.\n\nThe question says final glass is twice first glass.\n\nSo compare the glass units:\nFirst glass = 7u\nFinal glass should be 14u\n\nScale the final ratio:\n3 : 1\n42u : 14u\n\nNow compare total units at first and at the end.",
       "hints": [
         "A percentage split can become a ratio split.",
         "The final percentage is based on the final total number of beads.",
@@ -2001,6 +2031,7 @@ function createQuestionState(questions) {
     attempts: [],
     hintsShown: 0,
     solutionShown: false,
+    modelClueShown: false,
     workingCompleted: false,
     auditResponses: {}
   }));
@@ -2024,6 +2055,7 @@ function renderPracticeQuestion() {
         <h2 id="questionTitle">${question.subtopic}</h2>
         ${renderCalculatorPolicy(question)}
         ${renderQuestionOverview(question)}
+        ${renderPracticeMiniLesson(question)}
         <div class="prompt" id="questionPrompt"></div>
         ${renderPracticeThinkingBlocks(question)}
         ${renderAnswerForm(question, false)}
@@ -2031,9 +2063,11 @@ function renderPracticeQuestion() {
         <p class="attempt-count" id="practiceStatus"></p>
         <div class="support-actions">
           <button type="button" class="secondary-action" id="hintButton">Hint</button>
+          ${question.model_clue ? `<button type="button" class="secondary-action" id="modelClueButton">Model clue</button>` : ""}
           <button type="button" class="secondary-action" id="solutionButton">Worked Solution</button>
         </div>
         <ol class="hint-list" id="hintList" hidden></ol>
+        ${question.model_clue ? `<pre class="model-clue" id="modelClue" hidden></pre>` : ""}
         <pre class="worked-solution" id="workedSolution" hidden></pre>
         <div class="navigation-actions">
           <button type="button" class="secondary-action" id="previousQuestion">Back</button>
@@ -2052,11 +2086,12 @@ function renderPracticeQuestion() {
   document.querySelector("#backHome").addEventListener("click", renderHome);
   document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
   document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#modelClueButton")?.addEventListener("click", () => showModelClue(question, state));
   document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
   document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
   document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
   document.querySelector("#previousQuestion").disabled = currentIndex === 0;
-  focusFirstAnswerInput();
+  if (!question.mini_lesson) focusFirstAnswerInput();
 }
 
 function submitPracticeAnswer(event, question, state) {
@@ -2083,6 +2118,8 @@ function submitPracticeAnswer(event, question, state) {
 function renderPracticeSupport(question, state) {
   const hintList = document.querySelector("#hintList");
   const hintButton = document.querySelector("#hintButton");
+  const modelClue = document.querySelector("#modelClue");
+  const modelClueButton = document.querySelector("#modelClueButton");
   const solution = document.querySelector("#workedSolution");
 
   if (state.hintsShown > 0) {
@@ -2096,6 +2133,15 @@ function renderPracticeSupport(question, state) {
 
   hintButton.disabled = state.hintsShown >= question.hints.length;
 
+  if (modelClueButton) {
+    modelClueButton.disabled = state.modelClueShown;
+  }
+
+  if (modelClue && state.modelClueShown) {
+    modelClue.textContent = question.model_clue;
+    modelClue.hidden = false;
+  }
+
   if (state.solutionShown) {
     solution.textContent = question.worked_solution;
     solution.hidden = false;
@@ -2104,6 +2150,13 @@ function renderPracticeSupport(question, state) {
 
 function showNextHint(question, state) {
   state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showModelClue(question, state) {
+  if (!question.model_clue) return;
+
+  state.modelClueShown = true;
   renderPracticeQuestion();
 }
 
@@ -2673,6 +2726,22 @@ function renderQuestionOverview(question) {
   }
 
   return sections.join("");
+}
+
+function renderPracticeMiniLesson(question) {
+  const miniLesson = question.mini_lesson;
+  if (!miniLesson) return "";
+
+  const title = typeof miniLesson === "string" ? "Mini-lesson" : miniLesson.title ?? "Mini-lesson";
+  const body = typeof miniLesson === "string" ? miniLesson : miniLesson.body;
+  if (!body) return "";
+
+  return `
+    <section class="practice-mini-lesson">
+      <h3>${escapeHtml(title)}</h3>
+      ${formatTextBlock(body)}
+    </section>
+  `;
 }
 
 function renderPracticeThinkingBlocks(question) {
