@@ -1,0 +1,3050 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Equality Anchor Models — Spot the Method | Asher PSLE Quiz Lab</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #536170;
+  --line: #d8ded6;
+  --primary: #225e54;
+  --primary-dark: #18463f;
+  --accent: #d55f3a;
+  --checkpoint: #344b7a;
+  --success: #1f6d46;
+  --retry: #9a4b1f;
+  --shadow: 0 18px 45px rgba(28, 36, 48, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(34, 94, 84, 0.09), rgba(255, 255, 255, 0) 38%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 32px 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.completion-panel,
+.error-panel {
+  margin-top: clamp(24px, 8vh, 80px);
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.question-panel {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.eyebrow,
+.question-id,
+.progress-text,
+.attempt-count,
+.small-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.question-id {
+  margin: 0 0 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 4.8rem, 4.8rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 2.2rem, 2.2rem);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.topic-line {
+  margin: 12px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.calculator-policy {
+  display: inline-block;
+  margin: 14px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #d8c796;
+  border-radius: 6px;
+  background: #fff8df;
+  color: #5f4a12;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.instruction-callout {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #d8c796;
+  border-radius: 8px;
+  background: #fff8df;
+  color: #453409;
+}
+
+.instruction-callout p {
+  margin: 8px 0 0;
+}
+
+.instruction-callout p:first-child {
+  margin-top: 0;
+}
+
+.module-intro,
+.content-note,
+.practice-mini-lesson,
+.thinking-section,
+.checkpoint-instruction,
+.audit-section {
+  margin: 20px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9faf7;
+}
+
+.module-intro {
+  max-width: 68ch;
+}
+
+.content-note h3,
+.practice-mini-lesson h3,
+.thinking-section h3,
+.audit-section h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.content-note p,
+.practice-mini-lesson p,
+.thinking-section p,
+.checkpoint-instruction p,
+.module-intro p {
+  margin: 10px 0 0;
+}
+
+.content-note p:first-child,
+.practice-mini-lesson p:first-child,
+.thinking-section p:first-child,
+.checkpoint-instruction p:first-child,
+.module-intro p:first-child {
+  margin-top: 0;
+}
+
+.thinking-section ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.thinking-section li {
+  margin-top: 12px;
+}
+
+.checkpoint-instruction {
+  border-color: #cbd4e8;
+  background: #f4f7ff;
+  color: #27375e;
+  font-weight: 700;
+}
+
+.practice-mini-lesson {
+  border-color: #d9c27c;
+  background: #fff9e8;
+  color: #3f3420;
+}
+
+.checkpoint-gate {
+  margin-top: 22px;
+}
+
+.audit-section {
+  display: grid;
+  gap: 12px;
+  background: #fbfcf8;
+}
+
+.audit-instruction {
+  padding: 12px 14px;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 6px;
+  background: #f4f7ff;
+  color: #27375e;
+}
+
+.audit-instruction h3 {
+  margin-bottom: 6px;
+}
+
+.audit-instruction p {
+  margin: 6px 0 0;
+}
+
+.audit-instruction p:first-of-type {
+  margin-top: 0;
+}
+
+.audit-field,
+.answer-part-field {
+  display: grid;
+  gap: 6px;
+}
+
+.audit-field span,
+.answer-part-field span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.audit-field select,
+.audit-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.audit-field textarea {
+  resize: vertical;
+}
+
+.mode-actions,
+.support-actions,
+.navigation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action,
+.text-action,
+.final-action {
+  padding: 10px 16px;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-action:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-action {
+  background: #fff4ed;
+  color: #713316;
+  border: 1px solid #f2c3a8;
+}
+
+.final-action {
+  background: #8e2f2f;
+  color: #ffffff;
+}
+
+.final-action:hover {
+  background: #6f2424;
+}
+
+.text-action {
+  min-height: auto;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f0ec;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mode-pill.checkpoint {
+  background: #e9edf7;
+  color: var(--checkpoint);
+}
+
+.question-map {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.question-map-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.question-map-button {
+  display: grid;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  text-align: left;
+}
+
+.question-map-button span {
+  font-weight: 800;
+}
+
+.question-map-button small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.question-map-button.is-current {
+  border-color: var(--checkpoint);
+  outline: 3px solid rgba(52, 75, 122, 0.14);
+}
+
+.question-map-button.is-correct {
+  border-color: rgba(31, 109, 70, 0.45);
+  background: #eef8f1;
+}
+
+.question-map-button.is-tried {
+  border-color: rgba(154, 75, 31, 0.45);
+  background: #fff6ee;
+}
+
+.question-map-button.is-not-tried {
+  background: #ffffff;
+}
+
+.prompt {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f9faf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+}
+
+.visual-stimulus {
+  margin: 18px 0 0;
+}
+
+.visual-stimulus img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.visual-stimulus figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.answer-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.answer-form label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.answer-form input:focus,
+.audit-field select:focus,
+.audit-field textarea:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.multi-part-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mcq-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mcq-fieldset {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mcq-fieldset legend {
+  margin: 0 0 2px;
+  padding: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.mcq-option-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.mcq-option {
+  display: grid;
+  grid-template-columns: auto minmax(34px, auto) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  min-height: 54px;
+  padding: 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.mcq-option:has(input:checked) {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.mcq-option input {
+  width: 18px;
+  height: 18px;
+  min-height: auto;
+  margin: 3px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.mcq-option-label {
+  font-weight: 800;
+}
+
+.mcq-option-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+}
+
+.feedback.is-retry {
+  color: var(--retry);
+}
+
+.hint-list,
+.summary-list {
+  margin: 20px 0 0;
+  padding-left: 22px;
+}
+
+.hint-list li,
+.summary-list li {
+  margin-top: 8px;
+}
+
+.model-clue {
+  margin: 18px 0 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid #cbd4e8;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 8px;
+  background: #f4f7ff;
+  color: #27375e;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.worked-solution,
+.run-command {
+  margin: 20px 0 0;
+  padding: 16px;
+  overflow: auto;
+  background: #17202a;
+  color: #f7fbff;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.attempt-count {
+  min-height: 24px;
+  margin: 8px 0 0;
+}
+
+.summary-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .app {
+    padding: 18px 12px;
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .progress-text {
+    grid-column: 1 / -1;
+  }
+
+  .answer-form {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-form button,
+  .mode-actions button,
+  .support-actions button,
+  .navigation-actions button {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section class="panel hero-panel">
+        <p class="eyebrow">Asher PSLE Quiz Lab</p>
+        <h1>Loading quiz...</h1>
+      </section>
+    </main>
+    <script id="quiz-content-data" type="application/json">
+{
+  "quiz_id": "frp-equality-anchor-recognition-v1",
+  "title": "Equality Anchor Models — Spot the Method",
+  "topic": "Fractions / Ratio / Percentage",
+  "module": "FRP Equality Anchor Models — Method Recognition",
+  "version": "1.0",
+  "source_authority": "D_DAVE_REVIEW_REQUIRED",
+  "method_card_id": "FRP-Cards-F-G-DRAFT",
+  "learner_lede": "Spot the method before you solve: what is equal, who gives whom, which stage, what is the target.",
+  "learner_intro": "Asher, this lab is not about getting the final number. It trains something tougher and more useful: looking at a fresh, unlabelled question and KNOWING which method it needs — before you write a single sum.\n\nMate, here is the honest truth from exam day: questions do not come with their method written on top. Two questions can use almost the same words and need completely different methods. The trick is reading for what is EQUAL, whether anyone GIVES to anyone, and whether a fraction is of the original or the remainder.\n\nFor every question, ask:\n- What is EQUAL? (used amount / final amount / a topped-up total / nothing)\n- Is there a transfer BETWEEN people?\n- Are the fractions of the ORIGINAL or the REMAINDER?\n- Which STAGE owns the total, and what is the question really asking?\n\nRead every choice fully — the options describe HOW each method works, not its name. No calculator needed.",
+  "practice_questions": [
+    {
+      "question_id": "FRP-EAR-P1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "What is the SAME here?",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not needed. This is about spotting the method, not solving it.",
+      "source": "Re-skinned from Cantonment Primary School Q10 (the equal-used source); names, numbers and context changed.",
+      "source_summary": "Equal-used-amount stem. Each person uses a different fraction of their own amount, but the amount used is the same.",
+      "learner_purpose": "Asher, the first job in any of these questions is to find the thing the question says is the SAME. Mate, get that right and the method almost picks itself.",
+      "mini_lesson": {
+        "title": "Mini-lesson: find the equal thing before you draw",
+        "body": "Asher, when different people use different fractions of their OWN amounts, the bars are NOT equal at the start. Look for the sentence that says something is the same.\n\nEach USED block below is the same length; only the leftover tails differ:\n\nAaron used 2/5:  [##|...]\nBryan used 1/2:  [###|###]\nCaleb used 3/4:  [######|##]\n                  ^ the USED part is the equal thing (not what they started with)\n\nMate, my tell: if nobody is giving anything to anyone, it is not a transfer question. It is an 'equal amount used' question — line up the USED parts, not the starting bars."
+      },
+      "prompt": "Aaron, Bryan and Caleb had 700 stickers altogether at first.\n\nEach boy used the same number of stickers to decorate his book.\n\nAaron used 2/5 of his stickers, Bryan used 1/2 of his stickers, and Caleb used 3/4 of his stickers.\n\nWhat does this question say is the SAME for all three boys?",
+      "expected_format": "mcq",
+      "canonical_answer": "A",
+      "accepted_answers": ["A"],
+      "options": [
+        { "key": "A", "label": "A", "text": "How many stickers each boy USED." },
+        { "key": "B", "label": "B", "text": "How many each boy had AT FIRST." },
+        { "key": "C", "label": "C", "text": "How many each boy had AT THE END." },
+        { "key": "D", "label": "D", "text": "Nothing is said to be the same." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "EQUAL_USED_AMOUNT", "EQUAL_THING_FIRST"],
+      "parent_summary_tags": ["what is equal", "equal used amount", "recognition before solving"],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The USED amount is the equal thing.",
+        "WRONG_VALUE": "Try again. Re-read the sentence that says each boy used the same number.",
+        "INVALID_FORMAT": "Choose A, B, C or D.",
+        "BLANK": "Find the words that say something is the same for everyone."
+      },
+      "thinking_blocks": [
+        { "title": "Asher — find the equal thing first", "prompt": "Before any numbers, read the question again. Which words tell you what is the SAME for everyone?" },
+        { "title": "Mate — my quick tell", "prompt": "Nobody gives stickers to anyone else here. With no swapping between people, ask: is the equal thing what they started with, or what they used?" }
+      ],
+      "final_target_check": "If this were solved, it would ask for the number each boy USED — not what they had at first. Spotting the equal thing comes first.",
+      "hints": [
+        "Find the words that say something is the same for everyone.",
+        "No one gives stickers to anyone — so compare what was used, not what they started with."
+      ],
+      "worked_solution": "The sentence 'each boy used the same number of stickers' is the controlling clue. The USED amount is equal; the starting amounts are not. So this is the equal-USED family — you would line up the used parts first, then work back to each whole. (Recognition only: no need to solve it here.)",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-EAR-P2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "The remainder trap",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not needed. This is about spotting the method, not solving it.",
+      "source": "Re-skinned from a fraction-of-remainder prelim pattern (ACS-2025 orange-juice / plank family); pending image-verification before any solve item ships.",
+      "source_summary": "A fraction-of-remainder stem — a deliberate trap that looks like a fractions question but is NOT an equality-anchor (equal-used / equal-final) question.",
+      "learner_purpose": "Asher, one small word — 'remaining' — changes the whole method. Mate, this is the trap I fell for most: a fraction of what's LEFT is not a fraction of the original.",
+      "mini_lesson": {
+        "title": "Mini-lesson: 'of the remaining' moves the base",
+        "body": "Asher, when a second fraction is taken from what is LEFT, the whole has changed.\n\nWhole roll:   [============================]\nCurtains 3/5: [##############]              (used first)\nLeft:                       [=============]  <- the 3/4 is of THIS, not the whole roll\n\nMate, the moment I see 'of the remaining', I know the base has moved. That is not the equal-used or equal-final family — different machine entirely. Watch for it in the choices below."
+      },
+      "prompt": "A tailor used 3/5 of a roll of ribbon for curtains.\n\nShe then used 3/4 of the remaining ribbon for cushions.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "C",
+      "accepted_answers": ["C"],
+      "options": [
+        { "key": "A", "label": "A", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "B", "label": "B", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "C", "label": "C", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "D", "label": "D", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." },
+        { "key": "E", "label": "E", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "FRACTION_OF_ORIGINAL_NOT_REMAINDER", "WRONG_BASE_REMAINDER"],
+      "parent_summary_tags": ["original vs remainder", "fraction of remainder", "not an equality-anchor question"],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The 3/4 is of the remaining ribbon — a remainder question, not equal-used or equal-final.",
+        "WRONG_VALUE": "Try again. Find the word 'remaining' and ask what the 3/4 is taken from.",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Look for the word 'remaining'."
+      },
+      "thinking_blocks": [
+        { "title": "Asher — hunt for the word 'remaining'", "prompt": "Read it slowly. The second fraction sits on which ribbon — the whole roll, or what was left after the curtains?" },
+        { "title": "Mate — why this matters", "prompt": "When a fraction is of what's LEFT, the base has moved. That is not the equal-used or equal-final family, even though it is full of fractions. Don't let the fractions fool you." }
+      ],
+      "final_target_check": "Knowing the base (original vs remainder) decides the whole method. Here it is the remainder — so this is NOT an equality-anchor question.",
+      "hints": [
+        "Find the word 'remaining' and ask what the 3/4 is taken from.",
+        "A fraction of what is LEFT is not a fraction of the original."
+      ],
+      "worked_solution": "'3/4 of the remaining ribbon' means 3/4 of what was left after the curtains — not 3/4 of the whole roll. The base has moved, so this is a fraction-of-remainder question, NOT an equal-used or equal-final one. Matching it to a fractions method by surface alone is the trap.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "FRP-EAR-P3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "One gives, all equal after",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not needed. This is about spotting the method, not solving it.",
+      "source": "Re-skinned from Cantonment Primary School Q11 (the equal-final source); names, numbers and context changed.",
+      "source_summary": "Equal-final stem. One giver gives fractions of her own amount to two others; all equal afterwards.",
+      "learner_purpose": "Asher, when one person gives away fractions of her OWN amount and everyone ends equal, her leftover IS that equal amount. Mate, spotting that family is the whole shortcut.",
+      "prompt": "Mei, Raj and Sam had 168 marbles altogether at first.\n\nMei gave 1/4 of her marbles to Raj and 1/6 of her marbles to Sam.\n\nThe three children then had the same number of marbles.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": ["B"],
+      "options": [
+        { "key": "A", "label": "A", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." },
+        { "key": "B", "label": "B", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "C", "label": "C", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "D", "label": "D", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "E", "label": "E", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." }
+      ],
+      "option_display_mode": "text",
+      "model_clue": "Mei at first (12 parts): [ 3 to Raj ][ 2 to Sam ][ 7 kept ]\n\nAfter giving, all equal = Mei's leftover:\nMei : [###########] 7u\nRaj : [###########] 7u\nSam : [###########] 7u\n\n(Raj and Sam are NOT cut into Mei's 12 parts — they simply end equal to her 7u.)",
+      "error_tags": ["WRONG_CATEGORY", "EQUAL_FINAL_AMOUNT", "REVERSE_TRANSFER"],
+      "parent_summary_tags": ["equal final amount", "giver's leftover anchor", "one gives all equal"],
+      "feedback_by_code": {
+        "CORRECT": "Correct. One person gives parts of her own and all end equal — her leftover is the shared amount.",
+        "WRONG_VALUE": "Try again. Who gives, and are all three EQUAL afterwards?",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Ask who the giver is, and what everyone is equal to afterwards."
+      },
+      "thinking_blocks": [
+        { "title": "Asher — who gives, and is everyone equal after?", "prompt": "One person gives away fractions of her OWN marbles, and all three end equal. Whose amount sets that equal final amount?" },
+        { "title": "Mate — the leftover trick", "prompt": "When one person hands out parts of her own and everyone ends equal, her leftover IS the shared amount. Name it in units, then reverse each gift. (Like Roblox Limiteds: trade some away until all three own the same number, then work backwards.)" }
+      ],
+      "final_target_check": "If solved, it would ask who had more AT FIRST (Raj or Sam) and by how many — an at-first target, not the equal final amount.",
+      "hints": [
+        "One person gives; everyone ends equal. The giver's leftover is that equal amount.",
+        "The receivers are not split into the giver's parts; they only end equal to her leftover."
+      ],
+      "worked_solution": "One giver (Mei) gives fractions of her own marbles; all equal after. That is the equal-FINAL family: use Mei's leftover as the shared final amount (name it in units), then reverse each gift to get the others' at-first amounts. Raj and Sam are not cut into Mei's parts — they just end equal to her leftover.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-EAR-P4",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Transfer — then what? (the closest trap)",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not needed. This is about spotting the method, not solving it.",
+      "source": "Re-skinned from ACSJ-2024 Q6 (Julie/Gavin coins, changed-amount family); pending image-verification before any solve item ships.",
+      "source_summary": "A changed-amount stem: a transfer, then a fraction of the changed amount, solved from a final difference. NOT equal at the end.",
+      "learner_purpose": "Asher, this one looks like 'someone gives' — but watch the word 'then', and check the ending. Mate, my filter: are they EQUAL at the end? If not, it is not the equal-final family.",
+      "prompt": "Farah had 4 times as many coins as Gita at first.\n\nFarah gave 1/3 of her coins to Gita. Then Gita used 1/4 of her coins.\n\nIn the end, Farah had 88 more coins than Gita.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "D",
+      "accepted_answers": ["D"],
+      "options": [
+        { "key": "A", "label": "A", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "B", "label": "B", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "C", "label": "C", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "D", "label": "D", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." },
+        { "key": "E", "label": "E", "text": "One person gives parts of their own to others until all end with the same amount." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "INTERMEDIATE_NOT_FINAL", "WRONG_LEFTOVER_STAGE"],
+      "parent_summary_tags": ["changed amount", "transfer then fraction", "not equal at end"],
+      "feedback_by_code": {
+        "CORRECT": "Correct. A transfer, then a fraction of the changed amount, with a difference at the end — not equal-final.",
+        "WRONG_VALUE": "Try again. Are they EQUAL at the end here? And what does the second fraction act on?",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Follow what happens after the transfer, and check whether everyone ends equal."
+      },
+      "thinking_blocks": [
+        { "title": "Asher — what does the second action act on?", "prompt": "After the transfer, Gita uses 1/4. Of her original coins, or of her new, changed total? And does everyone end equal?" },
+        { "title": "Mate — equal-after check", "prompt": "My first question is always 'equal at the end?' Here, no — we are handed a difference. So even though someone gives, it is not the equal-final family. The second fraction lands on the changed amount." }
+      ],
+      "final_target_check": "If solved, the target is a difference at the END, and the second fraction is of the CHANGED amount — not the original.",
+      "hints": [
+        "Check whether the three end EQUAL. Here they do not — you get a difference.",
+        "The second fraction acts on Gita's changed total, not her original amount."
+      ],
+      "worked_solution": "There is a transfer (Farah to Gita), THEN a fraction of the changed amount (Gita uses 1/4 of her new total), solved from a final difference (88). They are not equal at the end. That is the changed-amount family — not equal-final. The 'someone gives' surface is the trap.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "FRP-EAR-P5",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Equal at the end — but how?",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not needed. This is about spotting the method, not solving it.",
+      "source": "Re-skinned from ACSJ-2024 Q12 (Sam/Paul/Ean money, equalising-totals family); pending image-verification before any solve item ships.",
+      "source_summary": "An equalising-totals stem: everyone equal after, but they are brought level by adding stated set amounts (plus one unstated transfer), solved by setting the finals equal — not by one giver's leftover fraction.",
+      "learner_purpose": "Asher, this ends with everyone equal, just like the marbles — but read HOW they are made equal. Mate, 'equal at the end' alone is not enough to pick the method.",
+      "prompt": "At first, Hana had 2/5 as much money as Leo. Marcus had $40 more than Hana.\n\nAfter Leo gave $90 to Hana and some money to Marcus, all three had the same amount of money.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "A",
+      "accepted_answers": ["A"],
+      "options": [
+        { "key": "A", "label": "A", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "B", "label": "B", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." },
+        { "key": "C", "label": "C", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "D", "label": "D", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "E", "label": "E", "text": "A fraction is taken from what is left over, not from the original whole amount." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "EQUAL_FINAL_AMOUNT", "EQUALISE_WITH_MONEY"],
+      "parent_summary_tags": ["equal final but different method", "equalising totals", "stated amounts top up"],
+      "feedback_by_code": {
+        "CORRECT": "Correct. They are brought level by adding stated amounts, then setting the finals equal — not a leftover fraction.",
+        "WRONG_VALUE": "Try again. Are they made equal by sharing out fractions of one person's own, or by adding stated amounts?",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Ask HOW they are made equal: fractions of one person's own, or set amounts added on?"
+      },
+      "thinking_blocks": [
+        { "title": "Asher — read HOW they are made equal", "prompt": "Everyone ends equal. But are they made equal by sharing out fractions of one person's own amount, or by adding stated amounts ($90, $40, and some unstated money)?" },
+        { "title": "Mate — don't stop at 'equal'", "prompt": "When you are told set amounts that top people up to the same level — and one transfer is even left blank — you solve it by setting the finals equal. That is a different machine from one giver's leftover fraction." }
+      ],
+      "final_target_check": "If solved, it would ask the TOTAL they had altogether. The 'some money to Marcus' is a distractor — internal transfers don't change the total.",
+      "hints": [
+        "Look at HOW they are made equal: a leftover fraction, or stated amounts added on?",
+        "The unstated 'some money to Marcus' does not change the total — it is a distractor."
+      ],
+      "worked_solution": "Everyone ends equal, but they are brought level by adding stated set amounts (Leo gives $90 to Hana; Marcus starts $40 above Hana; an unstated 'some money' goes to Marcus), and you solve it by setting the final amounts equal — not by one giver's leftover fraction. The unstated transfer is a distractor; internal moves don't change the total. That makes it the equalising-totals family, not equal-final.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "FRP-EAR-P6",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Full sort with a trap",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not needed. This is about spotting the method, not solving it.",
+      "source": "Re-skinned from Cantonment Primary School Q10 (the equal-used source); names, numbers and context changed, with a 'give to outsider' trap.",
+      "source_summary": "Equal-used stem with a trap: 'gave to the museum' is using, not a transfer between the three people.",
+      "learner_purpose": "Asher, this hides a trap in the word 'gave'. Mate, the test is always: is the giving BETWEEN these people, or to someone outside?",
+      "prompt": "Priya, Quentin and Rina had 1080 seashells altogether at first.\n\nEach child gave the same number of shells to the museum. Then each went home.\n\nPriya gave 1/2 of her shells, Quentin gave 2/3 of his shells, and Rina gave 3/5 of her shells.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "C",
+      "accepted_answers": ["C"],
+      "options": [
+        { "key": "A", "label": "A", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." },
+        { "key": "B", "label": "B", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "C", "label": "C", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "D", "label": "D", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "E", "label": "E", "text": "One person gives parts of their own to others until all end with the same amount." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "EQUAL_USED_AMOUNT", "TRANSFER_VS_USING"],
+      "parent_summary_tags": ["full sort", "equal used amount", "transfer vs using"],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Giving to the museum is using, not a transfer between the three — equal-used family.",
+        "WRONG_VALUE": "Try again. Is the giving BETWEEN Priya, Quentin and Rina, or to someone outside?",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Ask whether anyone gives to anyone else among the three children."
+      },
+      "thinking_blocks": [
+        { "title": "Asher — is 'gave to the museum' a transfer between them?", "prompt": "They give shells to a museum, not to each other. Is each simply using up the same number, or are they swapping amounts between themselves?" },
+        { "title": "Mate — transfer-between-people is the test", "prompt": "Giving to an outside museum is just 'using'. There is no swap between Priya, Quentin and Rina, and the 'then each went home' is just noise. Equal amount given away by each means the equal-used family." }
+      ],
+      "final_target_check": "If solved, the equal thing is the amount each gave away — the same equal-USED pattern as the stickers.",
+      "hints": [
+        "Check whether the giving is between the three children or to an outsider.",
+        "Giving the same number away to an outsider is 'using' — the equal-used family."
+      ],
+      "worked_solution": "'Gave the same number to the museum' is using, not a transfer between the three children, and 'then each went home' is just noise. Each uses up the same number, different fractions of own, so it is the equal-USED family. The 'gave' wording is the trap; 'transfer between people?' is the test.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ],
+  "checkpoint_questions": [
+    {
+      "question_id": "FRP-EAR-C1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold sort 1",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not needed. Decide the method type.",
+      "source": "Fresh equal-used stem; re-skinned, no method label shown.",
+      "source_summary": "Independent cold-stem sort.",
+      "checkpoint_instruction": "Read the question and decide its method TYPE first. Do not solve it. Read every choice fully, then choose A, B, C, D or E.",
+      "prompt": "Devi, Elias and Faiz had 960 trading cards altogether at first.\n\nEach boy gave away the same number of cards to younger students. Then each boy went back to class.\n\nDevi gave away 1/2 of his cards, Elias gave away 3/4 of his cards, and Faiz gave away 2/3 of his cards.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "B",
+      "accepted_answers": ["B"],
+      "options": [
+        { "key": "A", "label": "A", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." },
+        { "key": "B", "label": "B", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "C", "label": "C", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "D", "label": "D", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "E", "label": "E", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "EQUAL_USED_AMOUNT"],
+      "parent_summary_tags": ["cold-stem sort", "equal used amount"],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_VALUE": "Try again.",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Choose A, B, C, D or E."
+      },
+      "final_target_check": "Decide the method type first; a wrong type means a wrong method.",
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-EAR-C2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold sort 2",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not needed. Decide the method type.",
+      "source": "Fresh equal-final stem; re-skinned, no method label shown.",
+      "source_summary": "Independent cold-stem sort.",
+      "checkpoint_instruction": "Read the question and decide its method TYPE first. Do not solve it. Read every choice fully, then choose A, B, C, D or E.",
+      "prompt": "Nora, Omar and Pia had 240 stamps altogether at first.\n\nNora gave 1/5 of her stamps to Omar and 1/4 of her stamps to Pia.\n\nThe three children then had the same number of stamps.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "C",
+      "accepted_answers": ["C"],
+      "options": [
+        { "key": "A", "label": "A", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "B", "label": "B", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "C", "label": "C", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "D", "label": "D", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "E", "label": "E", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "EQUAL_FINAL_AMOUNT"],
+      "parent_summary_tags": ["cold-stem sort", "equal final amount"],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_VALUE": "Try again.",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Choose A, B, C, D or E."
+      },
+      "final_target_check": "Decide the method type first; a wrong type means a wrong method.",
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-EAR-C3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold sort 3",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not needed. Decide the method type.",
+      "source": "Fresh changed-amount stem; re-skinned, no method label shown; pending image-verification before any solve item ships.",
+      "source_summary": "Independent cold-stem sort.",
+      "checkpoint_instruction": "Read the question and decide its method TYPE first. Do not solve it. Read every choice fully, then choose A, B, C, D or E.",
+      "prompt": "Priya had twice as many tokens as Ravi at first.\n\nPriya gave 1/4 of her tokens to Ravi. After that, Ravi gave 1/3 of his tokens to his sister.\n\nIn the end, Priya had 40 more tokens than Ravi.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "E",
+      "accepted_answers": ["E"],
+      "options": [
+        { "key": "A", "label": "A", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "B", "label": "B", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "C", "label": "C", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "D", "label": "D", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "E", "label": "E", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "INTERMEDIATE_NOT_FINAL"],
+      "parent_summary_tags": ["cold-stem sort", "changed amount"],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_VALUE": "Try again.",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Choose A, B, C, D or E."
+      },
+      "final_target_check": "Decide the method type first; a wrong type means a wrong method.",
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "FRP-EAR-C4",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold sort 4",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Not needed. Decide the method type.",
+      "source": "Fresh equalising-totals stem; re-skinned, no method label shown; pending image-verification before any solve item ships.",
+      "source_summary": "Independent cold-stem sort.",
+      "checkpoint_instruction": "Read the question and decide its method TYPE first. Do not solve it. Read every choice fully, then choose A, B, C, D or E.",
+      "prompt": "At first, Tan had 1/3 as much money as Uma. Vik had $50 more than Tan.\n\nAfter Uma gave $120 to Tan and some money to Vik, all three had the same amount of money.\n\nWhich type of question is this?",
+      "expected_format": "mcq",
+      "canonical_answer": "D",
+      "accepted_answers": ["D"],
+      "options": [
+        { "key": "A", "label": "A", "text": "Everyone uses up the same amount of their own, and no one gives to anyone else." },
+        { "key": "B", "label": "B", "text": "A fraction is taken from what is left over, not from the original whole amount." },
+        { "key": "C", "label": "C", "text": "One person gives parts of their own to others until all end with the same amount." },
+        { "key": "D", "label": "D", "text": "Everyone is made level by adding set amounts, not by sharing out any fractions." },
+        { "key": "E", "label": "E", "text": "Something is passed on, then a fraction of the new amount is taken; ends compared." }
+      ],
+      "option_display_mode": "text",
+      "error_tags": ["WRONG_CATEGORY", "EQUALISE_WITH_MONEY"],
+      "parent_summary_tags": ["cold-stem sort", "equalising totals"],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "WRONG_VALUE": "Try again.",
+        "INVALID_FORMAT": "Choose A, B, C, D or E.",
+        "BLANK": "Choose A, B, C, D or E."
+      },
+      "final_target_check": "Decide the method type first; a wrong type means a wrong method.",
+      "hints": [],
+      "worked_solution": "",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    }
+  ]
+}
+    </script>
+    <script>
+const FEEDBACK_CODES = Object.freeze({
+  CORRECT: "CORRECT",
+  BLANK: "BLANK",
+  INVALID_FORMAT: "INVALID_FORMAT",
+  FRACTION_REQUIRED: "FRACTION_REQUIRED",
+  MIXED_NUMBER_REQUIRED: "MIXED_NUMBER_REQUIRED",
+  EQUIVALENT_NOT_SIMPLEST: "EQUIVALENT_NOT_SIMPLEST",
+  PLACE_VALUE_DENOMINATOR_ERROR: "PLACE_VALUE_DENOMINATOR_ERROR",
+  WRONG_VALUE: "WRONG_VALUE",
+  CALCULATION_ERROR: "CALCULATION_ERROR",
+  WRONG_START_RATIO: "WRONG_START_RATIO",
+  TRANSFER_APPLIED_TO_WRONG_PERSON: "TRANSFER_APPLIED_TO_WRONG_PERSON",
+  WRONG_CURRENT_AMOUNT: "WRONG_CURRENT_AMOUNT",
+  USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+  UNIT_VALUE_NOT_FINAL: "UNIT_VALUE_NOT_FINAL",
+  WRONG_BASE_ORIGINAL: "WRONG_BASE_ORIGINAL",
+  WRONG_BASE_REMAINDER: "WRONG_BASE_REMAINDER",
+  WRONG_LEFTOVER_STAGE: "WRONG_LEFTOVER_STAGE",
+  INTERMEDIATE_NOT_FINAL: "INTERMEDIATE_NOT_FINAL",
+  WRONG_FINAL_TARGET: "WRONG_FINAL_TARGET",
+  WRONG_CATEGORY: "WRONG_CATEGORY",
+  MISSING_UNIT: "MISSING_UNIT"
+});
+
+const PLACE_VALUE_DENOMINATORS = new Set([10, 100, 1000]);
+
+function normaliseAnswer(input) {
+  return String(input ?? "")
+    .replace(/\u2044/g, "/")
+    .trim()
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+/g, " ");
+}
+
+function getFeedbackMessage(code, mode, expectedFormat = "fraction", question = null) {
+  const mixedFormat = expectedFormat.includes("mixed");
+  const questionFeedback = question?.feedback_by_code?.[code];
+
+  if (questionFeedback) return questionFeedback;
+
+  if (code === FEEDBACK_CODES.CORRECT) return "Correct.";
+  if (code === FEEDBACK_CODES.BLANK) return mode === "Practice" ? "Try typing an answer." : "Try again.";
+  if (code === FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST) {
+    return mode === "Practice"
+      ? "Equivalent, but not in simplest form. Try simplifying it."
+      : "Try again: equivalent but not in simplest form.";
+  }
+  if (code === FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR) {
+    return mode === "Practice"
+      ? "Try again: check the decimal place value."
+      : "Try again: check the decimal place value.";
+  }
+  if (code === FEEDBACK_CODES.MIXED_NUMBER_REQUIRED || (code === FEEDBACK_CODES.INVALID_FORMAT && mixedFormat)) {
+    return "Try again: write your answer as a mixed number.";
+  }
+  if (code === FEEDBACK_CODES.INVALID_FORMAT && expectedFormat === "numeric") {
+    return "Try again: use a whole-number answer.";
+  }
+  if (code === FEEDBACK_CODES.FRACTION_REQUIRED || code === FEEDBACK_CODES.INVALID_FORMAT) {
+    return "Try again: answer must be written as a fraction.";
+  }
+  if (code === FEEDBACK_CODES.WRONG_BASE_ORIGINAL) return "Try again: check what the fraction is about.";
+  if (code === FEEDBACK_CODES.WRONG_BASE_REMAINDER) return "Try again: check what we started with.";
+  if (code === FEEDBACK_CODES.WRONG_LEFTOVER_STAGE) return "Try again: check what is left.";
+  if (code === FEEDBACK_CODES.WRONG_START_RATIO) return "Try again: check the starting ratio.";
+  if (code === FEEDBACK_CODES.TRANSFER_APPLIED_TO_WRONG_PERSON) return "Try again: check who changed.";
+  if (code === FEEDBACK_CODES.WRONG_CURRENT_AMOUNT) return "Try again: check the new amount now.";
+  if (code === FEEDBACK_CODES.USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL) return "Try again: the story changed before this clue.";
+  if (code === FEEDBACK_CODES.UNIT_VALUE_NOT_FINAL) return "Try again: this looks like one unit, not the final answer.";
+  if (code === FEEDBACK_CODES.INTERMEDIATE_NOT_FINAL) return "Try again: this looks like a halfway answer.";
+  if (code === FEEDBACK_CODES.WRONG_FINAL_TARGET) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.WRONG_CATEGORY) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.MISSING_UNIT) return "Try again: include the unit or group.";
+  if (code === FEEDBACK_CODES.CALCULATION_ERROR) return "Try again: check the calculation.";
+
+  return "Try again.";
+}
+
+function validateQuestionAnswer(question, rawInput) {
+  if (question.expected_format === "multi_part") {
+    return validateMultiPartQuestion(question, rawInput);
+  }
+
+  const answer = normaliseAnswer(rawInput);
+
+  if (!answer) {
+    return result(FEEDBACK_CODES.BLANK, answer);
+  }
+
+  if (question.expected_format === "three_denominators") {
+    return validateDenominatorSequence(question, answer);
+  }
+
+  if (question.expected_format === "denominator_only") {
+    return validateDenominatorOnly(question, answer);
+  }
+
+  if (question.expected_format === "mcq") {
+    return validateMcq(question, answer);
+  }
+
+  if (question.expected_format === "numeric") {
+    return validateNumeric(question, answer);
+  }
+
+  if (question.expected_format === "ratio") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "short_text") {
+    return validateShortText(question, answer);
+  }
+
+  if (question.expected_format === "ratio_units") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "error_explanation_plus_fraction") {
+    return validateErrorExplanation(question, answer);
+  }
+
+  if (question.expected_format === "yes_no_plus_mixed_number") {
+    return validateYesNoMixed(question, answer);
+  }
+
+  if (question.expected_format === "mixed_number") {
+    return validateMixedNumber(question, answer);
+  }
+
+  if (question.expected_format === "fraction_optional_unit") {
+    return validateFractionWithOptionalUnit(question, answer);
+  }
+
+  return validateFraction(question, answer);
+}
+
+function validateMultiPartQuestion(question, rawInput) {
+  if (!question.answer_parts?.length) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, {});
+  }
+
+  const answers = rawInput && typeof rawInput === "object" ? rawInput : {};
+  const partResults = (question.answer_parts ?? []).map((part) => {
+    const partQuestion = {
+      ...question,
+      ...part,
+      expected_format: part.expected_format,
+      feedback_by_code: part.feedback_by_code ?? question.feedback_by_code,
+      answer_parts: undefined
+    };
+
+    return {
+      part_id: part.part_id,
+      result: validateQuestionAnswer(partQuestion, answers[part.part_id] ?? "")
+    };
+  });
+  const normalised = Object.fromEntries(partResults.map((part) => [part.part_id, part.result.normalised]));
+  const firstIssue = partResults.find((part) => !part.result.isCorrect);
+
+  if (firstIssue) {
+    return result(firstIssue.result.code, normalised);
+  }
+
+  return result(FEEDBACK_CODES.CORRECT, normalised);
+}
+
+function validateDenominatorSequence(question, answer) {
+  const numbers = answer.split(/[,\s]+/).filter(Boolean);
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).replace(/\s*,\s*/g, ",")) ?? [];
+  const compact = answer.replace(/\s*,\s*/g, ",");
+
+  if (accepted.includes(compact) || arraysEqual(numbers, ["10", "100", "1000"])) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateDenominatorOnly(question, answer) {
+  if (question.accepted_answers?.includes(answer)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateMcq(question, answer) {
+  const cleaned = answer.toUpperCase().replace(/\.$/, "");
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).toUpperCase()) ?? [];
+
+  if (accepted.includes(cleaned)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const optionFeedbackCode = question.option_feedback_codes?.[cleaned];
+  if (optionFeedbackCode && FEEDBACK_CODES[optionFeedbackCode]) {
+    return result(FEEDBACK_CODES[optionFeedbackCode], answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  if (/^[A-D]$/i.test(cleaned)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+}
+
+function validateNumeric(question, answer) {
+  const parsed = parseWholeNumberAnswer(answer);
+
+  if (!parsed.ok) {
+    return result(parsed.code, answer);
+  }
+
+  const targetNumber = getTargetNumber(question);
+  if (!Number.isInteger(targetNumber)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.value === targetNumber) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, String(parsed.value));
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.CALCULATION_ERROR, answer);
+}
+
+function validateShortText(question, answer) {
+  const accepted = question.accepted_answers?.map((item) => normaliseTextAnswer(item)) ?? [];
+  const normalisedText = normaliseTextAnswer(answer);
+
+  if (accepted.includes(normalisedText) || matchesRequiredTerms(question, normalisedText)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateRatioUnits(question, answer) {
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseRatioUnits(answer);
+  if (!parsed.ok) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const target = question.target_ratio_units;
+  if (!target || !Number.isInteger(target.left) || !Number.isInteger(target.right)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.left === target.left && parsed.right === target.right) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (parsed.left * target.right === parsed.right * target.left) {
+    return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+}
+
+function validateErrorExplanation(question, answer) {
+  const hasFinalFraction = hasTargetFractionToken(question, answer);
+  const hasMistakeEvidence = hasP10MistakeEvidence(answer);
+
+  if (hasFinalFraction && hasMistakeEvidence) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const parsedFraction = parseFraction(answer);
+  if (parsedFraction.ok && !isFractionPartSimplest(parsedFraction.value)) {
+    return evaluateFractionValue(question, parsedFraction.value, "fraction", answer);
+  }
+
+  if (hasFractionToken(answer, "48/100")) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  if (answer.includes("48/10") || answer.includes("24/5")) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateYesNoMixed(question, answer) {
+  const hasFinalMixedNumber = hasTargetMixedNumberToken(question, answer);
+  const hasNotSimplestSignal = hasP11NotSimplestSignal(answer);
+
+  if (hasFinalMixedNumber && hasNotSimplestSignal) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (hasFinalMixedNumber) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (question.equivalent_not_simplest_examples?.some((item) => answer.includes(normaliseAnswer(item)))) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function validateFraction(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.FRACTION_REQUIRED, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseFraction(answer);
+  if (!parsed.ok) {
+    return result(parsed.code ?? FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return evaluateFractionValue(question, parsed.value, "fraction", answer);
+}
+
+function validateFractionWithOptionalUnit(question, answer) {
+  return validateFraction(question, stripOptionalUnit(answer, question.allowed_unit_tokens ?? []));
+}
+
+function validateMixedNumber(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  if (mixed.code === FEEDBACK_CODES.INVALID_FORMAT && mixed.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  if (fraction.code === FEEDBACK_CODES.INVALID_FORMAT && fraction.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function evaluateFractionValue(question, parsed, parsedFormat, normalised) {
+  const target = targetToImproperFraction(question.target_value);
+
+  if (!target) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  const input = toImproperFraction(parsed);
+
+  if (sameValue(input, target)) {
+    if (parsedFormat === "improper_for_mixed") {
+      return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, normalised);
+    }
+
+    if (!isFractionPartSimplest(parsed)) {
+      return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, normalised);
+    }
+
+    return result(FEEDBACK_CODES.CORRECT, normalised);
+  }
+
+  if (parsedFormat === "mixed_number" && parsed.whole !== question.target_value?.whole) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  if (looksLikePlaceValueError(question, parsed)) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, normalised);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+}
+
+function parseFraction(answer) {
+  const match = answer.match(/^(\d+)\/(\d+)$/);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (numerator <= 0 || denominator <= 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole: 0,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseMixedNumber(answer) {
+  const match = answer.match(/^(\d+)(?:\s+and)?\s+(\d+)\/(\d+)$/i);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+
+  const whole = Number(match[1]);
+  const numerator = Number(match[2]);
+  const denominator = Number(match[3]);
+
+  if (!Number.isInteger(whole) || !Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (whole <= 0 || numerator <= 0 || denominator <= 0 || numerator >= denominator) {
+    return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseRatioUnits(answer) {
+  const match = answer
+    .toLowerCase()
+    .match(/^(\d+)\s*(?:units?)?\s*(?::|to)\s*(\d+)\s*(?:units?)?$/);
+
+  if (!match) return { ok: false };
+
+  const left = Number(match[1]);
+  const right = Number(match[2]);
+
+  if (!Number.isInteger(left) || !Number.isInteger(right) || left <= 0 || right <= 0) {
+    return { ok: false };
+  }
+
+  return {
+    ok: true,
+    left,
+    right
+  };
+}
+
+function targetToImproperFraction(target) {
+  if (!target) return null;
+
+  return {
+    numerator: target.whole * target.denominator + target.numerator,
+    denominator: target.denominator
+  };
+}
+
+function toImproperFraction(value) {
+  return {
+    numerator: value.whole * value.denominator + value.numerator,
+    denominator: value.denominator
+  };
+}
+
+function sameValue(left, right) {
+  return left.numerator * right.denominator === right.numerator * left.denominator;
+}
+
+function isFractionPartSimplest(value) {
+  return gcd(value.numerator, value.denominator) === 1;
+}
+
+function looksLikePlaceValueError(question, parsed) {
+  if (!question.place_value_denominator) return false;
+  if (!PLACE_VALUE_DENOMINATORS.has(parsed.denominator)) return false;
+
+  return parsed.denominator !== question.place_value_denominator;
+}
+
+function getDiagnosticFeedbackCode(question, answer) {
+  const diagnostics = question.diagnostic_answers ?? {};
+  const candidates = [answer, normaliseAnswer(answer), normaliseAnswer(answer).toLowerCase(), normaliseAnswer(answer).toUpperCase()];
+
+  for (const candidate of candidates) {
+    const code = diagnostics[candidate];
+    if (code && FEEDBACK_CODES[code]) {
+      return FEEDBACK_CODES[code];
+    }
+  }
+
+  return "";
+}
+
+function normaliseTextAnswer(value) {
+  return normaliseAnswer(value)
+    .toLowerCase()
+    .replace(/[:.,;]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function matchesRequiredTerms(question, normalisedText) {
+  const requiredTerms = question.required_terms ?? [];
+
+  return requiredTerms.length > 0 && requiredTerms.every((group) => group.some((term) => normalisedText.includes(term)));
+}
+
+function parseWholeNumberAnswer(answer) {
+  const cleanedAnswer = answer.replace(/^\$\s*/, "");
+  const match = cleanedAnswer.match(/^(\d+)(.*)$/);
+
+  if (!match) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const rest = match[2].trim();
+  if (rest && (/^[\d./+\-*=/]/.test(rest) || /\d+\s*\/\s*\d+/.test(rest) || /\d+\.\d+/.test(rest))) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const value = Number(match[1]);
+  if (!Number.isInteger(value)) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return { ok: true, value };
+}
+
+function stripOptionalUnit(answer, allowedUnitTokens) {
+  if (!allowedUnitTokens.length) return answer;
+
+  const unitPattern = allowedUnitTokens.map((unit) => escapeRegExp(unit)).join("|");
+  const match = answer.match(new RegExp(`^(.+?)\\s*(?:${unitPattern})\\.?$`, "i"));
+
+  return match ? match[1].trim() : answer;
+}
+
+function getTargetNumber(question) {
+  if (Number.isInteger(question.target_number)) return question.target_number;
+  if (Number.isInteger(question.expected_numeric_value)) return question.expected_numeric_value;
+
+  const canonical = normaliseAnswer(question.canonical_answer ?? "");
+  const match = canonical.match(/^(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function hasTargetFractionToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole !== 0) return false;
+
+  return hasFractionToken(answer, `${target.numerator}/${target.denominator}`);
+}
+
+function hasTargetMixedNumberToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole <= 0) return false;
+
+  const mixedNumber = `${target.whole} ${target.numerator}/${target.denominator}`;
+  const mixedNumberWithAnd = `${target.whole} and ${target.numerator}/${target.denominator}`;
+
+  return hasPhraseToken(answer, mixedNumber) || hasPhraseToken(answer, mixedNumberWithAnd);
+}
+
+function hasP10MistakeEvidence(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    hasFractionToken(answer, "48/100") ||
+    /\bnot\s+48\/10\b/.test(lower) ||
+    /\bdenominator\b.{0,30}\b100\b/.test(lower) ||
+    /\bhundredths?\b/.test(lower)
+  );
+}
+
+function hasP11NotSimplestSignal(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    /\bno\b/.test(lower) ||
+    /\bnot\s+(?:in\s+)?simplest(?:\s+form)?\b/.test(lower) ||
+    /\bnot\s+simplified\b/.test(lower)
+  );
+}
+
+function hasFractionToken(answer, fraction) {
+  return hasPhraseToken(answer, fraction);
+}
+
+function hasPhraseToken(answer, phrase) {
+  const escaped = escapeRegExp(phrase);
+  const tokenPattern = new RegExp(`(^|[^\\d])${escaped}([^\\d]|$)`, "i");
+
+  return tokenPattern.test(answer);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasDecimalNumber(answer) {
+  return /\d+\.\d+/.test(answer);
+}
+
+function gcd(left, right) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+
+  while (b !== 0) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+
+  return a;
+}
+
+function arraysEqual(left, right) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function result(code, normalised) {
+  return {
+    code,
+    isCorrect: code === FEEDBACK_CODES.CORRECT,
+    normalised
+  };
+}
+
+const REMOTE_LOGGING_ENDPOINT = "";
+
+const checkpointLoggingConfig = {
+  remoteEndpoint: REMOTE_LOGGING_ENDPOINT
+};
+
+const CHECKPOINT_ATTEMPT_EVENT = "checkpoint_attempt";
+const SCHEMA_VERSION = "0.1";
+const SOURCE = "browser-local-first";
+
+function logCheckpointAttempt(session, attempt) {
+  try {
+    if (!session?.sessionId || !session?.quizId) {
+      return { ok: false, error: "Missing checkpoint session details." };
+    }
+
+    if (!attempt?.question_id || !Number.isInteger(attempt?.attempt_number)) {
+      return { ok: false, error: "Missing checkpoint attempt details." };
+    }
+
+    const endpoint = checkpointLoggingConfig.remoteEndpoint.trim();
+
+    if (!endpoint) {
+      return { ok: true, mode: "local-only" };
+    }
+
+    const payload = buildCheckpointAttemptPayload(session, attempt);
+
+    // Optional remote logging integration point. Blank by default for the static export workflow.
+    // Remote logging is fire-and-forget so it never blocks local checkpoint flow.
+    sendCheckpointAttempt(endpoint, payload);
+    return { ok: true, mode: "remote-queued" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown logging error."
+    };
+  }
+}
+
+function buildCheckpointAttemptPayload(session, attempt) {
+  return {
+    event_type: CHECKPOINT_ATTEMPT_EVENT,
+    schema_version: SCHEMA_VERSION,
+    session_id: session.sessionId,
+    quiz_id: session.quizId,
+    question_id: attempt.question_id,
+    attempt_number: attempt.attempt_number,
+    raw_input: attempt.raw_input,
+    normalised_input: attempt.normalised_input ?? "",
+    feedback_code: attempt.feedback_code,
+    is_correct: attempt.is_correct,
+    attempt_timestamp: attempt.timestamp,
+    client_timezone: getClientTimezone(),
+    source: SOURCE
+  };
+}
+
+async function sendCheckpointAttempt(endpoint, payload) {
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.warn("Checkpoint remote logging failed.", error);
+  }
+}
+
+function getClientTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+}
+
+const STORAGE_KEY_PREFIX = "asher-quiz-lab";
+
+function createCheckpointSession(quizId) {
+  return {
+    sessionId: `${quizId}-${Date.now()}`,
+    quizId,
+    startedAt: new Date().toISOString(),
+    attempts: []
+  };
+}
+
+function recordCheckpointAttempt(session, questionId, rawInput, feedbackCode, isCorrect, normalisedInput) {
+  const attemptNumber = session.attempts.filter((attempt) => attempt.question_id === questionId).length + 1;
+  const attempt = {
+    question_id: questionId,
+    attempt_number: attemptNumber,
+    raw_input: rawInput,
+    normalised_input: normalisedInput ?? "",
+    feedback_code: feedbackCode,
+    is_correct: isCorrect,
+    timestamp: new Date().toISOString()
+  };
+
+  session.attempts.push(attempt);
+  saveCheckpointSession(session);
+  logCheckpointAttempt(session, attempt);
+  return attempt;
+}
+
+function getCheckpointAttemptCounts(session, questionIds) {
+  return questionIds.map((questionId) => ({
+    question_id: questionId,
+    attempts: session.attempts.filter((attempt) => attempt.question_id === questionId).length
+  }));
+}
+
+function saveCheckpointSession(session) {
+  try {
+    window.localStorage.setItem(getStorageKey(session.quizId), JSON.stringify(session));
+  } catch {
+    // Local storage is helpful for Dave review, but the quiz should still run without it.
+  }
+}
+
+function clearCheckpointSession(quizId) {
+  try {
+    window.localStorage.removeItem(getStorageKey(quizId));
+  } catch {
+    // Ignore storage failures in local prototype mode.
+  }
+}
+
+function getStorageKey(quizId) {
+  return `${STORAGE_KEY_PREFIX}.${quizId}`;
+}
+
+const DEFAULT_QUIZ_ID = "decimals-to-fractions-v1";
+const QUIZ_REGISTRY = Object.freeze({
+  "decimals-to-fractions-v1": {
+    quizId: "decimals-to-fractions-v1",
+    contentPath: "content/math/decimals-to-fractions-v1.json"
+  },
+  "frp-module-1a-start-left-asked-v1": {
+    quizId: "frp-module-1a-start-left-asked-v1",
+    contentPath: "content/math/frp-module-1a-start-left-asked-v1.json"
+  },
+  "frp-module-2a-before-change-after-v1": {
+    quizId: "frp-module-2a-before-change-after-v1",
+    contentPath: "content/math/frp-module-2a-before-change-after-v1.json"
+  },
+  "frp-module-3-pyp-method-application-lab-v1": {
+    quizId: "frp-module-3-pyp-method-application-lab-v1",
+    contentPath: "content/math/frp-module-3-pyp-method-application-lab-v1.json"
+  },
+  "science-mcq-module-1a-read-setup-beat-trap-v1": {
+    quizId: "science-mcq-module-1a-read-setup-beat-trap-v1",
+    contentPath: "content/science/science-mcq-module-1a-read-setup-beat-trap-v1.json"
+  }
+});
+const FINAL_CHECKPOINT_WARNING =
+  "After this, your checkpoint will be locked. You will not be able to change your answers or try again.";
+const CHECKPOINT_EXPORT_SCHEMA_VERSION = "1.0";
+const CHECKPOINT_EXPORT_SOURCE = "static-html-export";
+
+const app = document.querySelector("#app");
+
+let quiz = null;
+let activeMode = "home";
+let currentIndex = 0;
+let checkpointSession = null;
+let checkpointLocked = false;
+let practiceState = [];
+let checkpointState = [];
+
+init();
+
+async function init() {
+  const quizConfig = getRequestedQuizConfig();
+
+  try {
+    quiz = await loadQuizContent(quizConfig);
+    document.title = `${quiz.title} | Asher PSLE Quiz Lab`;
+    renderHome();
+  } catch (error) {
+    renderLoadError(error);
+  }
+}
+
+async function loadQuizContent(quizConfig) {
+  const embeddedQuizData = document.querySelector("#quiz-content-data");
+  if (embeddedQuizData) return JSON.parse(embeddedQuizData.textContent);
+
+  const response = await fetch(quizConfig.contentPath);
+  if (!response.ok) throw new Error(`Could not load ${quizConfig.contentPath}`);
+
+  return response.json();
+}
+
+function getRequestedQuizConfig() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedQuizId = params.get("quiz") || DEFAULT_QUIZ_ID;
+
+  return QUIZ_REGISTRY[requestedQuizId] ?? QUIZ_REGISTRY[DEFAULT_QUIZ_ID];
+}
+
+function renderHome() {
+  activeMode = "home";
+  currentIndex = 0;
+
+  app.innerHTML = `
+    <section class="panel hero-panel">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${quiz.title}</h1>
+      <p class="topic-line">${quiz.topic}</p>
+      <p class="lede">${escapeHtml(quiz.learner_lede ?? "Practise the method first, then try the checkpoint without hints.")}</p>
+      ${renderModuleIntro()}
+      ${renderInstructionCallout()}
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startPractice">Start Practice</button>
+        <button type="button" class="secondary-action" id="startCheckpoint">Start Checkpoint</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startPractice").addEventListener("click", startPractice);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+}
+
+function startPractice() {
+  activeMode = "Practice";
+  currentIndex = 0;
+  practiceState = createQuestionState(quiz.practice_questions);
+  renderPracticeQuestion();
+}
+
+function startCheckpoint() {
+  activeMode = "Checkpoint";
+  currentIndex = 0;
+  checkpointLocked = false;
+  checkpointState = createQuestionState(quiz.checkpoint_questions);
+  clearCheckpointSession(quiz.quiz_id);
+  checkpointSession = createCheckpointSession(quiz.quiz_id);
+  renderCheckpointQuestion();
+}
+
+function createQuestionState(questions) {
+  return questions.map((question) => ({
+    input: getInitialInputState(question),
+    feedbackCode: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    attempts: [],
+    hintsShown: 0,
+    solutionShown: false,
+    modelClueShown: false,
+    workingCompleted: false,
+    auditResponses: {}
+  }));
+}
+
+function renderPracticeQuestion() {
+  const question = quiz.practice_questions[currentIndex];
+  const state = practiceState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.practice_questions.length}`;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill">Practice</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.practice_questions, practiceState, currentIndex, "Practice")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        ${renderPracticeMiniLesson(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderVisualStimulus(question)}
+        ${renderPracticeThinkingBlocks(question)}
+        ${renderAnswerForm(question, false)}
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="practiceStatus"></p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="hintButton">Hint</button>
+          ${question.model_clue ? `<button type="button" class="secondary-action" id="modelClueButton">Model clue</button>` : ""}
+          <button type="button" class="secondary-action" id="solutionButton">Worked Solution</button>
+        </div>
+        <ol class="hint-list" id="hintList" hidden></ol>
+        ${question.model_clue ? `<pre class="model-clue" id="modelClue" hidden></pre>` : ""}
+        <pre class="worked-solution" id="workedSolution" hidden></pre>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="primary-action" id="nextQuestion">${currentIndex === quiz.practice_questions.length - 1 ? "Finish Practice" : "Next"}</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  bindAnswerInputs(question, state);
+
+  renderFeedback(state, "Practice");
+  renderPracticeSupport(question, state);
+  bindQuestionMap(renderPracticeQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
+  document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#modelClueButton")?.addEventListener("click", () => showModelClue(question, state));
+  document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  if (!question.mini_lesson) focusFirstAnswerInput();
+}
+
+function submitPracticeAnswer(event, question, state) {
+  event.preventDefault();
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+  state.attempts.push({
+    attempt_number: state.attempts.length + 1,
+    feedback_code: validation.code,
+    is_correct: validation.isCorrect,
+    timestamp: new Date().toISOString()
+  });
+
+  renderPracticeQuestion();
+}
+
+function renderPracticeSupport(question, state) {
+  const hintList = document.querySelector("#hintList");
+  const hintButton = document.querySelector("#hintButton");
+  const modelClue = document.querySelector("#modelClue");
+  const modelClueButton = document.querySelector("#modelClueButton");
+  const solution = document.querySelector("#workedSolution");
+
+  if (state.hintsShown > 0) {
+    hintList.hidden = false;
+    question.hints.slice(0, state.hintsShown).forEach((hint) => {
+      const item = document.createElement("li");
+      item.textContent = hint;
+      hintList.append(item);
+    });
+  }
+
+  hintButton.disabled = state.hintsShown >= question.hints.length;
+
+  if (modelClueButton) {
+    modelClueButton.disabled = state.modelClueShown;
+  }
+
+  if (modelClue && state.modelClueShown) {
+    modelClue.textContent = question.model_clue;
+    modelClue.hidden = false;
+  }
+
+  if (state.solutionShown) {
+    solution.textContent = question.worked_solution;
+    solution.hidden = false;
+  }
+}
+
+function showNextHint(question, state) {
+  state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showModelClue(question, state) {
+  if (!question.model_clue) return;
+
+  state.modelClueShown = true;
+  renderPracticeQuestion();
+}
+
+function showWorkedSolution(question, state) {
+  state.solutionShown = true;
+  renderPracticeQuestion();
+}
+
+function goToPreviousPracticeQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderPracticeQuestion();
+}
+
+function goToNextPracticeQuestion() {
+  if (currentIndex === quiz.practice_questions.length - 1) {
+    renderPracticeComplete();
+    return;
+  }
+
+  currentIndex += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeComplete() {
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Practice complete</p>
+      <h1>Nice work.</h1>
+      <p class="lede">You reached the end of the practice ladder.</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="secondary-action" id="exportPracticeSummary">Export Parent Practice Summary</button>
+        <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#resumePractice").addEventListener("click", () => {
+    currentIndex = quiz.practice_questions.length - 1;
+    renderPracticeQuestion();
+  });
+  document.querySelector("#exportPracticeSummary").addEventListener("click", exportPracticeSummary);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function exportPracticeSummary() {
+  const exportedAt = new Date().toISOString();
+
+  downloadFile(
+    buildPracticeParentSummary(exportedAt),
+    "text/plain",
+    buildPracticeParentSummaryFilename(exportedAt)
+  );
+}
+
+function buildPracticeParentSummary(exportedAt) {
+  const questions = buildPracticeQuestionSummaries();
+  const attemptedQuestions = questions.filter((question) => question.attempt_count > 0);
+  const notAttemptedQuestions = questions.filter((question) => question.status === "Not attempted");
+  const latestCorrectQuestions = questions.filter((question) => question.status === "Correct");
+  const repeatedAttemptQuestions = questions.filter((question) => question.attempt_count > 1);
+  const openedSolutionQuestions = questions.filter((question) => question.worked_solution_opened);
+  const latestNotCorrectQuestions = questions.filter((question) => question.status === "Tried");
+  const totalAttempts = questions.reduce((total, question) => total + question.attempt_count, 0);
+  const totalHintsViewed = questions.reduce((total, question) => total + question.hints_viewed, 0);
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Practice Summary",
+    "",
+    `Quiz: ${quiz.title}`,
+    `Topic: ${quiz.topic}`,
+    `Exported: ${formatSummaryTimestamp(exportedAt)}`,
+    "",
+    "Practice Usage Summary",
+    "----------------------",
+    `Total practice questions: ${questions.length}`,
+    `Questions attempted: ${attemptedQuestions.length}`,
+    `Questions not attempted: ${notAttemptedQuestions.length}`,
+    `Questions with latest correct attempt: ${latestCorrectQuestions.length}`,
+    `Total practice attempts: ${totalAttempts}`,
+    `Total hints viewed: ${totalHintsViewed}`,
+    `Worked solutions opened: ${openedSolutionQuestions.length}`,
+    "",
+    "Question Summary",
+    "----------------",
+    ...questions.flatMap(formatPracticeQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    "Questions not attempted",
+    ...formatPracticeReviewList(notAttemptedQuestions),
+    "",
+    "Questions not correct on latest attempt",
+    ...formatPracticeReviewList(latestNotCorrectQuestions),
+    "",
+    "Questions with repeated attempts",
+    ...formatPracticeReviewList(repeatedAttemptQuestions, (question) => `${formatAttemptCount(question.attempt_count)}`),
+    "",
+    "Questions where worked solution was opened",
+    ...formatPracticeReviewList(openedSolutionQuestions),
+    "",
+    "No correct answers, accepted answers, hint text, worked solutions, raw submitted answers, normalised submitted answers, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function buildPracticeQuestionSummaries() {
+  return quiz.practice_questions.map((question, index) => {
+    const state = practiceState[index];
+    const attempts = state.attempts ?? [];
+    const latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    const status = latestAttempt ? (latestAttempt.is_correct ? "Correct" : "Tried") : "Not attempted";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+      hints_viewed: state.hintsShown,
+      worked_solution_opened: state.solutionShown,
+      parent_summary_tags: question.parent_summary_tags ?? []
+    };
+  });
+}
+
+function formatPracticeQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status}`,
+    `  Attempt count: ${formatAttemptCount(question.attempt_count)}`,
+    `  Latest feedback category: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`,
+    `  Hints viewed: ${question.hints_viewed}`,
+    `  Worked solution opened: ${question.worked_solution_opened ? "Yes" : "No"}`
+  ];
+}
+
+function formatPracticeReviewList(questions, detailFormatter = null) {
+  if (questions.length === 0) {
+    return ["- none"];
+  }
+
+  return questions.map((question) => {
+    const detail = detailFormatter ? `: ${detailFormatter(question)}` : "";
+    return `- ${question.question_id}${detail}`;
+  });
+}
+
+function renderCheckpointQuestion() {
+  const question = quiz.checkpoint_questions[currentIndex];
+  const state = checkpointState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.checkpoint_questions.length}`;
+  const attemptCount = getAttemptCount(question.question_id);
+  const needsWorkingConfirmation = usesWorkingConfirmation(question);
+  const showAnswerEntry = !needsWorkingConfirmation || state.workingCompleted;
+  const showCheckpointSolution = state.isCorrect && question.worked_solution;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill checkpoint">Checkpoint</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.checkpoint_questions, checkpointState, currentIndex, "Checkpoint")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderVisualStimulus(question)}
+        ${renderCheckpointInstruction(question)}
+        ${!showAnswerEntry ? renderWorkingConfirmation(question) : ""}
+        ${showAnswerEntry ? renderAuditFields(question, state) : ""}
+        ${showAnswerEntry ? renderAnswerForm(question, checkpointLocked) : ""}
+        ${showAnswerEntry ? `<p class="feedback" id="feedback" aria-live="polite"></p>` : ""}
+        <p class="attempt-count" id="attemptCount">Attempts recorded: ${attemptCount}</p>
+        ${showCheckpointSolution ? `<pre class="worked-solution checkpoint-solution">${escapeHtml(question.worked_solution)}</pre>` : ""}
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="secondary-action" id="nextQuestion">Next</button>
+          <button type="button" class="final-action" id="finalCheckpoint" ${checkpointLocked ? "disabled" : ""}>Submit Final Checkpoint</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+
+  if (showAnswerEntry) {
+    bindAnswerInputs(question, state);
+    bindAuditInputs(question, state);
+    renderFeedback(state, "Checkpoint");
+    document.querySelector("#answerForm").addEventListener("submit", (event) => submitCheckpointAnswer(event, question, state));
+  } else {
+    document.querySelector("#workingDoneButton").addEventListener("click", () => {
+      state.workingCompleted = true;
+      renderCheckpointQuestion();
+    });
+  }
+
+  bindQuestionMap(renderCheckpointQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousCheckpointQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextCheckpointQuestion);
+  document.querySelector("#finalCheckpoint").addEventListener("click", submitFinalCheckpoint);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  document.querySelector("#nextQuestion").disabled = currentIndex === quiz.checkpoint_questions.length - 1;
+  if (!checkpointLocked && showAnswerEntry) focusFirstAnswerInput();
+}
+
+function submitCheckpointAnswer(event, question, state) {
+  event.preventDefault();
+  if (checkpointLocked) return;
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  recordCheckpointAttempt(
+    checkpointSession,
+    question.question_id,
+    inputValue,
+    validation.code,
+    validation.isCorrect,
+    validation.normalised
+  );
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  renderCheckpointQuestion();
+}
+
+function goToPreviousCheckpointQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderCheckpointQuestion();
+}
+
+function goToNextCheckpointQuestion() {
+  if (currentIndex === quiz.checkpoint_questions.length - 1) return;
+
+  currentIndex += 1;
+  renderCheckpointQuestion();
+}
+
+function submitFinalCheckpoint() {
+  if (checkpointLocked) return;
+  if (!window.confirm(FINAL_CHECKPOINT_WARNING)) return;
+
+  checkpointLocked = true;
+  checkpointSession.lockedAt = new Date().toISOString();
+  saveCheckpointSession(checkpointSession);
+  renderCheckpointComplete();
+}
+
+function renderCheckpointComplete() {
+  const questionIds = quiz.checkpoint_questions.map((question) => question.question_id);
+  const attemptCounts = getCheckpointAttemptCounts(checkpointSession, questionIds);
+  const summaries = quiz.checkpoint_questions.map((question) => {
+    const latestAttempt = getLatestAttempt(question.question_id);
+    const attempts = attemptCounts.find((item) => item.question_id === question.question_id)?.attempts ?? 0;
+    const status = getSummaryStatus(latestAttempt);
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempts,
+      isCorrect: status === "Correct"
+    };
+  });
+  const score = summaries.filter((item) => item.isCorrect).length;
+  const exportData = buildCheckpointExport(summaries, score);
+
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Checkpoint complete</p>
+      <h1>Finished.</h1>
+      <p class="lede">Score: ${score} / ${quiz.checkpoint_questions.length}</p>
+      <ul class="summary-list" id="summaryList"></ul>
+      <p class="summary-note">No answers are shown here. Review mistakes with Dad or tutor.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="exportParentSummary">Export Parent Checkpoint Summary</button>
+        <button type="button" class="secondary-action" id="exportResults">Export Checkpoint JSON Data</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  const summaryList = document.querySelector("#summaryList");
+  summaries.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.question_id}: ${item.status}, ${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+    summaryList.append(row);
+  });
+
+  document.querySelector("#exportParentSummary").addEventListener("click", () => exportParentSummary(exportData));
+  document.querySelector("#exportResults").addEventListener("click", () => exportCheckpointResults(exportData));
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function buildCheckpointExport(summaries, score) {
+  return {
+    export_schema_version: CHECKPOINT_EXPORT_SCHEMA_VERSION,
+    exported_at: new Date().toISOString(),
+    source: CHECKPOINT_EXPORT_SOURCE,
+    quiz: {
+      quiz_id: quiz.quiz_id,
+      title: quiz.title,
+      topic: quiz.topic,
+      version: quiz.version
+    },
+    checkpoint: {
+      session_id: checkpointSession.sessionId,
+      started_at: checkpointSession.startedAt,
+      locked_at: checkpointSession.lockedAt ?? "",
+      score,
+      total_questions: quiz.checkpoint_questions.length,
+      questions: summaries.map((summary) => {
+        const latestAttempt = getLatestAttempt(summary.question_id);
+        const question = quiz.checkpoint_questions.find((item) => item.question_id === summary.question_id);
+
+        return {
+          question_id: summary.question_id,
+          status: summary.status,
+          is_correct: summary.isCorrect,
+          attempt_count: summary.attempts,
+          parent_summary_tags: question?.parent_summary_tags ?? [],
+          latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+          latest_attempt_timestamp: latestAttempt?.timestamp ?? ""
+        };
+      }),
+      attempts: checkpointSession.attempts.map((attempt) => ({
+        question_id: attempt.question_id,
+        attempt_number: attempt.attempt_number,
+        feedback_code: attempt.feedback_code,
+        is_correct: attempt.is_correct,
+        timestamp: attempt.timestamp
+      }))
+    }
+  };
+}
+
+function exportCheckpointResults(exportData) {
+  downloadFile(JSON.stringify(exportData, null, 2), "application/json", buildJsonExportFilename(exportData));
+}
+
+function exportParentSummary(exportData) {
+  downloadFile(buildParentSummary(exportData), "text/plain", buildParentSummaryFilename(exportData));
+}
+
+function buildParentSummary(exportData) {
+  const checkpoint = exportData.checkpoint;
+  const reviewQuestions = checkpoint.questions.filter((question) => question.status !== "Correct");
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Checkpoint Summary",
+    "",
+    `Quiz: ${exportData.quiz.title}`,
+    `Topic: ${exportData.quiz.topic}`,
+    `Completed: ${formatSummaryTimestamp(checkpoint.locked_at || exportData.exported_at)}`,
+    `Score: ${checkpoint.score} / ${checkpoint.total_questions}`,
+    "",
+    getParentEncouragement(checkpoint.score, checkpoint.total_questions),
+    "",
+    "Question Summary",
+    "----------------",
+    ...checkpoint.questions.flatMap(formatParentQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    ...formatReviewList(reviewQuestions),
+    "",
+    "No correct answers, hints, worked solutions, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function formatParentQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status} (${formatAttemptCount(question.attempt_count)})`,
+    `  Latest feedback: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`
+  ];
+}
+
+function formatReviewList(questions) {
+  if (questions.length === 0) {
+    return ["- No checkpoint questions marked for review."];
+  }
+
+  return questions.map(
+    (question) =>
+      `- ${question.question_id}: ${question.status}; ${formatAttemptCount(question.attempt_count)}.`
+  );
+}
+
+function getParentEncouragement(score, totalQuestions) {
+  if (score === totalQuestions) {
+    return "Great focus. Every checkpoint question was finished correct.";
+  }
+
+  if (score >= Math.ceil(totalQuestions / 2)) {
+    return "Good work. There are a few questions to review together.";
+  }
+
+  if (score > 0) {
+    return "Good effort. This gives Dad or tutor a clear review list.";
+  }
+
+  return "Thanks for giving it a go. Use this as a calm review list.";
+}
+
+function formatFeedbackCodeForParent(code) {
+  const labels = {
+    CORRECT: "Correct",
+    BLANK: "Blank or not submitted",
+    INVALID_FORMAT: "Check the answer format",
+    FRACTION_REQUIRED: "Answer needed as a fraction",
+    MIXED_NUMBER_REQUIRED: "Answer needed as a mixed number",
+    EQUIVALENT_NOT_SIMPLEST: "Equivalent, but not in simplest form",
+    PLACE_VALUE_DENOMINATOR_ERROR: "Check the decimal place value",
+    WRONG_VALUE: "Try again",
+    CALCULATION_ERROR: "Check the calculation",
+    WRONG_START_RATIO: "Check the starting ratio",
+    TRANSFER_APPLIED_TO_WRONG_PERSON: "Check who changed",
+    WRONG_CURRENT_AMOUNT: "Check the new amount now",
+    USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "Use the new amount now",
+    UNIT_VALUE_NOT_FINAL: "One unit, not final answer",
+    WRONG_BASE_ORIGINAL: "Check what the fraction is about",
+    WRONG_BASE_REMAINDER: "Check what we started with",
+    WRONG_LEFTOVER_STAGE: "Check what is left",
+    INTERMEDIATE_NOT_FINAL: "Halfway answer",
+    WRONG_FINAL_TARGET: "Check the final target",
+    WRONG_CATEGORY: "Check what the question asked for",
+    MISSING_UNIT: "Include the unit or group"
+  };
+
+  return labels[code] ?? "Review needed";
+}
+
+function formatAttemptCount(count) {
+  return `${count} attempt${count === 1 ? "" : "s"}`;
+}
+
+function formatParentSummaryTags(tags) {
+  return tags?.length ? tags.join("; ") : "none";
+}
+
+function formatSummaryTimestamp(timestamp) {
+  if (!timestamp) return "";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}
+
+function downloadFile(content, type, filename) {
+  const blob = new Blob([content], {
+    type
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function buildJsonExportFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}.json`;
+}
+
+function buildParentSummaryFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildPracticeParentSummaryFilename(exportedAt) {
+  return `${buildExportFilenameBase({
+    exported_at: exportedAt,
+    quiz: {
+      quiz_id: quiz.quiz_id
+    }
+  })}-practice-parent-summary.txt`;
+}
+
+function buildExportFilenameBase(exportData) {
+  const quizId = exportData.quiz.quiz_id.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+  const timestamp = exportData.exported_at.replace(/[:.]/g, "-");
+
+  return `asher-quiz-lab-${quizId}-${timestamp}`;
+}
+
+function renderQuestionMap(questions, states, activeIndex, mode) {
+  const buttons = questions.map((question, index) => {
+    const status = getMapStatus(states[index], index === activeIndex);
+    const classNames = ["question-map-button", `is-${status.className}`];
+    if (index === activeIndex) classNames.push("is-current");
+
+    return `
+      <button type="button" class="${classNames.join(" ")}" data-question-index="${index}" aria-current="${index === activeIndex ? "step" : "false"}">
+        <span>${question.question_id}</span>
+        <small>${status.label}</small>
+      </button>
+    `;
+  }).join("");
+
+  return `
+    <nav class="question-map" aria-label="${mode} question list">
+      <p class="question-map-title">Questions</p>
+      <div class="question-map-grid">${buttons}</div>
+    </nav>
+  `;
+}
+
+function renderCalculatorPolicy(question) {
+  if (!question.calculator_policy) return "";
+
+  return `<p class="calculator-policy">${escapeHtml(question.calculator_policy)}</p>`;
+}
+
+function renderModuleIntro() {
+  if (!quiz.learner_intro) return "";
+
+  return `
+    <div class="module-intro">
+      ${formatTextBlock(quiz.learner_intro)}
+    </div>
+  `;
+}
+
+function renderQuestionOverview(question) {
+  const sections = [];
+
+  if (question.source_summary) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Source Summary</h3>
+        ${formatTextBlock(question.source_summary)}
+      </section>
+    `);
+  }
+
+  if (question.learner_purpose) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Purpose</h3>
+        ${formatTextBlock(question.learner_purpose)}
+      </section>
+    `);
+  }
+
+  return sections.join("");
+}
+
+function renderVisualStimulus(question) {
+  const stimulus = question.visual_stimulus;
+  if (!stimulus?.path) return "";
+
+  const alt = stimulus.alt ?? "Question visual stimulus";
+  const caption = stimulus.caption
+    ? `<figcaption>${escapeHtml(stimulus.caption)}</figcaption>`
+    : "";
+
+  return `
+    <figure class="visual-stimulus">
+      <img src="${escapeHtml(stimulus.path)}" alt="${escapeHtml(alt)}" loading="lazy" />
+      ${caption}
+    </figure>
+  `;
+}
+
+function renderPracticeMiniLesson(question) {
+  const miniLesson = question.mini_lesson;
+  if (!miniLesson) return "";
+
+  const title = typeof miniLesson === "string" ? "Mini-lesson" : miniLesson.title ?? "Mini-lesson";
+  const body = typeof miniLesson === "string" ? miniLesson : miniLesson.body;
+  if (!body) return "";
+
+  return `
+    <section class="practice-mini-lesson">
+      <h3>${escapeHtml(title)}</h3>
+      ${formatTextBlock(body)}
+    </section>
+  `;
+}
+
+function renderPracticeThinkingBlocks(question) {
+  const thinkingBlocks = question.thinking_blocks ?? [];
+  const blockList = thinkingBlocks.map((block) => `
+    <li>
+      <strong>${escapeHtml(block.title)}</strong>
+      <p>${escapeHtml(block.prompt)}</p>
+    </li>
+  `).join("");
+  const blocksMarkup = blockList
+    ? `
+      <section class="thinking-section">
+        <h3>Thinking Blocks</h3>
+        <ol>${blockList}</ol>
+      </section>
+    `
+    : "";
+  const finalTargetMarkup = question.final_target_check
+    ? `
+      <section class="content-note final-target-check">
+        <h3>Final Target Check</h3>
+        ${formatTextBlock(question.final_target_check)}
+      </section>
+    `
+    : "";
+
+  return `${blocksMarkup}${finalTargetMarkup}`;
+}
+
+function renderCheckpointInstruction(question) {
+  if (!question.checkpoint_instruction) return "";
+
+  return `
+    <section class="checkpoint-instruction">
+      ${formatTextBlock(question.checkpoint_instruction)}
+    </section>
+  `;
+}
+
+function renderWorkingConfirmation(question) {
+  return `
+    <div class="checkpoint-gate">
+      <button type="button" class="primary-action" id="workingDoneButton">
+        ${escapeHtml(question.working_confirmation_label ?? "I have finished my working")}
+      </button>
+    </div>
+  `;
+}
+
+function renderAuditInstructions() {
+  return `
+    <section class="audit-instruction">
+      <h3>How to answer these review questions</h3>
+      <p>Before typing your final answer, answer these quick review questions honestly.</p>
+      <p>They are not trick questions and they are not part of your score.</p>
+      <p>Choose what you actually used in your foolscap working.</p>
+      <p>If you are not sure, choose "Other / not sure".</p>
+      <p>This helps Dad see how you thought through the question, not just whether the final answer was correct.</p>
+    </section>
+  `;
+}
+
+function renderAuditFields(question, state) {
+  const fields = question.audit_fields ?? [];
+  if (!fields.length) return "";
+
+  const fieldMarkup = fields.map((field) => {
+    const value = state.auditResponses[field.field_id] ?? "";
+    const label = escapeHtml(field.label);
+
+    if (field.type === "textarea") {
+      return `
+        <label class="audit-field">
+          <span>${label}</span>
+          <textarea data-audit-field="${escapeHtml(field.field_id)}" rows="3">${escapeHtml(value)}</textarea>
+        </label>
+      `;
+    }
+
+    const options = (field.options ?? []).map(
+      (option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`
+    ).join("");
+
+    return `
+      <label class="audit-field">
+        <span>${label}</span>
+        <select data-audit-field="${escapeHtml(field.field_id)}">
+          <option value="">Choose one</option>
+          ${options}
+        </select>
+      </label>
+    `;
+  }).join("");
+
+  return `
+    <section class="audit-section">
+      ${renderAuditInstructions()}
+      <h3>Quick Review</h3>
+      ${fieldMarkup}
+    </section>
+  `;
+}
+
+function renderAnswerForm(question, disabled) {
+  const disabledAttribute = disabled ? "disabled" : "";
+
+  if (isMultiPartQuestion(question)) {
+    const fields = question.answer_parts.map((part) => `
+      <label class="answer-part-field" for="answerInput-${escapeHtml(part.part_id)}">
+        <span>${escapeHtml(part.label)}</span>
+        <input id="answerInput-${escapeHtml(part.part_id)}" data-answer-input data-answer-part="${escapeHtml(part.part_id)}" name="answer-${escapeHtml(part.part_id)}" autocomplete="off" ${disabledAttribute} />
+      </label>
+    `).join("");
+
+    return `
+      <form class="answer-form multi-part-answer-form" id="answerForm">
+        ${fields}
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    return `
+      <form class="answer-form mcq-answer-form" id="answerForm">
+        <fieldset class="mcq-fieldset">
+          <legend>${escapeHtml(question.answer_label ?? "Choose one answer")}</legend>
+          <div class="mcq-option-grid">
+            ${renderMcqOptions(question, disabledAttribute)}
+          </div>
+        </fieldset>
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  return `
+    <form class="answer-form" id="answerForm">
+      <label for="answerInput">${escapeHtml(question.answer_label ?? "Answer")}</label>
+      <input id="answerInput" data-answer-input name="answer" autocomplete="off" ${disabledAttribute} />
+      <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+    </form>
+  `;
+}
+
+function renderMcqOptions(question, disabledAttribute) {
+  return question.options.map((option) => {
+    const optionKey = escapeHtml(option.key);
+    const optionLabel = escapeHtml(option.label ?? option.key);
+    const optionText = escapeHtml(option.text ?? "");
+    const sourceOptionNumber = Number.isInteger(option.source_option_number)
+      ? ` data-source-option-number="${option.source_option_number}"`
+      : "";
+
+    return `
+      <label class="mcq-option">
+        <input type="radio" data-answer-input data-answer-option="${optionKey}" name="answer" value="${optionKey}" ${disabledAttribute}${sourceOptionNumber} />
+        <span class="mcq-option-label">${optionLabel}</span>
+        <span class="mcq-option-text">${optionText}</span>
+      </label>
+    `;
+  }).join("");
+}
+
+function bindAnswerInputs(question, state) {
+  if (isMultiPartQuestion(question)) {
+    question.answer_parts.forEach((part) => {
+      const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+      input.value = state.input[part.part_id] ?? "";
+      input.addEventListener("input", () => {
+        state.input = {
+          ...state.input,
+          [part.part_id]: input.value
+        };
+      });
+    });
+    return;
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    question.options.forEach((option) => {
+      const input = document.querySelector(`[data-answer-option="${cssEscape(option.key)}"]`);
+      if (!input) return;
+
+      input.checked = state.input === option.key;
+      input.addEventListener("change", () => {
+        state.input = input.value;
+      });
+    });
+    return;
+  }
+
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+}
+
+function bindAuditInputs(question, state) {
+  (question.audit_fields ?? []).forEach((field) => {
+    const input = document.querySelector(`[data-audit-field="${cssEscape(field.field_id)}"]`);
+    if (!input) return;
+
+    input.value = state.auditResponses[field.field_id] ?? "";
+    input.addEventListener("input", () => {
+      state.auditResponses = {
+        ...state.auditResponses,
+        [field.field_id]: input.value
+      };
+    });
+  });
+}
+
+function getAnswerInputValue(question) {
+  if (isMultiPartQuestion(question)) {
+    return Object.fromEntries(
+      question.answer_parts.map((part) => {
+        const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+        return [part.part_id, input?.value ?? ""];
+      })
+    );
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    return document.querySelector("[data-answer-option]:checked")?.value ?? "";
+  }
+
+  return document.querySelector("#answerInput")?.value ?? "";
+}
+
+function focusFirstAnswerInput() {
+  document.querySelector("[data-answer-input]")?.focus();
+}
+
+function getInitialInputState(question) {
+  if (!isMultiPartQuestion(question)) return "";
+
+  return Object.fromEntries((question.answer_parts ?? []).map((part) => [part.part_id, ""]));
+}
+
+function isMultiPartQuestion(question) {
+  return question.expected_format === "multi_part" && Array.isArray(question.answer_parts);
+}
+
+function isMcqOptionsQuestion(question) {
+  return question.expected_format === "mcq" && Array.isArray(question.options) && question.options.length > 0;
+}
+
+function usesWorkingConfirmation(question) {
+  return Boolean(question.requires_working_confirmation || question.audit_fields?.length);
+}
+
+function formatTextBlock(value) {
+  return escapeHtml(value)
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+function cssEscape(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+}
+
+function renderInstructionCallout() {
+  if (!quizHasCalculatorPolicy()) return "";
+
+  return `
+    <div class="instruction-callout">
+      <p><strong><u>Check the calculator instruction for every question.</u></strong></p>
+      <p>If it says <strong><u>Calculator: Not allowed</u></strong>, do it without a calculator and write your working on foolscap paper.</p>
+      <p>If it says <strong><u>Calculator: Allowed</u></strong>, you may use a calculator, but only after choosing the correct steps.</p>
+      <p>The calculator can help with arithmetic. It cannot read the story. No licence, no driving.</p>
+    </div>
+  `;
+}
+
+function quizHasCalculatorPolicy() {
+  return [...(quiz.practice_questions ?? []), ...(quiz.checkpoint_questions ?? [])].some(
+    (question) => question.calculator_policy
+  );
+}
+
+function bindQuestionMap(renderFunction) {
+  document.querySelectorAll(".question-map-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentIndex = Number(button.dataset.questionIndex);
+      renderFunction();
+    });
+  });
+}
+
+function getMapStatus(state, isCurrent) {
+  if (isCurrent) return { label: "Current", className: "current" };
+  if (!state.submitted) return { label: "Not tried", className: "not-tried" };
+  if (state.isCorrect) return { label: "Correct", className: "correct" };
+  return { label: "Tried", className: "tried" };
+}
+
+function escapeHtml(value) {
+  const replacements = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  };
+
+  return String(value).replace(/[&<>"']/g, (character) => replacements[character]);
+}
+
+function renderFeedback(state, mode) {
+  const feedback = document.querySelector("#feedback");
+  const status = mode === "Practice" ? document.querySelector("#practiceStatus") : null;
+
+  if (!state.submitted) {
+    feedback.textContent = "";
+    if (status) status.textContent = "Not submitted yet.";
+    return;
+  }
+
+  feedback.textContent = state.feedbackMessage;
+  feedback.className = state.isCorrect ? "feedback is-correct" : "feedback is-retry";
+  if (status) status.textContent = state.isCorrect ? "Latest answer: correct." : "Latest answer: try again.";
+}
+
+function getAttemptCount(questionId) {
+  return checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId).length;
+}
+
+function getLatestAttempt(questionId) {
+  const attempts = checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId);
+  return attempts.length ? attempts[attempts.length - 1] : null;
+}
+
+function getSummaryStatus(latestAttempt) {
+  if (!latestAttempt || latestAttempt.feedback_code === "BLANK") return "Blank";
+  return latestAttempt.is_correct ? "Correct" : "Incorrect";
+}
+
+function renderLoadError(error) {
+  app.innerHTML = `
+    <section class="panel error-panel">
+      <p class="eyebrow">Local setup needed</p>
+      <h1>Quiz content did not load.</h1>
+      <p class="lede">Run a local server from the repo root, then open the local URL.</p>
+      <pre class="run-command">python -m http.server 8000</pre>
+      <p class="small-note">Then open http://localhost:8000/</p>
+    </section>
+  `;
+
+  console.error(error);
+}
+    </script>
+  </body>
+</html>
