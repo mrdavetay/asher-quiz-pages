@@ -1,0 +1,3838 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mixed Methods Lab — New Tricks, Old Friends | Asher PSLE Quiz Lab</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #536170;
+  --line: #d8ded6;
+  --primary: #225e54;
+  --primary-dark: #18463f;
+  --accent: #d55f3a;
+  --checkpoint: #344b7a;
+  --success: #1f6d46;
+  --retry: #9a4b1f;
+  --shadow: 0 18px 45px rgba(28, 36, 48, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(34, 94, 84, 0.09), rgba(255, 255, 255, 0) 38%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 32px 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.completion-panel,
+.error-panel {
+  margin-top: clamp(24px, 8vh, 80px);
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.question-panel {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.eyebrow,
+.question-id,
+.progress-text,
+.attempt-count,
+.small-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.question-id {
+  margin: 0 0 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 4.8rem, 4.8rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 2.2rem, 2.2rem);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.topic-line {
+  margin: 12px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.calculator-policy {
+  display: inline-block;
+  margin: 14px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #d8c796;
+  border-radius: 6px;
+  background: #fff8df;
+  color: #5f4a12;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.instruction-callout {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #d8c796;
+  border-radius: 8px;
+  background: #fff8df;
+  color: #453409;
+}
+
+.instruction-callout p {
+  margin: 8px 0 0;
+}
+
+.instruction-callout p:first-child {
+  margin-top: 0;
+}
+
+.module-intro,
+.content-note,
+.practice-mini-lesson,
+.thinking-section,
+.checkpoint-instruction,
+.audit-section {
+  margin: 20px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9faf7;
+}
+
+.module-intro {
+  max-width: 68ch;
+}
+
+.content-note h3,
+.practice-mini-lesson h3,
+.thinking-section h3,
+.audit-section h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.content-note p,
+.practice-mini-lesson p,
+.thinking-section p,
+.checkpoint-instruction p,
+.module-intro p {
+  margin: 10px 0 0;
+}
+
+.content-note p:first-child,
+.practice-mini-lesson p:first-child,
+.thinking-section p:first-child,
+.checkpoint-instruction p:first-child,
+.module-intro p:first-child {
+  margin-top: 0;
+}
+
+.thinking-section ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.thinking-section li {
+  margin-top: 12px;
+}
+
+.checkpoint-instruction {
+  border-color: #cbd4e8;
+  background: #f4f7ff;
+  color: #27375e;
+  font-weight: 700;
+}
+
+.practice-mini-lesson {
+  border-color: #d9c27c;
+  background: #fff9e8;
+  color: #3f3420;
+}
+
+.checkpoint-gate {
+  margin-top: 22px;
+}
+
+.audit-section {
+  display: grid;
+  gap: 12px;
+  background: #fbfcf8;
+}
+
+.audit-instruction {
+  padding: 12px 14px;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 6px;
+  background: #f4f7ff;
+  color: #27375e;
+}
+
+.audit-instruction h3 {
+  margin-bottom: 6px;
+}
+
+.audit-instruction p {
+  margin: 6px 0 0;
+}
+
+.audit-instruction p:first-of-type {
+  margin-top: 0;
+}
+
+.audit-field,
+.answer-part-field {
+  display: grid;
+  gap: 6px;
+}
+
+.audit-field span,
+.answer-part-field span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.audit-field select,
+.audit-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.audit-field textarea {
+  resize: vertical;
+}
+
+.mode-actions,
+.support-actions,
+.navigation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action,
+.text-action,
+.final-action {
+  padding: 10px 16px;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-action:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-action {
+  background: #fff4ed;
+  color: #713316;
+  border: 1px solid #f2c3a8;
+}
+
+.final-action {
+  background: #8e2f2f;
+  color: #ffffff;
+}
+
+.final-action:hover {
+  background: #6f2424;
+}
+
+.text-action {
+  min-height: auto;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f0ec;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mode-pill.checkpoint {
+  background: #e9edf7;
+  color: var(--checkpoint);
+}
+
+.question-map {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.question-map-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.question-map-button {
+  display: grid;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  text-align: left;
+}
+
+.question-map-button span {
+  font-weight: 800;
+}
+
+.question-map-button small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.question-map-button.is-current {
+  border-color: var(--checkpoint);
+  outline: 3px solid rgba(52, 75, 122, 0.14);
+}
+
+.question-map-button.is-correct {
+  border-color: rgba(31, 109, 70, 0.45);
+  background: #eef8f1;
+}
+
+.question-map-button.is-tried {
+  border-color: rgba(154, 75, 31, 0.45);
+  background: #fff6ee;
+}
+
+.question-map-button.is-not-tried {
+  background: #ffffff;
+}
+
+.prompt {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f9faf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+}
+
+.question-figure {
+  margin: 14px 0 0;
+}
+
+.question-figure-art {
+  margin: 0;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: "Cascadia Mono", Consolas, "DejaVu Sans Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.question-figure figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.visual-stimulus {
+  margin: 18px 0 0;
+}
+
+.visual-stimulus img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.visual-stimulus figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.answer-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.answer-form label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.answer-form input:focus,
+.audit-field select:focus,
+.audit-field textarea:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.multi-part-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mcq-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mcq-fieldset {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mcq-fieldset legend {
+  margin: 0 0 2px;
+  padding: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.mcq-option-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.mcq-option {
+  display: grid;
+  grid-template-columns: auto minmax(34px, auto) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  min-height: 54px;
+  padding: 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.mcq-option:has(input:checked) {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.mcq-option input {
+  width: 18px;
+  height: 18px;
+  min-height: auto;
+  margin: 3px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.mcq-option-label {
+  font-weight: 800;
+}
+
+.mcq-option-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+}
+
+.feedback.is-retry {
+  color: var(--retry);
+}
+
+.hint-list,
+.summary-list {
+  margin: 20px 0 0;
+  padding-left: 22px;
+}
+
+.hint-list li,
+.summary-list li {
+  margin-top: 8px;
+}
+
+.model-clue {
+  margin: 18px 0 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid #cbd4e8;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 8px;
+  background: #f4f7ff;
+  color: #27375e;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.worked-solution,
+.run-command {
+  margin: 20px 0 0;
+  padding: 16px;
+  overflow: auto;
+  background: #17202a;
+  color: #f7fbff;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.attempt-count {
+  min-height: 24px;
+  margin: 8px 0 0;
+}
+
+.summary-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .app {
+    padding: 18px 12px;
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .progress-text {
+    grid-column: 1 / -1;
+  }
+
+  .answer-form {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-form button,
+  .mode-actions button,
+  .support-actions button,
+  .navigation-actions button {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section class="panel hero-panel">
+        <p class="eyebrow">Asher PSLE Quiz Lab</p>
+        <h1>Loading quiz...</h1>
+      </section>
+    </main>
+    <script id="quiz-content-data" type="application/json">
+{
+  "quiz_id": "frp-mixed-methods-tutor-update-v1",
+  "title": "Mixed Methods Lab — New Tricks, Old Friends",
+  "topic": "Fractions / Ratio / Percentage",
+  "module": "FRP Mixed Methods — Tutor Update (July 2026)",
+  "version": "1.0",
+  "source_authority": "D_DAVE_REVIEW_REQUIRED",
+  "learner_lede": "Ten tricks, one habit: name what KIND of question it is, pick the fast method, then re-read the target.",
+  "learner_intro": "Asher, this lab mixes everything — fractions, ratio and percentage — the way a real paper does. The questions come from the same kinds your tutor worked through with you in July, but with new names and numbers, so the METHOD is what carries you, not memory.\n\nMate, before you write a single sum, ask four questions every time:\n- What KIND is this? (dividing by a fraction? part of a remainder? two ratios sharing a person? a percentage of a hidden whole? two shapes overlapping?)\n- What is EQUAL, SHARED or UNCHANGED? That thing gets the anchor.\n- Which STAGE does each number belong to — before, after, or the change?\n- What EXACTLY is asked? Re-read the last line before you answer.\n\nCheck the calculator note on each question, and show your working on foolscap.",
+  "practice_questions": [
+    {
+      "question_id": "FRP-MMX-P1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Divide by a fraction: how many pieces fit?",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Re-skinned from ACS(J) WA1 2025 Q8 (cloth into 1/8 m rags); names, length, fraction and context changed; answer-key verified.",
+      "source_summary": "Dividing a whole-number length by a unit fraction: how many small pieces fit inside?",
+      "learner_purpose": "Asher, dividing by a fraction is asking 'how many of these small pieces FIT?' — not making something smaller.\n\nMate, keep-change-flip does the work; the picture tells you why.",
+      "mini_lesson": {
+        "title": "Mini-lesson: keep, change, flip",
+        "body": "Asher, 7 divided by 1/4 asks: how many quarter-metres fit inside 7 metres? Every 1 metre holds 4 quarters, so the answer must be BIGGER than 7 — dividing by a fraction smaller than 1 makes the answer grow.\n\nThe fast way is keep-change-flip: KEEP the first number, CHANGE divide to multiply, FLIP the fraction.\n\n7 ÷ 1/4 = 7 × 4/1\n\nMate, the trap is multiplying by the fraction as it stands (7 × 1/4) — that finds a quarter OF seven, which is a different question. If your answer came out SMALLER, you multiplied when you should have flipped."
+      },
+      "prompt": "A roll of ribbon is 7 m long.\n\nPriya cut all of it into shorter pieces, each 1/4 m long, to tie gift boxes.\n\nHow many pieces did she cut?",
+      "expected_format": "numeric",
+      "canonical_answer": "28",
+      "accepted_answers": [
+        "28",
+        "28 pieces"
+      ],
+      "target_number": 28,
+      "error_tags": [
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "divide by a fraction",
+        "keep-change-flip",
+        "how many pieces fit"
+      ],
+      "diagnostic_answers": {
+        "11": "WRONG_VALUE",
+        "2": "WRONG_VALUE"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. 7 ÷ 1/4 = 7 × 4 = 28 pieces.",
+        "WRONG_VALUE": "Check the operation: this is a fitting-in question, so DIVIDE 7 by 1/4 with keep-change-flip. Don't add the numbers, and don't take a fraction OF the ribbon.",
+        "CALCULATION_ERROR": "Keep-change-flip: 7 ÷ 1/4 = 7 × 4.",
+        "INVALID_FORMAT": "Type a whole number of pieces. If your answer came out as a fraction, check which way the flip went.",
+        "BLANK": "Ask: how many quarter-metres fit inside 7 metres?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — what is the question really asking?",
+          "prompt": "It is asking how many 1/4 m pieces FIT inside 7 m. Fitting-in questions are division questions: 7 ÷ 1/4."
+        },
+        {
+          "title": "Mate — keep, change, flip",
+          "prompt": "Keep the 7, change ÷ to ×, flip 1/4 to 4/1. Then it is just 7 × 4."
+        },
+        {
+          "title": "Asher — sense check",
+          "prompt": "Dividing by a number smaller than 1 makes the answer BIGGER. If your answer is smaller than 7, something flipped the wrong way."
+        }
+      ],
+      "model_clue": "1 metre holds 4 quarter-metre pieces:\n\n1 m:  [1/4][1/4][1/4][1/4]\n\nThe ribbon is 7 of these metres:\n[1/4][1/4][1/4][1/4] | [1/4][1/4][1/4][1/4] | ... (7 metres in all)\n\nCount the pieces per metre, then multiply by the metres yourself.",
+      "final_target_check": "It asks the NUMBER OF PIECES (a count, bigger than 7) — not a length of ribbon.",
+      "hints": [
+        "How many quarter-metres fit in ONE metre?",
+        "Keep-change-flip: 7 ÷ 1/4 = 7 × 4/1.",
+        "Every metre gives 4 pieces, and there are 7 metres."
+      ],
+      "worked_solution": "This is a fitting-in question: how many 1/4 m pieces fit in 7 m?\n\n7 ÷ 1/4 = 7 × 4/1 = 28\n\nCheck: 28 pieces × 1/4 m = 7 m. OK\nSense check: dividing by a fraction smaller than 1 gives an answer BIGGER than 7 — 28 fits.\nFinal target: the question asks the number of pieces = 28.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "What is left — in ONE multiplication",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Re-skinned from ACS(J) WA1 2025 Q4 (paint: 1/4 litre, used 1/3 of it); names, both fractions and context changed; answer-key verified.",
+      "source_summary": "Fraction of a fraction: the amount LEFT found in one multiplication, using the leftover fraction.",
+      "learner_purpose": "Asher, you already know 'what is left' questions. The July upgrade: find LEFT in ONE multiplication — no subtracting needed.\n\nMate, the word 'of it' is the whole trick. Watch what the fraction is a fraction OF.",
+      "mini_lesson": {
+        "title": "Mini-lesson: left = the leftover fraction × the amount",
+        "body": "Asher, the slow way finds the used amount first, then subtracts. The fast way skips a whole step:\n\nIf 1/5 of the juice was drunk, then 4/5 of it is left. So:\nleft = 4/5 × the amount\n\nOne multiplication, done.\n\nMate, the trap in this question type: the amount is ITSELF a fraction (5/8 of a litre). '1/5 of it' means 1/5 of the 5/8 — NOT 1/5 of a whole litre. If you subtract 1/5 from 5/8 you are mixing up two different wholes."
+      },
+      "prompt": "A jug held 5/8 ℓ of juice.\n\nSam drank 1/5 of it.\n\nHow many litres of juice were left in the jug?",
+      "expected_format": "fraction",
+      "canonical_answer": "1/2",
+      "accepted_answers": [
+        "1/2"
+      ],
+      "target_value": {
+        "whole": 0,
+        "numerator": 1,
+        "denominator": 2
+      },
+      "equivalent_not_simplest_examples": [
+        "4/8",
+        "20/40"
+      ],
+      "error_tags": [
+        "FRACTION_OF_ORIGINAL_NOT_REMAINDER",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "fraction of a fraction",
+        "left in one multiplication",
+        "watch the whole"
+      ],
+      "diagnostic_answers": {
+        "17/40": "WRONG_VALUE",
+        "1/8": "WRONG_FINAL_TARGET",
+        "4/5": "WRONG_VALUE"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. Left = 4/5 × 5/8 = 1/2 ℓ.",
+        "WRONG_VALUE": "Check what your fraction is a fraction OF. '1/5 of it' means 1/5 of the 5/8 ℓ — not 1/5 of a whole litre, and not just the leftover fraction by itself.",
+        "WRONG_FINAL_TARGET": "That looks like the amount Sam DRANK. The question asks what is LEFT.",
+        "CALCULATION_ERROR": "One step: left = 4/5 × 5/8.",
+        "INVALID_FORMAT": "Type a fraction in its simplest form, like 3/7.",
+        "BLANK": "If 1/5 of it was drunk, what fraction of it is left?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — what is the whole here?",
+          "prompt": "'1/5 of IT' — 'it' is the 5/8 ℓ in the jug, not a full litre. Every fraction needs to know what it is a fraction OF."
+        },
+        {
+          "title": "Mate — go straight to LEFT",
+          "prompt": "Drank 1/5 of it, so 4/5 of it is left. Left = 4/5 × 5/8. One multiplication — no need to find the drunk amount at all."
+        },
+        {
+          "title": "Asher — simplest form",
+          "prompt": "Multiply, then simplify. And re-read: it asks the amount LEFT, in litres."
+        }
+      ],
+      "model_clue": "The jug's juice (5/8 ℓ) cut into 5 equal parts:\n\njuice: [ drank ][ left ][ left ][ left ][ left ]   <- each part is 1/5 OF THE JUICE\n\nLeft = 4 of those 5 parts = 4/5 × 5/8.\nMultiply it out yourself and simplify.",
+      "final_target_check": "It asks the amount LEFT in litres — not the amount drunk, and not the fraction 4/5 by itself.",
+      "hints": [
+        "'1/5 of it' — of the 5/8 ℓ, not of a whole litre.",
+        "Drank 1/5 of it means 4/5 of it is left.",
+        "Left = 4/5 × 5/8. Simplify your answer."
+      ],
+      "worked_solution": "'Of it' = of the 5/8 ℓ.\nDrank 1/5 of it -> left = 4/5 of it.\n\nLeft = 4/5 × 5/8 = 20/40 = 1/2 ℓ\n\nCheck (slow way agrees): drank = 1/5 × 5/8 = 1/8; left = 5/8 - 1/8 = 4/8 = 1/2. OK\nFinal target: the amount LEFT = 1/2 ℓ, in simplest form.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Fractions of the REMAINDER, chained",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Re-skinned from ACS(J) WA1 2025 Q7 (cake: 3/8, then 3/10 of the remaining, rest shared by two friends); names, numbers and context changed; answer-key verified.",
+      "source_summary": "Chained fractions of a remainder: each new fraction acts on what is left, and the final piece is shared equally.",
+      "learner_purpose": "Asher, this is the remainder trap's big sister: TWO people take turns, and each new fraction bites the REMAINDER, not the original.\n\nMate, the fast move is multiplying the leftover fraction each time — never re-subtracting.",
+      "mini_lesson": {
+        "title": "Mini-lesson: multiply along the chain of remainders",
+        "body": "Asher, when the second person takes a fraction OF THE REMAINDER, work in two beats:\n\nBeat 1 — after the first person takes 1/4, the remainder is 3/4 of the tray.\nBeat 2 — the second person takes 1/6 OF THAT, so what stays after him is 5/6 OF THE REMAINDER:\nleft = 5/6 × 3/4\n\nThat is P2's one-multiplication trick, used on a remainder.\n\nMate, the killer mistake is reading '1/6 of the remaining' as '1/6 of the whole tray'. The fraction bites what is LEFT, not the original. And when the last piece is 'shared equally between two', that is one more ÷ 2 at the very end — do not forget the last line."
+      },
+      "prompt": "Kavya took 1/4 of a tray of brownies.\n\nLeon took 1/6 of the remaining brownies.\n\nThe rest of the brownies were shared equally between two cousins.\n\nWhat fraction of the tray of brownies did each cousin get?",
+      "expected_format": "fraction",
+      "canonical_answer": "5/16",
+      "accepted_answers": [
+        "5/16"
+      ],
+      "target_value": {
+        "whole": 0,
+        "numerator": 5,
+        "denominator": 16
+      },
+      "equivalent_not_simplest_examples": [
+        "10/32"
+      ],
+      "error_tags": [
+        "FRACTION_OF_ORIGINAL_NOT_REMAINDER",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "fraction of the remainder",
+        "chain the leftovers",
+        "share equally at the end"
+      ],
+      "diagnostic_answers": {
+        "5/8": "WRONG_FINAL_TARGET",
+        "7/24": "WRONG_VALUE",
+        "1/8": "WRONG_VALUE"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. Left after Leon = 5/6 × 3/4 = 5/8; each cousin = 5/8 ÷ 2 = 5/16.",
+        "WRONG_FINAL_TARGET": "That is the amount left after Leon — but it still had to be SHARED between the two cousins. One more step.",
+        "WRONG_VALUE": "Check whose share you found, and what each fraction bites. Leon's 1/6 is 1/6 OF THE REMAINDER (the 3/4), not of the whole tray.",
+        "CALCULATION_ERROR": "Chain it: remainder 3/4, then left = 5/6 × 3/4, then ÷ 2.",
+        "INVALID_FORMAT": "Type a fraction in its simplest form, like 3/7.",
+        "BLANK": "After Kavya takes 1/4, what fraction of the tray remains?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — beat 1: the remainder",
+          "prompt": "Kavya took 1/4, so the remainder is 3/4 of the tray. Every fraction after this point bites THAT remainder."
+        },
+        {
+          "title": "Mate — beat 2: chain, don't subtract",
+          "prompt": "Leon takes 1/6 of the remainder, so 5/6 of the remainder stays: left = 5/6 × 3/4. No common denominators, no re-subtracting."
+        },
+        {
+          "title": "Asher — the last line",
+          "prompt": "'Shared equally between two cousins' — one more ÷ 2. The target is ONE cousin's fraction of the whole tray."
+        }
+      ],
+      "model_clue": "The tray (cut into quarters first):\n\ntray:  [ Kavya 1/4 ][ ---- remainder 3/4 ---- ]\n\nThe remainder, cut into sixths for Leon:\nremainder: [ Leon 1/6 ][ 5/6 of the remainder stays ]\n\nleft = 5/6 × 3/4, then share it: ÷ 2.\nMultiply the chain out yourself and simplify.",
+      "final_target_check": "It asks EACH COUSIN's fraction of the whole tray — after the ÷ 2 — not the fraction left after Leon.",
+      "hints": [
+        "After Kavya: 3/4 of the tray remains. Leon's fraction bites THIS.",
+        "Left after Leon = 5/6 × 3/4 — the leftover fraction after his 1/6, times the remainder.",
+        "Share the result equally between two: divide by 2, then simplify."
+      ],
+      "worked_solution": "Kavya takes 1/4 -> remainder = 3/4.\nLeon takes 1/6 OF THE REMAINDER -> stays: 5/6 of the remainder.\nLeft = 5/6 × 3/4 = 15/24 = 5/8 of the tray.\nShared equally between two cousins: 5/8 ÷ 2 = 5/8 × 1/2 = 5/16.\n\nCheck: Kavya 1/4 = 4/16; Leon = 1/6 × 3/4 = 1/8 = 2/16; cousins 5/16 + 5/16; total 4/16 + 2/16 + 5/16 + 5/16 = 16/16. OK\nFinal target: EACH cousin's fraction = 5/16.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P4",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Two ratios, one shared person: make them match",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Re-skinned from ACS(J) WA1 2025 Q6 (savings 2:3 and 3:5, find B:C); names and numbers changed, savings context retained; answer-key verified.",
+      "source_summary": "Merging two ratios that share a common member by scaling both until the shared member's units match.",
+      "learner_purpose": "Asher, two ratios can talk about the same person with DIFFERENT unit sizes. Before you compare anyone else, make that shared person match.\n\nMate, it is the LCM move again — just pointed at a person instead of a fraction.",
+      "mini_lesson": {
+        "title": "Mini-lesson: the shared person must wear the same number",
+        "body": "Asher, one ratio says Devi : Elias = 3 : 4. Another says Devi : Farah = 2 : 5. The '3' and the '2' are BOTH Devi — but they are different-sized units, so you cannot read Elias against Farah yet.\n\nFix Devi first: the smallest number both 3 and 2 fit into is 6. Scale each WHOLE ratio (both sides!) until Devi = 6. The first row goes like this:\nDevi : Elias = 3 : 4 -> ×2 -> 6 : 8\n\nMate, scale the second row yourself the same way, line the two rows up, and read off the pair the question asks about. The trap is comparing Elias's 4 with Farah's 5 straight from the question — those numbers are in different unit sizes. Match the shared person FIRST."
+      },
+      "prompt": "The ratio of Devi's savings to Elias's savings is 3 : 4.\n\nThe ratio of Devi's savings to Farah's savings is 2 : 5.\n\nWhat is the ratio of Elias's savings to Farah's savings?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "8 : 15",
+      "accepted_answers": [
+        "8:15",
+        "8 : 15",
+        "8 to 15"
+      ],
+      "target_ratio_units": {
+        "left": 8,
+        "right": 15
+      },
+      "error_tags": [
+        "CONFUSED_PARTS_AND_UNITS",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "two ratios one shared person",
+        "scale to match the shared member",
+        "LCM on a person"
+      ],
+      "diagnostic_answers": {
+        "4:5": "WRONG_VALUE",
+        "4 : 5": "WRONG_VALUE",
+        "4: 5": "WRONG_VALUE",
+        "6:8": "WRONG_FINAL_TARGET",
+        "6 : 8": "WRONG_FINAL_TARGET",
+        "6: 8": "WRONG_FINAL_TARGET",
+        "6:15": "WRONG_FINAL_TARGET",
+        "6 : 15": "WRONG_FINAL_TARGET",
+        "6: 15": "WRONG_FINAL_TARGET",
+        "15:8": "WRONG_FINAL_TARGET",
+        "15 : 8": "WRONG_FINAL_TARGET",
+        "15: 8": "WRONG_FINAL_TARGET",
+        "16:30": "EQUIVALENT_NOT_SIMPLEST",
+        "16 : 30": "EQUIVALENT_NOT_SIMPLEST",
+        "16: 30": "EQUIVALENT_NOT_SIMPLEST"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. Scale Devi to 6 in both: 6 : 8 and 6 : 15, so Elias : Farah = 8 : 15.",
+        "WRONG_VALUE": "Those numbers came straight from the question — but they are in DIFFERENT unit sizes. Make Devi's number match in both ratios first.",
+        "WRONG_FINAL_TARGET": "Re-read the target: it asks ELIAS : FARAH, in that order — not a row involving Devi, and not the reversed order.",
+        "WRONG_CURRENT_AMOUNT": "Check your merge: the shared person must wear the SAME number in both rows before you compare anyone else.",
+        "EQUIVALENT_NOT_SIMPLEST": "Right working — now give the ratio in its simplest form.",
+        "CALCULATION_ERROR": "Devi is 3 in one ratio, 2 in the other. LCM(3, 2) = 6 — scale both whole ratios to put Devi at 6.",
+        "INVALID_FORMAT": "Type a ratio, like 5 : 7.",
+        "BLANK": "Which person appears in BOTH ratios? Make that person's number match first."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — find the shared person",
+          "prompt": "Devi appears in both ratios (as 3, and as 2). Those are different unit sizes for the SAME savings — they must be made equal before anything else."
+        },
+        {
+          "title": "Mate — scale both whole ratios",
+          "prompt": "LCM(3, 2) = 6. Multiply the first ratio by 2 (3:4 -> 6:8) and the second by 3 (2:5 -> 6:15). Multiply BOTH sides of each ratio — a ratio scales as a whole."
+        },
+        {
+          "title": "Asher — read off the target",
+          "prompt": "Once Devi wears the same number in both rows, all three people live in one unit size. The question asks Elias : Farah — read exactly those two, nobody else."
+        }
+      ],
+      "model_clue": "Devi wears a different number in each ratio — fix that first.\n\nDevi : Elias = 3 : 4   -> x2 ->   6 : 8\nDevi : Farah = 2 : 5   -> x? ->   6 : ?\n                                   ^ Devi must match\n\nScale the second row yourself (BOTH sides), then read off\nonly the two people the question asks about.",
+      "final_target_check": "It asks ELIAS : FARAH — the two people who never shared a ratio — in the matched units.",
+      "hints": [
+        "Devi is in both ratios. Her two numbers (3 and 2) must be made the same.",
+        "LCM(3, 2) = 6 — multiply each WHOLE ratio (both sides!) so Devi becomes 6.",
+        "Line the two scaled rows up so Devi matches, then read off only the two people asked for."
+      ],
+      "worked_solution": "Shared person: Devi (3 in the first ratio, 2 in the second).\nLCM(3, 2) = 6.\n\nDevi : Elias = 3 : 4 = 6 : 8       (x2, both sides)\nDevi : Farah = 2 : 5 = 6 : 15      (x3, both sides)\n\nDevi : Elias : Farah = 6 : 8 : 15\nElias : Farah = 8 : 15\n\nCheck: Devi's savings are the same amount in both rows (6 units). 8 : 15 has no common factor — already simplest.\nFinal target: Elias : Farah = 8 : 15.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P5",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Giving a fraction of a share: cut the units first",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Re-skinned from Henry Park WA1 2025 Q23 (2:5, giver passes 1/4 of his share; tutor-taught circle-cut method, 16 Jul session); names changed, ratio changed (2:5 -> 2:7), giving fraction changed (1/4 -> 1/3); money context retained; tutor working verified (13:15 for the original).",
+      "source_summary": "Ratio transfer where the amount moved is a FRACTION of one person's share: cut every unit into equal mini-units so the transfer is a whole number.",
+      "learner_purpose": "Asher, this is the circle-cutting trick from your July session — the one drawn with crosses in the circles. Now it is yours.\n\nMate, the whole game is: if a share will not split cleanly, cut EVERY unit smaller until it does.",
+      "mini_lesson": {
+        "title": "Mini-lesson: cut every unit so the fraction comes out whole",
+        "body": "Asher, Noor : Omar = 2 : 7, and Omar gives away 1/3 of HIS share. But 7 units will not split into thirds cleanly. Do not fight the fraction — change the units.\n\nCut EVERY unit into 3 mini-units (the giving fraction is thirds, so cut into thirds):\n2 : 7 becomes 6 : 21 — same ratio, same money, just smaller pieces.\n\nNow 1/3 of Omar's 21 mini-units = 7 mini-units, a whole number. Move them.\n\nMate, this is like trading Roblox Limiteds: splitting one rare item's value into 3 equal small trades does not change what your inventory is worth — it just makes a third of it tradeable in whole pieces. Cut, then move; the total never changes."
+      },
+      "prompt": "Noor and Omar shared a sum of money in the ratio 2 : 7.\n\nOmar gave 1/3 of his share to Noor.\n\nWhat is the new ratio of Noor's share to Omar's share of the money?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "13 : 14",
+      "accepted_answers": [
+        "13:14",
+        "13 : 14",
+        "13 to 14"
+      ],
+      "target_ratio_units": {
+        "left": 13,
+        "right": 14
+      },
+      "error_tags": [
+        "CONFUSED_PARTS_AND_UNITS",
+        "REVERSE_TRANSFER",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "fraction-of-share transfer",
+        "cut units into mini-units",
+        "totals never change"
+      ],
+      "diagnostic_answers": {
+        "5:4": "WRONG_VALUE",
+        "5 : 4": "WRONG_VALUE",
+        "5: 4": "WRONG_VALUE",
+        "14:13": "WRONG_FINAL_TARGET",
+        "14 : 13": "WRONG_FINAL_TARGET",
+        "14: 13": "WRONG_FINAL_TARGET",
+        "26:28": "EQUIVALENT_NOT_SIMPLEST",
+        "26 : 28": "EQUIVALENT_NOT_SIMPLEST",
+        "26: 28": "EQUIVALENT_NOT_SIMPLEST"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. 6 : 21, move 7 mini-units: 13 : 14.",
+        "WRONG_VALUE": "Check WHOSE share the 1/3 bites. It is 1/3 of OMAR's share — not 1/3 of the total, and not one whole unit. Cut every unit into 3 first.",
+        "WRONG_FINAL_TARGET": "Right numbers, wrong order — the question asks NOOR : OMAR. Read the target line again.",
+        "WRONG_CURRENT_AMOUNT": "Check the transfer: Noor gains EXACTLY what Omar loses, and the total mini-units must not change.",
+        "EQUIVALENT_NOT_SIMPLEST": "Right working — now give the ratio in its simplest form.",
+        "CALCULATION_ERROR": "Cut 2 : 7 into 6 : 21 (every unit into thirds), then move 1/3 of Omar's 21.",
+        "INVALID_FORMAT": "Type a ratio, like 5 : 7.",
+        "BLANK": "Omar's 7 units will not split into thirds. What could you cut?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — why cut at all?",
+          "prompt": "1/3 of 7 units is not a whole number of units. Rather than work with broken units, cut EVERY unit into 3 mini-units: 2 : 7 -> 6 : 21. Nothing about the money changed."
+        },
+        {
+          "title": "Mate — move the mini-units",
+          "prompt": "1/3 of Omar's 21 mini-units = 7 mini-units. Omar loses 7, Noor gains the SAME 7. One person's loss is exactly the other's gain."
+        },
+        {
+          "title": "Asher — check the total, read the order",
+          "prompt": "Before: 6 + 21 = 27. After: your two numbers must still add to 27 — transfers never change the total. And the question asks Noor FIRST."
+        }
+      ],
+      "model_clue": "Cut every unit into 3 (the giving fraction is thirds):\n\nNoor  2 units  -> [+++][+++]                              = 6 mini-units\nOmar  7 units  -> [+++][+++][+++][+++][+++][+++][+++]     = 21 mini-units\n\n1/3 of Omar's 21 = 7 mini-units --> move them to Noor.\n\nNoor:  6 + 7 = ?\nOmar:  21 - 7 = ?\nDo the last two sums yourself; check they still total 27.",
+      "final_target_check": "It asks the NEW ratio, NOOR first — and the two sides must still add up to the same total as before.",
+      "hints": [
+        "The gift is 1/3 of OMAR's share. His 7 units won't split into thirds cleanly — cut every unit into 3.",
+        "2 : 7 becomes 6 : 21. Now find 1/3 of Omar's mini-units and move them.",
+        "Noor gains exactly what Omar loses. Check: both sides should still total 27."
+      ],
+      "worked_solution": "Omar gives 1/3 of HIS OWN share, and 7 units will not split into thirds -> cut every unit into 3 mini-units.\n\nNoor : Omar = 2 : 7 = 6 : 21 (mini-units)\nOmar gives 1/3 × 21 = 7 mini-units to Noor.\n\nNoor: 6 + 7 = 13\nOmar: 21 - 7 = 14\n\nNew ratio Noor : Omar = 13 : 14 (no common factor — already simplest).\n\nCheck: total before 27, after 13 + 14 = 27. OK — a transfer never changes the total.\nFinal target: Noor : Omar (in that order) = 13 : 14.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P6",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Reverse percentage: the price paid is NOT 100%",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Re-skinned from ACS(J) WA1 2025 Q15 (70% sale, paid $570, usual price $1900); discount, price and context changed; answer-key verified.",
+      "source_summary": "Reverse percentage: from the discounted price paid, work back to the original 100%.",
+      "learner_purpose": "Asher, in a sale question the money in the stem is usually NOT the 100% — it is what is left after the discount.\n\nMate, name the percentage of every dollar amount BEFORE touching the calculator.",
+      "mini_lesson": {
+        "title": "Mini-lesson: paid % first, then walk to 100%",
+        "body": "Asher, '60% off' means the discount is 60%, so the price PAID is only 40% of the usual price. The $332 in this question is 40%, not 100%.\n\nWalk it back in two small steps:\n40% -> $332\n(so 10% -> $332 ÷ 4, or 1% -> $332 ÷ 40)\n100% -> ten times the 10%, or a hundred times the 1%.\n\nMate, the give-away that you used the wrong base: your 'usual price' comes out LOWER than the sale price, or the division turns ugly. A sale price can never be more than the usual price."
+      },
+      "prompt": "During a sale, a camera was sold at 60% off its usual price.\n\nRani paid $332 for the camera during the sale.\n\nWhat was the usual price of the camera?",
+      "expected_format": "numeric",
+      "canonical_answer": "830",
+      "accepted_answers": [
+        "830",
+        "830 dollars"
+      ],
+      "target_number": 830,
+      "error_tags": [
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "reverse percentage",
+        "paid % is not 100%",
+        "walk back to 100%"
+      ],
+      "diagnostic_answers": {
+        "531": "WRONG_VALUE",
+        "532": "WRONG_VALUE",
+        "199": "WRONG_VALUE",
+        "498": "WRONG_FINAL_TARGET",
+        "8": "UNIT_VALUE_NOT_FINAL"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. Paid = 40%, so 40% -> $332, 10% -> $83, 100% -> $830.",
+        "WRONG_VALUE": "You took a percentage OF THE SALE PRICE. The 60% acts on the USUAL price — the $332 is only 40% of that. Start from '40% -> $332'.",
+        "WRONG_FINAL_TARGET": "Re-read the target: it asks the USUAL price (the 100%), not the discount amount.",
+        "UNIT_VALUE_NOT_FINAL": "That looks like 1%. The usual price is the full 100%.",
+        "CALCULATION_ERROR": "Check what the 60% acts on: the discount is 60% of the USUAL price, so the $332 is the other 40%. Start from '40% -> $332', find 10%, then scale to 100%.",
+        "INVALID_FORMAT": "Type a whole number of dollars — no cents, no $ sign. If your answer came out with cents in it, check what the 60% acts on.",
+        "BLANK": "60% off — so what percent of the usual price did Rani actually pay?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — name the percentage of the $332",
+          "prompt": "60% off means Rani paid 100% - 60% = 40% of the usual price. So $332 wears the label '40%', not '100%'."
+        },
+        {
+          "title": "Mate — walk to 100%",
+          "prompt": "40% -> $332. Quarter it: 10% -> $83. Then ten of those gives the 100%. Small steps beat one scary division."
+        },
+        {
+          "title": "Asher — sanity check",
+          "prompt": "The usual price must be MORE than the sale price. If your answer is below $332, the base slipped."
+        }
+      ],
+      "model_clue": "The usual price is the full bar (100%). The sale cut 60% away:\n\nusual: [====== 60% off ======][== paid 40% ==]\n                                 ^ this 40% is the $332\n\n40%  -> $332\n10%  -> ?      (divide by 4)\n100% -> ?      (ten of those)\nWalk the last two steps yourself.",
+      "final_target_check": "It asks the USUAL price — the 100% — which must come out bigger than the $332 paid.",
+      "hints": [
+        "60% off means the $332 is only 40% of the usual price.",
+        "40% -> $332, so 10% -> $83.",
+        "100% is ten steps of 10%."
+      ],
+      "worked_solution": "60% off -> Rani paid 100% - 60% = 40% of the usual price.\n\n40%  -> $332\n10%  -> $332 ÷ 4 = $83\n100% -> $83 × 10 = $830\n\nCheck: 60% off $830 = $498 off -> $830 - $498 = $332 paid. OK\nFinal target: the USUAL price = $830 (bigger than the sale price, as it must be).",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P7",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "GST: the total paid is 109%",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Re-skinned from ACS(J) WA1 2025 Q16 (two rice dishes, $13.08 incl 9% GST, before-GST total $12; tutor-taught 109% method); items, ALL prices, the paid total ($15.26) and the answer ($14) changed so the tutored numbers cannot be recalled; GST rate kept at the real 9%; answer-key verified for the original.",
+      "source_summary": "Reverse percentage with GST: the amount paid is 109% of the price, so divide by 109 to find 1% first.",
+      "learner_purpose": "Asher, GST is the reverse-percentage trick wearing a disguise: the till receipt is MORE than 100%.\n\nMate, same engine as the camera — just a different label on the money.",
+      "mini_lesson": {
+        "title": "Mini-lesson: with GST, the receipt reads 109%",
+        "body": "Asher, GST of 9% is ADDED to the price. So the amount paid = the price (100%) + GST (9%) = 109% of the price.\n\nSame walk as before, uphill this time:\n109% -> the amount paid\n1%   -> paid ÷ 109\n100% -> a hundred of those.\n\nMate, the trap is subtracting 9% OF THE RECEIPT (receipt × 0.91). The 9% was charged on the PRICE, not on the receipt — so divide by 109, don't subtract 9% of the wrong thing.\n\nOne more thing: 109 is not a magic number. If an older paper uses 8% GST, the receipt reads 108% — it is always 100% + the GST rate printed on THAT paper."
+      },
+      "prompt": "The table shows the prices of 3 drinks at a stall, before GST.\n\nDrink        Price before GST\nKopi         $4.50\nTeh          $6.50\nMilo         $9.50\n\nGST of 9% is added to the bill.\n\nUncle Dan ordered two DIFFERENT drinks and paid $15.26 altogether, including GST.\n\nWhat was the total price of his two drinks BEFORE GST?",
+      "expected_format": "numeric",
+      "canonical_answer": "14",
+      "accepted_answers": [
+        "14",
+        "14 dollars"
+      ],
+      "target_number": 14,
+      "error_tags": [
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "GST 109%",
+        "divide by 109 for 1%",
+        "match the price pair"
+      ],
+      "diagnostic_answers": {
+        "15": "WRONG_VALUE",
+        "16": "WRONG_VALUE",
+        "11": "WRONG_VALUE"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. $15.26 is 109%, so 1% = $0.14 and 100% = $14 — the Kopi and the Milo.",
+        "WRONG_VALUE": "Check against the receipt: your before-GST total × 1.09 must give exactly $15.26. And remember what the 9% acts on — GST was charged on the PRICE (100%), so the receipt is 109%: divide by 109; don't take 9% of the receipt, and don't round the receipt.",
+        "UNIT_VALUE_NOT_FINAL": "That looks like 1%. The before-GST total is the full 100%.",
+        "CALCULATION_ERROR": "Check what the 9% acts on: GST was charged on the PRICE, so the receipt is 109%. 109% -> $15.26; find 1%, then 100%.",
+        "INVALID_FORMAT": "Type a whole number of dollars — no cents, no $ sign. If your answer came out with cents in it, check what the 9% acts on.",
+        "BLANK": "The $15.26 includes GST. What percentage of the before-GST price is it?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — label the receipt",
+          "prompt": "The price is 100%. GST adds 9%. So the $15.26 Uncle Dan paid wears the label '109%'."
+        },
+        {
+          "title": "Mate — shrink to 1%, grow to 100%",
+          "prompt": "1% = $15.26 ÷ 109 — the division comes out exact. Then a hundred of those is your 100%. Dividing by 109 looks scary; it is just the 1% step."
+        },
+        {
+          "title": "Asher — the hidden second question",
+          "prompt": "Which two DIFFERENT drinks add up to your 100% figure? Check the pairs — only one pair fits. That is how you know your answer makes sense."
+        }
+      ],
+      "model_clue": "receipt: [======== price 100% ========][ GST 9% ]\n           = 109% altogether = $15.26\n\n1%   -> $15.26 ÷ 109\n100% -> a hundred of those\n\nThen check the table: which pair of DIFFERENT drinks adds to your 100% figure?\nKopi + Teh, Kopi + Milo, or Teh + Milo — only one works.",
+      "final_target_check": "It asks the total BEFORE GST (the 100%) — not the GST amount, and not 1%.",
+      "hints": [
+        "The $15.26 includes GST, so it is 109% of the before-GST total.",
+        "1% = $15.26 ÷ 109. Watch the long division — it comes out exact.",
+        "100% = your 1% × 100. Then check which two different drinks add to it."
+      ],
+      "worked_solution": "Paid = price + 9% GST = 109% of the before-GST total.\n\n109% -> $15.26\n1%   -> $15.26 ÷ 109 = $0.14\n100% -> $0.14 × 100 = $14\n\nPair check (two DIFFERENT drinks): Kopi + Teh = $11.00; Kopi + Milo = $14.00 ✓; Teh + Milo = $16.00.\nUncle Dan ordered the Kopi and the Milo.\n\nCheck: $14 × 1.09 = $15.26. OK\n(And if the GST rate had been 8%, the receipt would read 108% — always 100% + the printed rate.)\nFinal target: the before-GST total = $14.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P9",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Percentage change: measure from the starting line",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "Re-skinned from Rosyth WA2 2025 Booklet B Q19 (muffins: 1000 sold, 200 more than June, 25% increase); names, numbers and context changed; answer-key verified for the original.",
+      "source_summary": "Percentage increase where the base month is hidden: the increase is measured against the ORIGINAL (earlier) amount.",
+      "learner_purpose": "Asher, a percentage change always needs a base — and the base is where the story STARTED, not where it ended.\n\nMate, the question hides the starting number on purpose. Find it first.",
+      "mini_lesson": {
+        "title": "Mini-lesson: percentage change starts from the starting line",
+        "body": "Asher, 'percentage increase' compares the CHANGE against the ORIGINAL amount — the earlier one, before the change:\n\npercentage increase = increase ÷ ORIGINAL × 100%\n\nThink of a race: how much further you ran is measured from the starting line, not the finish line.\n\nMate, papers love to hand you the FINAL number and hide the original. 'November was 60 more than October' gives you November — you must step BACK to October before you divide. Dividing by the final number is the classic wrong turn, whatever the answer looks like."
+      },
+      "prompt": "A fruit stall sold 660 mangoes in November.\n\nThis was 60 more mangoes than it sold in October.\n\nWhat was the percentage increase in the number of mangoes sold from October to November?",
+      "expected_format": "numeric",
+      "canonical_answer": "10",
+      "accepted_answers": [
+        "10",
+        "10 percent"
+      ],
+      "target_number": 10,
+      "error_tags": [
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "percentage increase",
+        "base is the original",
+        "step back to the start"
+      ],
+      "diagnostic_answers": {
+        "9": "WRONG_VALUE",
+        "600": "WRONG_FINAL_TARGET",
+        "60": "WRONG_FINAL_TARGET"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. October = 600, so the increase is 60 ÷ 600 × 100% = 10%.",
+        "WRONG_VALUE": "You divided by NOVEMBER's number — the finish line. A percentage increase is measured against the ORIGINAL month. Step back to October first.",
+        "WRONG_FINAL_TARGET": "That is a NUMBER of mangoes, not a percentage. The question asks the percentage increase from October.",
+        "CALCULATION_ERROR": "Step back first: October = 660 − 60. Then increase ÷ October × 100%.",
+        "INVALID_FORMAT": "Give the percentage as a whole number, without a % sign.",
+        "BLANK": "Which month is the STARTING line here — and do you know its number yet?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — find the starting line",
+          "prompt": "November (660) is the FINAL number. 'This was 60 more than October' means October = 660 − 60. The story started in October."
+        },
+        {
+          "title": "Mate — divide by the original",
+          "prompt": "Percentage increase = increase ÷ ORIGINAL × 100%. The increase is 60 and the original is October's number — not November's."
+        },
+        {
+          "title": "Asher — say what the percent is OF",
+          "prompt": "Your answer means 'the stall sold ___ percent more THAN OCTOBER'. If you cannot finish that sentence with the earlier month, the base slipped."
+        }
+      ],
+      "model_clue": "October  : [============ ? ============]        <- the starting line\nNovember : [============ ? ============][ +60 ]  <- 60 more than October\n\nStep 1: October = 660 − 60.\nStep 2: percentage increase = 60 ÷ (October's number) × 100%.\nDo both steps yourself — and divide by the STARTING month.",
+      "final_target_check": "It asks the percentage increase FROM OCTOBER — the change measured against October's number, as a percentage.",
+      "hints": [
+        "660 is November — the FINAL number. Find October first: 660 − 60.",
+        "Percentage increase = increase ÷ ORIGINAL × 100%. The original is October.",
+        "60 out of October's 600 — turn that into a percentage."
+      ],
+      "worked_solution": "November = 660. That is 60 MORE than October, so October = 660 − 60 = 600.\n\nPercentage increase = increase ÷ ORIGINAL × 100%\n= 60 ÷ 600 × 100% = 10%\n\nWhy not 60 ÷ 660? Because the change is measured from the STARTING line (October). 60 ÷ 660 ≈ 9.1% — and even when a wrong base happens to give a tidy number, it is still wrong: the base is the original, full stop.\nFinal target: the percentage increase from October = 10%.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-P8",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Two overlapping shapes: count the overlap ONCE",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Calculator: Not allowed. Write your working on foolscap paper.",
+      "source": "VERBATIM from ACS(J) WA1 2025 Q19, by Dave's direction (23 Jul 2026), to correct a taught method: the July session reached 92 cm² by adding both ovals without removing the double-counted overlap; the school's answer key gives 84 cm² (21u × 4). Deviation from the re-skin rule recorded in the build ledger.",
+      "source_summary": "Two overlapping ovals, each given as a ratio to the shaded overlap: match the overlap units across both ratios, then count the overlap once.",
+      "learner_purpose": "Asher, you have met this exact question before — and the method you were shown that day has a missing step. Today we fix it for good.\n\nMate, the overlap belongs to BOTH ovals. If you add the two ovals, you have paid for that piece twice.",
+      "mini_lesson": {
+        "title": "Mini-lesson: the overlap is inside BOTH shapes",
+        "body": "Asher, two ratios mention the same shaded overlap — with different unit sizes. Just like P4, the shared thing must match first:\n\nA : shaded = 7 : 1  -> ×2 ->  14 : 2\nB : shaded = 9 : 2  ->        9 : 2\n\nNow the shaded overlap is 2 units in both rows, so one unit means the same thing everywhere.\n\nHere is the step that was missed in July: Oval A's area INCLUDES the overlap, and Oval B's area INCLUDES it too. Add A + B and you have counted that piece TWICE — but it only exists once on the page. So the whole figure is:\n\nwhole figure = A + B − overlap\n\nMate, adding 56 + 36 = 92 FEELS finished, but 8 of those square centimetres were paid for twice. Subtract the overlap once and the figure is honest again."
+      },
+      "prompt": "The figure below shows Oval A overlapping Oval B. The ratio of the area of Oval A to the shaded area is 7 : 1. The ratio of the area of Oval B to the shaded area is 9 : 2. The area of the shaded area is 8 cm². Find the area of the whole figure.",
+      "figure": "        ---------\n     ---         ---   ---------\n   //               /--         --\\\n  /                /##\\            \\\n |                |####|            |\n |     A          |####|      B     |\n |                |####|            |\n  \\                \\##/            /\n   \\\\               \\--         --/\n     ---         ---   ---------\n        ---------\n\n       shaded = the # overlap",
+      "figure_alt": "Oval A on the left overlapping the smaller Oval B on the right; the lens-shaped region where the two outlines cross is shaded with hash marks.",
+      "figure_caption": "(The # region is part of Oval A AND part of Oval B at the same time — it is where the two ovals overlap, not a separate piece between them.)",
+      "expected_format": "numeric",
+      "canonical_answer": "84",
+      "accepted_answers": [
+        "84",
+        "84 cm2",
+        "84 cm^2",
+        "84cm2"
+      ],
+      "target_number": 84,
+      "error_tags": [
+        "OVERLAP_COUNTED_TWICE",
+        "CONFUSED_PARTS_AND_UNITS",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "overlapping areas",
+        "match the overlap units",
+        "count the overlap once"
+      ],
+      "diagnostic_answers": {
+        "92": "WRONG_VALUE",
+        "56": "WRONG_FINAL_TARGET",
+        "36": "WRONG_FINAL_TARGET",
+        "21": "UNIT_VALUE_NOT_FINAL"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. 14u + 9u − 2u = 21u, and 2u = 8 so 1u = 4: the whole figure is 84 cm².",
+        "WRONG_VALUE": "This is the July answer — and it counts the shaded piece twice. Oval A's 56 already contains the 8 cm² overlap, and Oval B's 36 contains the SAME 8 cm². Adding them pays for that piece twice: subtract it once.",
+        "WRONG_FINAL_TARGET": "That is ONE oval's area. The question asks the WHOLE figure — both ovals together, overlap counted once.",
+        "UNIT_VALUE_NOT_FINAL": "That looks like the unit count (21 units). The question asks the area in cm² — multiply by the value of 1 unit.",
+        "CALCULATION_ERROR": "Match the shaded units first (7:1 -> 14:2 against 9:2), then whole figure = A + B − overlap.",
+        "INVALID_FORMAT": "Type the area as a whole number of cm², without the units.",
+        "BLANK": "The two ratios both mention the shaded area — but with different numbers. What has to match first?"
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — make the shaded units match",
+          "prompt": "A : shaded = 7 : 1 and B : shaded = 9 : 2. The shaded piece is the SAME piece in both — scale the first ratio to 14 : 2 so 'shaded' is 2 units in both rows."
+        },
+        {
+          "title": "Mate — where does the 8 cm² live?",
+          "prompt": "Shaded = 2 units = 8 cm², so 1 unit = 4 cm². And notice: that shaded piece sits INSIDE Oval A and INSIDE Oval B at the same time."
+        },
+        {
+          "title": "Asher — count it once",
+          "prompt": "Whole figure = A + B − overlap = 14u + 9u − 2u. Adding 14u + 9u alone counts the overlap twice — the subtraction puts the figure back to what is actually on the page."
+        }
+      ],
+      "model_clue": "Match the shared shaded piece first (like P4's shared person):\n\nA : shaded = 7 : 1 = 14 : 2\nB : shaded = 9 : 2 =  9 : 2\n                       ^ shaded now 2u in both\n\nshaded = 2u = 8 cm²  ->  1u = ?\n\nTwo gate questions before you add anything:\nIs the ### piece inside Oval A? Is it inside Oval B too?\nThen build the whole figure yourself — every piece of the page\ncounted exactly ONCE.",
+      "final_target_check": "It asks the WHOLE FIGURE in cm² — both ovals with the overlap counted exactly once — not one oval, and not the unit count.",
+      "hints": [
+        "Both ratios mention the shaded overlap — scale 7 : 1 to 14 : 2 so the shaded units match.",
+        "2u = 8 cm², so 1u = 4 cm². Now, is the overlap inside Oval A? Is it inside Oval B too?",
+        "The gate: the shaded piece is inside BOTH ovals. If you add A and B, how many times have you counted it — and what must you do about that?"
+      ],
+      "worked_solution": "Match the shared member (the shaded overlap):\nA : shaded = 7 : 1 = 14 : 2\nB : shaded = 9 : 2 =  9 : 2\n\nShaded = 2u = 8 cm²  ->  1u = 4 cm²\n\nWhole figure = A + B − overlap (the overlap sits inside BOTH ovals, but exists once):\n= 14u + 9u − 2u = 21u = 21 × 4 = 84 cm²\n\nWhy not 92? A = 14u = 56 cm² INCLUDES the 8 cm² overlap; B = 9u = 36 cm² INCLUDES the same 8 cm². 56 + 36 = 92 counts that piece twice; 92 − 8 = 84 counts it once. The school's answer key confirms 84.\n\nGuard (so you don't over-use this): subtract the overlap ONLY because each stated area already includes it. Always ask the gate question first — 'is this piece inside both shapes?' If a question gives areas that do NOT share any piece, there is nothing to subtract; you just add.\nFinal target: the whole figure = 84 cm².",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ],
+  "checkpoint_questions": [
+    {
+      "question_id": "FRP-MMX-C1",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold solve 1",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Fresh cold-stem; re-skinned; no method label shown.",
+      "source_summary": "Independent cold-stem solve.",
+      "prompt": "The figure below shows Circle P overlapping Circle Q. The ratio of the area of Circle P to the shaded area is 5 : 1. The ratio of the area of Circle Q to the shaded area is 7 : 2. The area of the shaded area is 6 cm². Find the area of the whole figure.",
+      "figure": "        ---------\n     ---         ---   ---------\n   //               /--         --\\\n  /                /##\\            \\\n |                |####|            |\n |     P          |####|      Q     |\n |                |####|            |\n  \\                \\##/            /\n   \\\\               \\--         --/\n     ---         ---   ---------\n        ---------\n\n       shaded = the # overlap",
+      "figure_alt": "Circle P on the left overlapping the smaller Circle Q on the right; the lens-shaped region where the two outlines cross is shaded with hash marks.",
+      "figure_caption": "(The # region is part of Circle P AND part of Circle Q at the same time — it is where the two circles overlap, not a separate piece between them.)",
+      "expected_format": "numeric",
+      "canonical_answer": "45",
+      "accepted_answers": [
+        "45",
+        "45 cm2",
+        "45 cm^2",
+        "45cm2"
+      ],
+      "target_number": 45,
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nDecide what KIND of question this is and what the exact target is. Choose your method, work it through fully, then re-read the last line for the exact target.\nDo not type your answer yet. Show your working clearly.\n\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage walk (1% / 10%)",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount at the end / after",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units on a bar",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "OVERLAP_COUNTED_TWICE",
+        "CONFUSED_PARTS_AND_UNITS",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "overlapping areas",
+        "shared-member units"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "It asks the area of the whole figure, in cm².",
+      "hints": [],
+      "worked_solution": "Match the shared member (the shaded overlap):\nP : shaded = 5 : 1 = 10 : 2\nQ : shaded = 7 : 2 =  7 : 2\n\nShaded = 2u = 6 cm²  ->  1u = 3 cm²\n\nWhole figure = P + Q − overlap = 10u + 7u − 2u = 15u = 15 × 3 = 45 cm²\n\nCheck: P = 30 cm² and Q = 21 cm² both contain the same 6 cm² overlap; 30 + 21 − 6 = 45. (30 + 21 = 51 would count the overlap twice.)\nFinal target: the whole figure = 45 cm².",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-C2",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold solve 2",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Fresh cold-stem; re-skinned; no method label shown.",
+      "source_summary": "Independent cold-stem solve.",
+      "prompt": "Wen spent 2/5 of her money on a tablet and 1/4 of her money on headphones.\n\nShe then spent 1/2 of her remaining money on a printer during a sale, at 25% off the printer's usual price. She saved the rest.\n\nWen had $600 at first.\n\nWhat was the usual price of the printer?",
+      "expected_format": "numeric",
+      "canonical_answer": "140",
+      "accepted_answers": [
+        "140",
+        "140 dollars"
+      ],
+      "target_number": 140,
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nDecide what KIND of question this is and what the exact target is. Choose your method, work it through fully, then re-read the last line for the exact target.\nDo not type your answer yet. Show your working clearly.\n\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage walk (1% / 10%)",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount at the end / after",
+            "C. A total or whole",
+            "D. A difference",
+            "E. The cost of one item",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units on a bar",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "FRACTION_OF_ORIGINAL_NOT_REMAINDER",
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "fraction of the remainder",
+        "reverse percentage anchor"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole-number dollar amount.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "It asks the printer's usual price, in dollars.",
+      "hints": [],
+      "worked_solution": "Fractions of the whole: tablet 2/5, headphones 1/4.\nRemainder = 1 − 2/5 − 1/4 = 20/20 − 8/20 − 5/20 = 7/20.\nRemaining money = 7/20 × $600 = $210.\n\nPrinter (amount PAID) = 1/2 OF THE REMAINDER = 1/2 × $210 = $105.\n\n25% off -> she paid 75% of the usual price:\n75%  -> $105\n25%  -> $35\n100% -> $105 + $35 = $140.\n\nCheck: 25% off $140 = $35 off -> $105 paid; spent $240 + $150 + $105 = $495; saved $105 = the other half of the remainder. OK\nFinal target: the printer's USUAL price = $140 (not the $105 she paid, and not the headphones' $150).",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-C3",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold solve 3",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Fresh cold-stem; re-skinned; no method label shown.",
+      "source_summary": "Independent cold-stem solve.",
+      "prompt": "A sum of money was shared between Tara and Uma in the ratio 3 : 5.\n\nUma gave 1/4 of her share to Tara.\n\nWhat is the new ratio of Tara's share to Uma's share of the money?",
+      "expected_format": "ratio_units",
+      "canonical_answer": "17 : 15",
+      "accepted_answers": [
+        "17:15",
+        "17 : 15",
+        "17 to 15"
+      ],
+      "target_ratio_units": {
+        "left": 17,
+        "right": 15
+      },
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nDecide what KIND of question this is and what the exact target is. Choose your method, work it through fully, then re-read the last line for the exact target.\nDo not type your answer yet. Show your working clearly.\n\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage walk (1% / 10%)",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount at the end / after",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units on a bar",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "CONFUSED_PARTS_AND_UNITS",
+        "REVERSE_TRANSFER",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "fraction-of-share transfer",
+        "new ratio"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "WRONG_CURRENT_AMOUNT": "Try again.",
+        "INVALID_FORMAT": "Try again: give your answer as a ratio, like 5 : 7.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "It asks the new ratio, Tara's share first.",
+      "hints": [],
+      "worked_solution": "Uma gives 1/4 of HER OWN share, and 5 units will not split into quarters -> cut every unit into 4 mini-units.\n\nTara : Uma = 3 : 5 = 12 : 20 (mini-units)\nUma gives 1/4 × 20 = 5 mini-units to Tara.\n\nTara: 12 + 5 = 17\nUma: 20 − 5 = 15\n\nNew ratio Tara : Uma = 17 : 15 (no common factor — already simplest).\n\nCheck: total before 32, after 17 + 15 = 32. OK — a transfer never changes the total.\nFinal target: Tara : Uma (in that order) = 17 : 15.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-C4",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold solve 4",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Fresh cold-stem; re-skinned; no method label shown.",
+      "source_summary": "Independent cold-stem solve.",
+      "prompt": "In March, a bakery sold 900 cupcakes.\n\nThis was 180 more cupcakes than it sold in February.\n\nWhat was the percentage increase in the number of cupcakes sold from February to March?",
+      "expected_format": "numeric",
+      "canonical_answer": "25",
+      "accepted_answers": [
+        "25",
+        "25 percent"
+      ],
+      "target_number": 25,
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nDecide what KIND of question this is and what the exact target is. Choose your method, work it through fully, then re-read the last line for the exact target.\nDo not type your answer yet. Show your working clearly.\n\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage walk (1% / 10%)",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount at the end / after",
+            "C. A total or whole",
+            "D. A percentage",
+            "E. A difference",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units on a bar",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "percentage increase",
+        "base is the original"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: give the percentage as a whole number, without a % sign.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "It asks a percentage increase.",
+      "hints": [],
+      "worked_solution": "March = 900. That is 180 MORE than February, so February = 900 − 180 = 720.\n\nPercentage increase = increase ÷ ORIGINAL × 100%\n= 180 ÷ 720 × 100% = 25%\n\nWhy not 180/900? The increase is measured against where you STARTED (February), not where you ended. 180 ÷ 900 gives 20% — a clean-looking number that is still WRONG, because the base is the original month. Tidy numbers are not proof of a right base; the STARTING point is.\nFinal target: the percentage increase from February = 25%.",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    },
+    {
+      "question_id": "FRP-MMX-C5",
+      "topic": "Fractions / Ratio / Percentage",
+      "subtopic": "Cold solve 5",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Calculator: Allowed. Write your working on foolscap paper before entering the answer.",
+      "source": "Fresh cold-stem; re-skinned; no method label shown.",
+      "source_summary": "Independent cold-stem solve.",
+      "prompt": "Hana and Iman had badges in the ratio 1 : 4.\n\nAfter Hana bought another 45 badges, the ratio of Hana's badges to Iman's badges became 2 : 3.\n\nHow many badges did Iman have?",
+      "expected_format": "numeric",
+      "canonical_answer": "108",
+      "accepted_answers": [
+        "108",
+        "108 badges"
+      ],
+      "target_number": 108,
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Solve this fully on foolscap first.\n\nDecide what KIND of question this is and what the exact target is. Choose your method, work it through fully, then re-read the last line for the exact target.\nDo not type your answer yet. Show your working clearly.\n\nWhen you are done, click:\n\"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage walk (1% / 10%)",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. Amount at first",
+            "B. Amount at the end / after",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units on a bar",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "CONFUSED_PARTS_AND_UNITS",
+        "WRONG_STAGE_TOTAL",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "unchanged quantity",
+        "equalise across before and after"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "It asks how many badges Iman had.",
+      "hints": [],
+      "worked_solution": "Iman's badges never change — only Hana buys more. So make IMAN's units match across the two stages.\n\nBefore: Hana : Iman = 1 : 4     After: Hana : Iman = 2 : 3\nIman is 4 in one and 3 in the other -> LCM(4, 3) = 12.\n\nBefore: 1 : 4 = 3 : 12\nAfter:  2 : 3 = 8 : 12\n\nHana grew from 3u to 8u -> 5u = 45 badges -> 1u = 9.\nIman = 12u = 108 badges.\n\nCheck: Hana before = 27, after = 27 + 45 = 72; 72 : 108 = 2 : 3. OK\nFinal target: IMAN's badges = 108 (the unchanged person).",
+      "source_authority": "D_DAVE_REVIEWED_AI_DRAFT"
+    }
+  ]
+}
+    </script>
+    <script>
+const FEEDBACK_CODES = Object.freeze({
+  CORRECT: "CORRECT",
+  BLANK: "BLANK",
+  INVALID_FORMAT: "INVALID_FORMAT",
+  FRACTION_REQUIRED: "FRACTION_REQUIRED",
+  MIXED_NUMBER_REQUIRED: "MIXED_NUMBER_REQUIRED",
+  EQUIVALENT_NOT_SIMPLEST: "EQUIVALENT_NOT_SIMPLEST",
+  PLACE_VALUE_DENOMINATOR_ERROR: "PLACE_VALUE_DENOMINATOR_ERROR",
+  WRONG_VALUE: "WRONG_VALUE",
+  CALCULATION_ERROR: "CALCULATION_ERROR",
+  WRONG_START_RATIO: "WRONG_START_RATIO",
+  TRANSFER_APPLIED_TO_WRONG_PERSON: "TRANSFER_APPLIED_TO_WRONG_PERSON",
+  WRONG_CURRENT_AMOUNT: "WRONG_CURRENT_AMOUNT",
+  USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+  UNIT_VALUE_NOT_FINAL: "UNIT_VALUE_NOT_FINAL",
+  WRONG_BASE_ORIGINAL: "WRONG_BASE_ORIGINAL",
+  WRONG_BASE_REMAINDER: "WRONG_BASE_REMAINDER",
+  WRONG_LEFTOVER_STAGE: "WRONG_LEFTOVER_STAGE",
+  INTERMEDIATE_NOT_FINAL: "INTERMEDIATE_NOT_FINAL",
+  WRONG_FINAL_TARGET: "WRONG_FINAL_TARGET",
+  WRONG_CATEGORY: "WRONG_CATEGORY",
+  MISSING_UNIT: "MISSING_UNIT"
+});
+
+const PLACE_VALUE_DENOMINATORS = new Set([10, 100, 1000]);
+
+function normaliseAnswer(input) {
+  return String(input ?? "")
+    .replace(/\u2044/g, "/")
+    .trim()
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+/g, " ");
+}
+
+function getFeedbackMessage(code, mode, expectedFormat = "fraction", question = null) {
+  const mixedFormat = expectedFormat.includes("mixed");
+  const questionFeedback = question?.feedback_by_code?.[code];
+
+  if (questionFeedback) return questionFeedback;
+
+  if (code === FEEDBACK_CODES.CORRECT) return "Correct.";
+  if (code === FEEDBACK_CODES.BLANK) return mode === "Practice" ? "Try typing an answer." : "Try again.";
+  if (code === FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST) {
+    return mode === "Practice"
+      ? "Equivalent, but not in simplest form. Try simplifying it."
+      : "Try again: equivalent but not in simplest form.";
+  }
+  if (code === FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR) {
+    return mode === "Practice"
+      ? "Try again: check the decimal place value."
+      : "Try again: check the decimal place value.";
+  }
+  if (code === FEEDBACK_CODES.MIXED_NUMBER_REQUIRED || (code === FEEDBACK_CODES.INVALID_FORMAT && mixedFormat)) {
+    return "Try again: write your answer as a mixed number.";
+  }
+  if (code === FEEDBACK_CODES.INVALID_FORMAT && expectedFormat === "numeric") {
+    return "Try again: use a whole-number answer.";
+  }
+  if (code === FEEDBACK_CODES.FRACTION_REQUIRED || code === FEEDBACK_CODES.INVALID_FORMAT) {
+    return "Try again: answer must be written as a fraction.";
+  }
+  if (code === FEEDBACK_CODES.WRONG_BASE_ORIGINAL) return "Try again: check what the fraction is about.";
+  if (code === FEEDBACK_CODES.WRONG_BASE_REMAINDER) return "Try again: check what we started with.";
+  if (code === FEEDBACK_CODES.WRONG_LEFTOVER_STAGE) return "Try again: check what is left.";
+  if (code === FEEDBACK_CODES.WRONG_START_RATIO) return "Try again: check the starting ratio.";
+  if (code === FEEDBACK_CODES.TRANSFER_APPLIED_TO_WRONG_PERSON) return "Try again: check who changed.";
+  if (code === FEEDBACK_CODES.WRONG_CURRENT_AMOUNT) return "Try again: check the new amount now.";
+  if (code === FEEDBACK_CODES.USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL) return "Try again: the story changed before this clue.";
+  if (code === FEEDBACK_CODES.UNIT_VALUE_NOT_FINAL) return "Try again: this looks like one unit, not the final answer.";
+  if (code === FEEDBACK_CODES.INTERMEDIATE_NOT_FINAL) return "Try again: this looks like a halfway answer.";
+  if (code === FEEDBACK_CODES.WRONG_FINAL_TARGET) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.WRONG_CATEGORY) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.MISSING_UNIT) return "Try again: include the unit or group.";
+  if (code === FEEDBACK_CODES.CALCULATION_ERROR) return "Try again: check the calculation.";
+
+  return "Try again.";
+}
+
+function validateQuestionAnswer(question, rawInput) {
+  if (question.expected_format === "multi_part") {
+    return validateMultiPartQuestion(question, rawInput);
+  }
+
+  const answer = normaliseAnswer(rawInput);
+
+  if (!answer) {
+    return result(FEEDBACK_CODES.BLANK, answer);
+  }
+
+  if (question.expected_format === "three_denominators") {
+    return validateDenominatorSequence(question, answer);
+  }
+
+  if (question.expected_format === "denominator_only") {
+    return validateDenominatorOnly(question, answer);
+  }
+
+  if (question.expected_format === "mcq") {
+    return validateMcq(question, answer);
+  }
+
+  if (question.expected_format === "numeric") {
+    return validateNumeric(question, answer);
+  }
+
+  if (question.expected_format === "ratio") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "short_text") {
+    return validateShortText(question, answer);
+  }
+
+  if (question.expected_format === "ratio_units") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "error_explanation_plus_fraction") {
+    return validateErrorExplanation(question, answer);
+  }
+
+  if (question.expected_format === "yes_no_plus_mixed_number") {
+    return validateYesNoMixed(question, answer);
+  }
+
+  if (question.expected_format === "mixed_number") {
+    return validateMixedNumber(question, answer);
+  }
+
+  if (question.expected_format === "fraction_optional_unit") {
+    return validateFractionWithOptionalUnit(question, answer);
+  }
+
+  return validateFraction(question, answer);
+}
+
+function validateMultiPartQuestion(question, rawInput) {
+  if (!question.answer_parts?.length) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, {});
+  }
+
+  const answers = rawInput && typeof rawInput === "object" ? rawInput : {};
+  const partResults = (question.answer_parts ?? []).map((part) => {
+    const partQuestion = {
+      ...question,
+      ...part,
+      expected_format: part.expected_format,
+      feedback_by_code: part.feedback_by_code ?? question.feedback_by_code,
+      answer_parts: undefined
+    };
+
+    return {
+      part_id: part.part_id,
+      result: validateQuestionAnswer(partQuestion, answers[part.part_id] ?? "")
+    };
+  });
+  const normalised = Object.fromEntries(partResults.map((part) => [part.part_id, part.result.normalised]));
+  const firstIssue = partResults.find((part) => !part.result.isCorrect);
+
+  if (firstIssue) {
+    return result(firstIssue.result.code, normalised);
+  }
+
+  return result(FEEDBACK_CODES.CORRECT, normalised);
+}
+
+function validateDenominatorSequence(question, answer) {
+  const numbers = answer.split(/[,\s]+/).filter(Boolean);
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).replace(/\s*,\s*/g, ",")) ?? [];
+  const compact = answer.replace(/\s*,\s*/g, ",");
+
+  if (accepted.includes(compact) || arraysEqual(numbers, ["10", "100", "1000"])) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateDenominatorOnly(question, answer) {
+  if (question.accepted_answers?.includes(answer)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateMcq(question, answer) {
+  const cleaned = answer.toUpperCase().replace(/\.$/, "");
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).toUpperCase()) ?? [];
+
+  if (accepted.includes(cleaned)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const optionFeedbackCode = question.option_feedback_codes?.[cleaned];
+  if (optionFeedbackCode && FEEDBACK_CODES[optionFeedbackCode]) {
+    return result(FEEDBACK_CODES[optionFeedbackCode], answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  if (/^[A-D]$/i.test(cleaned)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+}
+
+function validateNumeric(question, answer) {
+  const parsed = parseWholeNumberAnswer(answer);
+
+  if (!parsed.ok) {
+    return result(parsed.code, answer);
+  }
+
+  const targetNumber = getTargetNumber(question);
+  if (!Number.isInteger(targetNumber)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.value === targetNumber) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, String(parsed.value));
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.CALCULATION_ERROR, answer);
+}
+
+function validateShortText(question, answer) {
+  const accepted = question.accepted_answers?.map((item) => normaliseTextAnswer(item)) ?? [];
+  const normalisedText = normaliseTextAnswer(answer);
+
+  if (accepted.includes(normalisedText) || matchesRequiredTerms(question, normalisedText)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateRatioUnits(question, answer) {
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseRatioUnits(answer);
+  if (!parsed.ok) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const target = question.target_ratio_units;
+  if (!target || !Number.isInteger(target.left) || !Number.isInteger(target.right)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.left === target.left && parsed.right === target.right) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (parsed.left * target.right === parsed.right * target.left) {
+    return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+}
+
+function validateErrorExplanation(question, answer) {
+  const hasFinalFraction = hasTargetFractionToken(question, answer);
+  const hasMistakeEvidence = hasP10MistakeEvidence(answer);
+
+  if (hasFinalFraction && hasMistakeEvidence) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const parsedFraction = parseFraction(answer);
+  if (parsedFraction.ok && !isFractionPartSimplest(parsedFraction.value)) {
+    return evaluateFractionValue(question, parsedFraction.value, "fraction", answer);
+  }
+
+  if (hasFractionToken(answer, "48/100")) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  if (answer.includes("48/10") || answer.includes("24/5")) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateYesNoMixed(question, answer) {
+  const hasFinalMixedNumber = hasTargetMixedNumberToken(question, answer);
+  const hasNotSimplestSignal = hasP11NotSimplestSignal(answer);
+
+  if (hasFinalMixedNumber && hasNotSimplestSignal) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (hasFinalMixedNumber) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (question.equivalent_not_simplest_examples?.some((item) => answer.includes(normaliseAnswer(item)))) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function validateFraction(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.FRACTION_REQUIRED, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseFraction(answer);
+  if (!parsed.ok) {
+    return result(parsed.code ?? FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return evaluateFractionValue(question, parsed.value, "fraction", answer);
+}
+
+function validateFractionWithOptionalUnit(question, answer) {
+  return validateFraction(question, stripOptionalUnit(answer, question.allowed_unit_tokens ?? []));
+}
+
+function validateMixedNumber(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  if (mixed.code === FEEDBACK_CODES.INVALID_FORMAT && mixed.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  if (fraction.code === FEEDBACK_CODES.INVALID_FORMAT && fraction.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function evaluateFractionValue(question, parsed, parsedFormat, normalised) {
+  const target = targetToImproperFraction(question.target_value);
+
+  if (!target) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  const input = toImproperFraction(parsed);
+
+  if (sameValue(input, target)) {
+    if (parsedFormat === "improper_for_mixed") {
+      return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, normalised);
+    }
+
+    if (!isFractionPartSimplest(parsed)) {
+      return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, normalised);
+    }
+
+    return result(FEEDBACK_CODES.CORRECT, normalised);
+  }
+
+  if (parsedFormat === "mixed_number" && parsed.whole !== question.target_value?.whole) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  if (looksLikePlaceValueError(question, parsed)) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, normalised);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+}
+
+function parseFraction(answer) {
+  const match = answer.match(/^(\d+)\/(\d+)$/);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (numerator <= 0 || denominator <= 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole: 0,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseMixedNumber(answer) {
+  const match = answer.match(/^(\d+)(?:\s+and)?\s+(\d+)\/(\d+)$/i);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+
+  const whole = Number(match[1]);
+  const numerator = Number(match[2]);
+  const denominator = Number(match[3]);
+
+  if (!Number.isInteger(whole) || !Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (whole <= 0 || numerator <= 0 || denominator <= 0 || numerator >= denominator) {
+    return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseRatioUnits(answer) {
+  const match = answer
+    .toLowerCase()
+    .match(/^(\d+)\s*(?:units?)?\s*(?::|to)\s*(\d+)\s*(?:units?)?$/);
+
+  if (!match) return { ok: false };
+
+  const left = Number(match[1]);
+  const right = Number(match[2]);
+
+  if (!Number.isInteger(left) || !Number.isInteger(right) || left <= 0 || right <= 0) {
+    return { ok: false };
+  }
+
+  return {
+    ok: true,
+    left,
+    right
+  };
+}
+
+function targetToImproperFraction(target) {
+  if (!target) return null;
+
+  return {
+    numerator: target.whole * target.denominator + target.numerator,
+    denominator: target.denominator
+  };
+}
+
+function toImproperFraction(value) {
+  return {
+    numerator: value.whole * value.denominator + value.numerator,
+    denominator: value.denominator
+  };
+}
+
+function sameValue(left, right) {
+  return left.numerator * right.denominator === right.numerator * left.denominator;
+}
+
+function isFractionPartSimplest(value) {
+  return gcd(value.numerator, value.denominator) === 1;
+}
+
+function looksLikePlaceValueError(question, parsed) {
+  if (!question.place_value_denominator) return false;
+  if (!PLACE_VALUE_DENOMINATORS.has(parsed.denominator)) return false;
+
+  return parsed.denominator !== question.place_value_denominator;
+}
+
+function getDiagnosticFeedbackCode(question, answer) {
+  const diagnostics = question.diagnostic_answers ?? {};
+  const candidates = [answer, normaliseAnswer(answer), normaliseAnswer(answer).toLowerCase(), normaliseAnswer(answer).toUpperCase()];
+
+  for (const candidate of candidates) {
+    const code = diagnostics[candidate];
+    if (code && FEEDBACK_CODES[code]) {
+      return FEEDBACK_CODES[code];
+    }
+  }
+
+  return "";
+}
+
+function normaliseTextAnswer(value) {
+  return normaliseAnswer(value)
+    .toLowerCase()
+    .replace(/[:.,;]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function matchesRequiredTerms(question, normalisedText) {
+  const requiredTerms = question.required_terms ?? [];
+
+  return requiredTerms.length > 0 && requiredTerms.every((group) => group.some((term) => normalisedText.includes(term)));
+}
+
+function parseWholeNumberAnswer(answer) {
+  const cleanedAnswer = answer.replace(/^\$\s*/, "");
+  const match = cleanedAnswer.match(/^(\d+)(.*)$/);
+
+  if (!match) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const rest = match[2].trim();
+  if (rest && (/^[\d./+\-*=/]/.test(rest) || /\d+\s*\/\s*\d+/.test(rest) || /\d+\.\d+/.test(rest))) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const value = Number(match[1]);
+  if (!Number.isInteger(value)) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return { ok: true, value };
+}
+
+function stripOptionalUnit(answer, allowedUnitTokens) {
+  if (!allowedUnitTokens.length) return answer;
+
+  const unitPattern = allowedUnitTokens.map((unit) => escapeRegExp(unit)).join("|");
+  const match = answer.match(new RegExp(`^(.+?)\\s*(?:${unitPattern})\\.?$`, "i"));
+
+  return match ? match[1].trim() : answer;
+}
+
+function getTargetNumber(question) {
+  if (Number.isInteger(question.target_number)) return question.target_number;
+  if (Number.isInteger(question.expected_numeric_value)) return question.expected_numeric_value;
+
+  const canonical = normaliseAnswer(question.canonical_answer ?? "");
+  const match = canonical.match(/^(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function hasTargetFractionToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole !== 0) return false;
+
+  return hasFractionToken(answer, `${target.numerator}/${target.denominator}`);
+}
+
+function hasTargetMixedNumberToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole <= 0) return false;
+
+  const mixedNumber = `${target.whole} ${target.numerator}/${target.denominator}`;
+  const mixedNumberWithAnd = `${target.whole} and ${target.numerator}/${target.denominator}`;
+
+  return hasPhraseToken(answer, mixedNumber) || hasPhraseToken(answer, mixedNumberWithAnd);
+}
+
+function hasP10MistakeEvidence(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    hasFractionToken(answer, "48/100") ||
+    /\bnot\s+48\/10\b/.test(lower) ||
+    /\bdenominator\b.{0,30}\b100\b/.test(lower) ||
+    /\bhundredths?\b/.test(lower)
+  );
+}
+
+function hasP11NotSimplestSignal(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    /\bno\b/.test(lower) ||
+    /\bnot\s+(?:in\s+)?simplest(?:\s+form)?\b/.test(lower) ||
+    /\bnot\s+simplified\b/.test(lower)
+  );
+}
+
+function hasFractionToken(answer, fraction) {
+  return hasPhraseToken(answer, fraction);
+}
+
+function hasPhraseToken(answer, phrase) {
+  const escaped = escapeRegExp(phrase);
+  const tokenPattern = new RegExp(`(^|[^\\d])${escaped}([^\\d]|$)`, "i");
+
+  return tokenPattern.test(answer);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasDecimalNumber(answer) {
+  return /\d+\.\d+/.test(answer);
+}
+
+function gcd(left, right) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+
+  while (b !== 0) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+
+  return a;
+}
+
+function arraysEqual(left, right) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function result(code, normalised) {
+  return {
+    code,
+    isCorrect: code === FEEDBACK_CODES.CORRECT,
+    normalised
+  };
+}
+
+const REMOTE_LOGGING_ENDPOINT = "";
+
+const checkpointLoggingConfig = {
+  remoteEndpoint: REMOTE_LOGGING_ENDPOINT
+};
+
+const CHECKPOINT_ATTEMPT_EVENT = "checkpoint_attempt";
+const SCHEMA_VERSION = "0.1";
+const SOURCE = "browser-local-first";
+
+function logCheckpointAttempt(session, attempt) {
+  try {
+    if (!session?.sessionId || !session?.quizId) {
+      return { ok: false, error: "Missing checkpoint session details." };
+    }
+
+    if (!attempt?.question_id || !Number.isInteger(attempt?.attempt_number)) {
+      return { ok: false, error: "Missing checkpoint attempt details." };
+    }
+
+    const endpoint = checkpointLoggingConfig.remoteEndpoint.trim();
+
+    if (!endpoint) {
+      return { ok: true, mode: "local-only" };
+    }
+
+    const payload = buildCheckpointAttemptPayload(session, attempt);
+
+    // Optional remote logging integration point. Blank by default for the static export workflow.
+    // Remote logging is fire-and-forget so it never blocks local checkpoint flow.
+    sendCheckpointAttempt(endpoint, payload);
+    return { ok: true, mode: "remote-queued" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown logging error."
+    };
+  }
+}
+
+function buildCheckpointAttemptPayload(session, attempt) {
+  return {
+    event_type: CHECKPOINT_ATTEMPT_EVENT,
+    schema_version: SCHEMA_VERSION,
+    session_id: session.sessionId,
+    quiz_id: session.quizId,
+    question_id: attempt.question_id,
+    attempt_number: attempt.attempt_number,
+    raw_input: attempt.raw_input,
+    normalised_input: attempt.normalised_input ?? "",
+    feedback_code: attempt.feedback_code,
+    is_correct: attempt.is_correct,
+    attempt_timestamp: attempt.timestamp,
+    client_timezone: getClientTimezone(),
+    source: SOURCE
+  };
+}
+
+async function sendCheckpointAttempt(endpoint, payload) {
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.warn("Checkpoint remote logging failed.", error);
+  }
+}
+
+function getClientTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+}
+
+const STORAGE_KEY_PREFIX = "asher-quiz-lab";
+
+function createCheckpointSession(quizId) {
+  return {
+    sessionId: `${quizId}-${Date.now()}`,
+    quizId,
+    startedAt: new Date().toISOString(),
+    attempts: []
+  };
+}
+
+function recordCheckpointAttempt(session, questionId, rawInput, feedbackCode, isCorrect, normalisedInput) {
+  const attemptNumber = session.attempts.filter((attempt) => attempt.question_id === questionId).length + 1;
+  const attempt = {
+    question_id: questionId,
+    attempt_number: attemptNumber,
+    raw_input: rawInput,
+    normalised_input: normalisedInput ?? "",
+    feedback_code: feedbackCode,
+    is_correct: isCorrect,
+    timestamp: new Date().toISOString()
+  };
+
+  session.attempts.push(attempt);
+  saveCheckpointSession(session);
+  logCheckpointAttempt(session, attempt);
+  return attempt;
+}
+
+function getCheckpointAttemptCounts(session, questionIds) {
+  return questionIds.map((questionId) => ({
+    question_id: questionId,
+    attempts: session.attempts.filter((attempt) => attempt.question_id === questionId).length
+  }));
+}
+
+function saveCheckpointSession(session) {
+  try {
+    window.localStorage.setItem(getStorageKey(session.quizId), JSON.stringify(session));
+  } catch {
+    // Local storage is helpful for Dave review, but the quiz should still run without it.
+  }
+}
+
+function clearCheckpointSession(quizId) {
+  try {
+    window.localStorage.removeItem(getStorageKey(quizId));
+  } catch {
+    // Ignore storage failures in local prototype mode.
+  }
+}
+
+function getStorageKey(quizId) {
+  return `${STORAGE_KEY_PREFIX}.${quizId}`;
+}
+
+const DEFAULT_QUIZ_ID = "decimals-to-fractions-v1";
+const QUIZ_REGISTRY = Object.freeze({
+  "decimals-to-fractions-v1": {
+    quizId: "decimals-to-fractions-v1",
+    contentPath: "content/math/decimals-to-fractions-v1.json"
+  },
+  "frp-module-1a-start-left-asked-v1": {
+    quizId: "frp-module-1a-start-left-asked-v1",
+    contentPath: "content/math/frp-module-1a-start-left-asked-v1.json"
+  },
+  "frp-module-2a-before-change-after-v1": {
+    quizId: "frp-module-2a-before-change-after-v1",
+    contentPath: "content/math/frp-module-2a-before-change-after-v1.json"
+  },
+  "frp-module-3-pyp-method-application-lab-v1": {
+    quizId: "frp-module-3-pyp-method-application-lab-v1",
+    contentPath: "content/math/frp-module-3-pyp-method-application-lab-v1.json"
+  },
+  "frp-equality-anchor-recognition-v1": {
+    quizId: "frp-equality-anchor-recognition-v1",
+    contentPath: "content/math/frp-equality-anchor-recognition-v1.json"
+  },
+  "frp-equality-anchor-solve-v1": {
+    quizId: "frp-equality-anchor-solve-v1",
+    contentPath: "content/math/frp-equality-anchor-solve-v1.json"
+  },
+  "frp-mixed-methods-tutor-update-v1": {
+    quizId: "frp-mixed-methods-tutor-update-v1",
+    contentPath: "content/math/frp-mixed-methods-tutor-update-v1.json"
+  },
+  "science-mcq-module-1a-read-setup-beat-trap-v1": {
+    quizId: "science-mcq-module-1a-read-setup-beat-trap-v1",
+    contentPath: "content/science/science-mcq-module-1a-read-setup-beat-trap-v1.json"
+  },
+  "science-mcq-module-1b-read-data-match-evidence-v1": {
+    quizId: "science-mcq-module-1b-read-data-match-evidence-v1",
+    contentPath: "content/science/science-mcq-module-1b-read-data-match-evidence-v1.json"
+  }
+});
+const FINAL_CHECKPOINT_WARNING =
+  "After this, your checkpoint will be locked. You will not be able to change your answers or try again.";
+const CHECKPOINT_EXPORT_SCHEMA_VERSION = "1.0";
+const CHECKPOINT_EXPORT_SOURCE = "static-html-export";
+
+const app = document.querySelector("#app");
+
+let quiz = null;
+let activeMode = "home";
+let currentIndex = 0;
+let checkpointSession = null;
+let checkpointLocked = false;
+let practiceState = [];
+let checkpointState = [];
+
+init();
+
+async function init() {
+  const quizConfig = getRequestedQuizConfig();
+
+  try {
+    quiz = await loadQuizContent(quizConfig);
+    document.title = `${quiz.title} | Asher PSLE Quiz Lab`;
+    renderHome();
+  } catch (error) {
+    renderLoadError(error);
+  }
+}
+
+async function loadQuizContent(quizConfig) {
+  const embeddedQuizData = document.querySelector("#quiz-content-data");
+  if (embeddedQuizData) return JSON.parse(embeddedQuizData.textContent);
+
+  const response = await fetch(quizConfig.contentPath);
+  if (!response.ok) throw new Error(`Could not load ${quizConfig.contentPath}`);
+
+  return response.json();
+}
+
+function getRequestedQuizConfig() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedQuizId = params.get("quiz") || DEFAULT_QUIZ_ID;
+
+  return QUIZ_REGISTRY[requestedQuizId] ?? QUIZ_REGISTRY[DEFAULT_QUIZ_ID];
+}
+
+function renderHome() {
+  activeMode = "home";
+  currentIndex = 0;
+
+  app.innerHTML = `
+    <section class="panel hero-panel">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${quiz.title}</h1>
+      <p class="topic-line">${quiz.topic}</p>
+      <p class="lede">${escapeHtml(quiz.learner_lede ?? "Practise the method first, then try the checkpoint without hints.")}</p>
+      ${renderModuleIntro()}
+      ${renderInstructionCallout()}
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startPractice">Start Practice</button>
+        <button type="button" class="secondary-action" id="startCheckpoint">Start Checkpoint</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startPractice").addEventListener("click", startPractice);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+}
+
+function startPractice() {
+  activeMode = "Practice";
+  currentIndex = 0;
+  practiceState = createQuestionState(quiz.practice_questions);
+  renderPracticeQuestion();
+}
+
+function startCheckpoint() {
+  activeMode = "Checkpoint";
+  currentIndex = 0;
+  checkpointLocked = false;
+  checkpointState = createQuestionState(quiz.checkpoint_questions);
+  clearCheckpointSession(quiz.quiz_id);
+  checkpointSession = createCheckpointSession(quiz.quiz_id);
+  renderCheckpointQuestion();
+}
+
+function createQuestionState(questions) {
+  return questions.map((question) => ({
+    input: getInitialInputState(question),
+    feedbackCode: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    attempts: [],
+    hintsShown: 0,
+    solutionShown: false,
+    modelClueShown: false,
+    workingCompleted: false,
+    auditResponses: {}
+  }));
+}
+
+function renderPracticeQuestion() {
+  const question = quiz.practice_questions[currentIndex];
+  const state = practiceState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.practice_questions.length}`;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill">Practice</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.practice_questions, practiceState, currentIndex, "Practice")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        ${renderPracticeMiniLesson(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderQuestionFigure(question)}
+        ${renderVisualStimulus(question)}
+        ${renderPracticeThinkingBlocks(question)}
+        ${renderAnswerForm(question, false)}
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="practiceStatus"></p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="hintButton">Hint</button>
+          ${question.model_clue ? `<button type="button" class="secondary-action" id="modelClueButton">Model clue</button>` : ""}
+          <button type="button" class="secondary-action" id="solutionButton">Worked Solution</button>
+        </div>
+        <ol class="hint-list" id="hintList" hidden></ol>
+        ${question.model_clue ? `<pre class="model-clue" id="modelClue" hidden></pre>` : ""}
+        <pre class="worked-solution" id="workedSolution" hidden></pre>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="primary-action" id="nextQuestion">${currentIndex === quiz.practice_questions.length - 1 ? "Finish Practice" : "Next"}</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  bindAnswerInputs(question, state);
+
+  renderFeedback(state, "Practice");
+  renderPracticeSupport(question, state);
+  bindQuestionMap(renderPracticeQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
+  document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#modelClueButton")?.addEventListener("click", () => showModelClue(question, state));
+  document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  if (!question.mini_lesson) focusFirstAnswerInput();
+}
+
+function submitPracticeAnswer(event, question, state) {
+  event.preventDefault();
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+  state.attempts.push({
+    attempt_number: state.attempts.length + 1,
+    feedback_code: validation.code,
+    is_correct: validation.isCorrect,
+    timestamp: new Date().toISOString()
+  });
+
+  renderPracticeQuestion();
+}
+
+function renderPracticeSupport(question, state) {
+  const hintList = document.querySelector("#hintList");
+  const hintButton = document.querySelector("#hintButton");
+  const modelClue = document.querySelector("#modelClue");
+  const modelClueButton = document.querySelector("#modelClueButton");
+  const solution = document.querySelector("#workedSolution");
+
+  if (state.hintsShown > 0) {
+    hintList.hidden = false;
+    question.hints.slice(0, state.hintsShown).forEach((hint) => {
+      const item = document.createElement("li");
+      item.textContent = hint;
+      hintList.append(item);
+    });
+  }
+
+  hintButton.disabled = state.hintsShown >= question.hints.length;
+
+  if (modelClueButton) {
+    modelClueButton.disabled = state.modelClueShown;
+  }
+
+  if (modelClue && state.modelClueShown) {
+    modelClue.textContent = question.model_clue;
+    modelClue.hidden = false;
+  }
+
+  if (state.solutionShown) {
+    solution.textContent = question.worked_solution;
+    solution.hidden = false;
+  }
+}
+
+function showNextHint(question, state) {
+  state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showModelClue(question, state) {
+  if (!question.model_clue) return;
+
+  state.modelClueShown = true;
+  renderPracticeQuestion();
+}
+
+function showWorkedSolution(question, state) {
+  state.solutionShown = true;
+  renderPracticeQuestion();
+}
+
+function goToPreviousPracticeQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderPracticeQuestion();
+}
+
+function goToNextPracticeQuestion() {
+  if (currentIndex === quiz.practice_questions.length - 1) {
+    renderPracticeComplete();
+    return;
+  }
+
+  currentIndex += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeComplete() {
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Practice complete</p>
+      <h1>Nice work.</h1>
+      <p class="lede">You reached the end of the practice ladder.</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="secondary-action" id="exportPracticeSummary">Export Parent Practice Summary</button>
+        <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#resumePractice").addEventListener("click", () => {
+    currentIndex = quiz.practice_questions.length - 1;
+    renderPracticeQuestion();
+  });
+  document.querySelector("#exportPracticeSummary").addEventListener("click", exportPracticeSummary);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function exportPracticeSummary() {
+  const exportedAt = new Date().toISOString();
+
+  downloadFile(
+    buildPracticeParentSummary(exportedAt),
+    "text/plain",
+    buildPracticeParentSummaryFilename(exportedAt)
+  );
+}
+
+function buildPracticeParentSummary(exportedAt) {
+  const questions = buildPracticeQuestionSummaries();
+  const attemptedQuestions = questions.filter((question) => question.attempt_count > 0);
+  const notAttemptedQuestions = questions.filter((question) => question.status === "Not attempted");
+  const latestCorrectQuestions = questions.filter((question) => question.status === "Correct");
+  const repeatedAttemptQuestions = questions.filter((question) => question.attempt_count > 1);
+  const openedSolutionQuestions = questions.filter((question) => question.worked_solution_opened);
+  const latestNotCorrectQuestions = questions.filter((question) => question.status === "Tried");
+  const totalAttempts = questions.reduce((total, question) => total + question.attempt_count, 0);
+  const totalHintsViewed = questions.reduce((total, question) => total + question.hints_viewed, 0);
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Practice Summary",
+    "",
+    `Quiz: ${quiz.title}`,
+    `Topic: ${quiz.topic}`,
+    `Exported: ${formatSummaryTimestamp(exportedAt)}`,
+    "",
+    "Practice Usage Summary",
+    "----------------------",
+    `Total practice questions: ${questions.length}`,
+    `Questions attempted: ${attemptedQuestions.length}`,
+    `Questions not attempted: ${notAttemptedQuestions.length}`,
+    `Questions with latest correct attempt: ${latestCorrectQuestions.length}`,
+    `Total practice attempts: ${totalAttempts}`,
+    `Total hints viewed: ${totalHintsViewed}`,
+    `Worked solutions opened: ${openedSolutionQuestions.length}`,
+    "",
+    "Question Summary",
+    "----------------",
+    ...questions.flatMap(formatPracticeQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    "Questions not attempted",
+    ...formatPracticeReviewList(notAttemptedQuestions),
+    "",
+    "Questions not correct on latest attempt",
+    ...formatPracticeReviewList(latestNotCorrectQuestions),
+    "",
+    "Questions with repeated attempts",
+    ...formatPracticeReviewList(repeatedAttemptQuestions, (question) => `${formatAttemptCount(question.attempt_count)}`),
+    "",
+    "Questions where worked solution was opened",
+    ...formatPracticeReviewList(openedSolutionQuestions),
+    "",
+    "No correct answers, accepted answers, hint text, worked solutions, raw submitted answers, normalised submitted answers, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function buildPracticeQuestionSummaries() {
+  return quiz.practice_questions.map((question, index) => {
+    const state = practiceState[index];
+    const attempts = state.attempts ?? [];
+    const latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    const status = latestAttempt ? (latestAttempt.is_correct ? "Correct" : "Tried") : "Not attempted";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+      hints_viewed: state.hintsShown,
+      worked_solution_opened: state.solutionShown,
+      parent_summary_tags: question.parent_summary_tags ?? []
+    };
+  });
+}
+
+function formatPracticeQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status}`,
+    `  Attempt count: ${formatAttemptCount(question.attempt_count)}`,
+    `  Latest feedback category: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`,
+    `  Hints viewed: ${question.hints_viewed}`,
+    `  Worked solution opened: ${question.worked_solution_opened ? "Yes" : "No"}`
+  ];
+}
+
+function formatPracticeReviewList(questions, detailFormatter = null) {
+  if (questions.length === 0) {
+    return ["- none"];
+  }
+
+  return questions.map((question) => {
+    const detail = detailFormatter ? `: ${detailFormatter(question)}` : "";
+    return `- ${question.question_id}${detail}`;
+  });
+}
+
+function renderCheckpointQuestion() {
+  const question = quiz.checkpoint_questions[currentIndex];
+  const state = checkpointState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.checkpoint_questions.length}`;
+  const attemptCount = getAttemptCount(question.question_id);
+  const needsWorkingConfirmation = usesWorkingConfirmation(question);
+  const showAnswerEntry = !needsWorkingConfirmation || state.workingCompleted;
+  const showCheckpointSolution = state.isCorrect && question.worked_solution;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill checkpoint">Checkpoint</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.checkpoint_questions, checkpointState, currentIndex, "Checkpoint")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderQuestionFigure(question)}
+        ${renderVisualStimulus(question)}
+        ${renderCheckpointInstruction(question)}
+        ${!showAnswerEntry ? renderWorkingConfirmation(question) : ""}
+        ${showAnswerEntry ? renderAuditFields(question, state) : ""}
+        ${showAnswerEntry ? renderAnswerForm(question, checkpointLocked) : ""}
+        ${showAnswerEntry ? `<p class="feedback" id="feedback" aria-live="polite"></p>` : ""}
+        <p class="attempt-count" id="attemptCount">Attempts recorded: ${attemptCount}</p>
+        ${showCheckpointSolution ? `<pre class="worked-solution checkpoint-solution">${escapeHtml(question.worked_solution)}</pre>` : ""}
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="secondary-action" id="nextQuestion">Next</button>
+          <button type="button" class="final-action" id="finalCheckpoint" ${checkpointLocked ? "disabled" : ""}>Submit Final Checkpoint</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+
+  if (showAnswerEntry) {
+    bindAnswerInputs(question, state);
+    bindAuditInputs(question, state);
+    renderFeedback(state, "Checkpoint");
+    document.querySelector("#answerForm").addEventListener("submit", (event) => submitCheckpointAnswer(event, question, state));
+  } else {
+    document.querySelector("#workingDoneButton").addEventListener("click", () => {
+      state.workingCompleted = true;
+      renderCheckpointQuestion();
+    });
+  }
+
+  bindQuestionMap(renderCheckpointQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousCheckpointQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextCheckpointQuestion);
+  document.querySelector("#finalCheckpoint").addEventListener("click", submitFinalCheckpoint);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  document.querySelector("#nextQuestion").disabled = currentIndex === quiz.checkpoint_questions.length - 1;
+  if (!checkpointLocked && showAnswerEntry) focusFirstAnswerInput();
+}
+
+function submitCheckpointAnswer(event, question, state) {
+  event.preventDefault();
+  if (checkpointLocked) return;
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  recordCheckpointAttempt(
+    checkpointSession,
+    question.question_id,
+    inputValue,
+    validation.code,
+    validation.isCorrect,
+    validation.normalised
+  );
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  renderCheckpointQuestion();
+}
+
+function goToPreviousCheckpointQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderCheckpointQuestion();
+}
+
+function goToNextCheckpointQuestion() {
+  if (currentIndex === quiz.checkpoint_questions.length - 1) return;
+
+  currentIndex += 1;
+  renderCheckpointQuestion();
+}
+
+function submitFinalCheckpoint() {
+  if (checkpointLocked) return;
+  if (!window.confirm(FINAL_CHECKPOINT_WARNING)) return;
+
+  checkpointLocked = true;
+  checkpointSession.lockedAt = new Date().toISOString();
+  saveCheckpointSession(checkpointSession);
+  renderCheckpointComplete();
+}
+
+function renderCheckpointComplete() {
+  const questionIds = quiz.checkpoint_questions.map((question) => question.question_id);
+  const attemptCounts = getCheckpointAttemptCounts(checkpointSession, questionIds);
+  const summaries = quiz.checkpoint_questions.map((question) => {
+    const latestAttempt = getLatestAttempt(question.question_id);
+    const attempts = attemptCounts.find((item) => item.question_id === question.question_id)?.attempts ?? 0;
+    const status = getSummaryStatus(latestAttempt);
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempts,
+      isCorrect: status === "Correct"
+    };
+  });
+  const score = summaries.filter((item) => item.isCorrect).length;
+  const exportData = buildCheckpointExport(summaries, score);
+
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Checkpoint complete</p>
+      <h1>Finished.</h1>
+      <p class="lede">Score: ${score} / ${quiz.checkpoint_questions.length}</p>
+      <ul class="summary-list" id="summaryList"></ul>
+      <p class="summary-note">No answers are shown here. Review mistakes with Dad or tutor.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="exportParentSummary">Export Parent Checkpoint Summary</button>
+        <button type="button" class="secondary-action" id="exportResults">Export Checkpoint JSON Data</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  const summaryList = document.querySelector("#summaryList");
+  summaries.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.question_id}: ${item.status}, ${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+    summaryList.append(row);
+  });
+
+  document.querySelector("#exportParentSummary").addEventListener("click", () => exportParentSummary(exportData));
+  document.querySelector("#exportResults").addEventListener("click", () => exportCheckpointResults(exportData));
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function buildCheckpointExport(summaries, score) {
+  return {
+    export_schema_version: CHECKPOINT_EXPORT_SCHEMA_VERSION,
+    exported_at: new Date().toISOString(),
+    source: CHECKPOINT_EXPORT_SOURCE,
+    quiz: {
+      quiz_id: quiz.quiz_id,
+      title: quiz.title,
+      topic: quiz.topic,
+      version: quiz.version
+    },
+    checkpoint: {
+      session_id: checkpointSession.sessionId,
+      started_at: checkpointSession.startedAt,
+      locked_at: checkpointSession.lockedAt ?? "",
+      score,
+      total_questions: quiz.checkpoint_questions.length,
+      questions: summaries.map((summary) => {
+        const latestAttempt = getLatestAttempt(summary.question_id);
+        const question = quiz.checkpoint_questions.find((item) => item.question_id === summary.question_id);
+
+        return {
+          question_id: summary.question_id,
+          status: summary.status,
+          is_correct: summary.isCorrect,
+          attempt_count: summary.attempts,
+          parent_summary_tags: question?.parent_summary_tags ?? [],
+          latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+          latest_attempt_timestamp: latestAttempt?.timestamp ?? ""
+        };
+      }),
+      attempts: checkpointSession.attempts.map((attempt) => ({
+        question_id: attempt.question_id,
+        attempt_number: attempt.attempt_number,
+        feedback_code: attempt.feedback_code,
+        is_correct: attempt.is_correct,
+        timestamp: attempt.timestamp
+      }))
+    }
+  };
+}
+
+function exportCheckpointResults(exportData) {
+  downloadFile(JSON.stringify(exportData, null, 2), "application/json", buildJsonExportFilename(exportData));
+}
+
+function exportParentSummary(exportData) {
+  downloadFile(buildParentSummary(exportData), "text/plain", buildParentSummaryFilename(exportData));
+}
+
+function buildParentSummary(exportData) {
+  const checkpoint = exportData.checkpoint;
+  const reviewQuestions = checkpoint.questions.filter((question) => question.status !== "Correct");
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Checkpoint Summary",
+    "",
+    `Quiz: ${exportData.quiz.title}`,
+    `Topic: ${exportData.quiz.topic}`,
+    `Completed: ${formatSummaryTimestamp(checkpoint.locked_at || exportData.exported_at)}`,
+    `Score: ${checkpoint.score} / ${checkpoint.total_questions}`,
+    "",
+    getParentEncouragement(checkpoint.score, checkpoint.total_questions),
+    "",
+    "Question Summary",
+    "----------------",
+    ...checkpoint.questions.flatMap(formatParentQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    ...formatReviewList(reviewQuestions),
+    "",
+    "No correct answers, hints, worked solutions, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function formatParentQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status} (${formatAttemptCount(question.attempt_count)})`,
+    `  Latest feedback: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`
+  ];
+}
+
+function formatReviewList(questions) {
+  if (questions.length === 0) {
+    return ["- No checkpoint questions marked for review."];
+  }
+
+  return questions.map(
+    (question) =>
+      `- ${question.question_id}: ${question.status}; ${formatAttemptCount(question.attempt_count)}.`
+  );
+}
+
+function getParentEncouragement(score, totalQuestions) {
+  if (score === totalQuestions) {
+    return "Great focus. Every checkpoint question was finished correct.";
+  }
+
+  if (score >= Math.ceil(totalQuestions / 2)) {
+    return "Good work. There are a few questions to review together.";
+  }
+
+  if (score > 0) {
+    return "Good effort. This gives Dad or tutor a clear review list.";
+  }
+
+  return "Thanks for giving it a go. Use this as a calm review list.";
+}
+
+function formatFeedbackCodeForParent(code) {
+  const labels = {
+    CORRECT: "Correct",
+    BLANK: "Blank or not submitted",
+    INVALID_FORMAT: "Check the answer format",
+    FRACTION_REQUIRED: "Answer needed as a fraction",
+    MIXED_NUMBER_REQUIRED: "Answer needed as a mixed number",
+    EQUIVALENT_NOT_SIMPLEST: "Equivalent, but not in simplest form",
+    PLACE_VALUE_DENOMINATOR_ERROR: "Check the decimal place value",
+    WRONG_VALUE: "Try again",
+    CALCULATION_ERROR: "Check the calculation",
+    WRONG_START_RATIO: "Check the starting ratio",
+    TRANSFER_APPLIED_TO_WRONG_PERSON: "Check who changed",
+    WRONG_CURRENT_AMOUNT: "Check the new amount now",
+    USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "Use the new amount now",
+    UNIT_VALUE_NOT_FINAL: "One unit, not final answer",
+    WRONG_BASE_ORIGINAL: "Check what the fraction is about",
+    WRONG_BASE_REMAINDER: "Check what we started with",
+    WRONG_LEFTOVER_STAGE: "Check what is left",
+    INTERMEDIATE_NOT_FINAL: "Halfway answer",
+    WRONG_FINAL_TARGET: "Check the final target",
+    WRONG_CATEGORY: "Check what the question asked for",
+    MISSING_UNIT: "Include the unit or group"
+  };
+
+  return labels[code] ?? "Review needed";
+}
+
+function formatAttemptCount(count) {
+  return `${count} attempt${count === 1 ? "" : "s"}`;
+}
+
+function formatParentSummaryTags(tags) {
+  return tags?.length ? tags.join("; ") : "none";
+}
+
+function formatSummaryTimestamp(timestamp) {
+  if (!timestamp) return "";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}
+
+function downloadFile(content, type, filename) {
+  const blob = new Blob([content], {
+    type
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function buildJsonExportFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}.json`;
+}
+
+function buildParentSummaryFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildPracticeParentSummaryFilename(exportedAt) {
+  return `${buildExportFilenameBase({
+    exported_at: exportedAt,
+    quiz: {
+      quiz_id: quiz.quiz_id
+    }
+  })}-practice-parent-summary.txt`;
+}
+
+function buildExportFilenameBase(exportData) {
+  const quizId = exportData.quiz.quiz_id.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+  const timestamp = exportData.exported_at.replace(/[:.]/g, "-");
+
+  return `asher-quiz-lab-${quizId}-${timestamp}`;
+}
+
+function renderQuestionMap(questions, states, activeIndex, mode) {
+  const buttons = questions.map((question, index) => {
+    const status = getMapStatus(states[index], index === activeIndex);
+    const classNames = ["question-map-button", `is-${status.className}`];
+    if (index === activeIndex) classNames.push("is-current");
+
+    return `
+      <button type="button" class="${classNames.join(" ")}" data-question-index="${index}" aria-current="${index === activeIndex ? "step" : "false"}">
+        <span>${question.question_id}</span>
+        <small>${status.label}</small>
+      </button>
+    `;
+  }).join("");
+
+  return `
+    <nav class="question-map" aria-label="${mode} question list">
+      <p class="question-map-title">Questions</p>
+      <div class="question-map-grid">${buttons}</div>
+    </nav>
+  `;
+}
+
+function renderCalculatorPolicy(question) {
+  if (!question.calculator_policy) return "";
+
+  return `<p class="calculator-policy">${escapeHtml(question.calculator_policy)}</p>`;
+}
+
+function renderModuleIntro() {
+  if (!quiz.learner_intro) return "";
+
+  return `
+    <div class="module-intro">
+      ${formatTextBlock(quiz.learner_intro)}
+    </div>
+  `;
+}
+
+function renderQuestionOverview(question) {
+  const sections = [];
+
+  if (question.source_summary) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Source Summary</h3>
+        ${formatTextBlock(question.source_summary)}
+      </section>
+    `);
+  }
+
+  if (question.learner_purpose) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Purpose</h3>
+        ${formatTextBlock(question.learner_purpose)}
+      </section>
+    `);
+  }
+
+  return sections.join("");
+}
+
+function renderQuestionFigure(question) {
+  if (!question.figure) return "";
+
+  const caption = question.figure_caption
+    ? `<figcaption>${escapeHtml(question.figure_caption)}</figcaption>`
+    : "";
+
+  return `
+    <figure class="question-figure">
+      <pre class="question-figure-art" role="img" aria-label="${escapeHtml(question.figure_alt ?? "Question figure")}">${escapeHtml(question.figure)}</pre>
+      ${caption}
+    </figure>
+  `;
+}
+
+function renderVisualStimulus(question) {
+  const stimulus = question.visual_stimulus;
+  if (!stimulus?.path) return "";
+
+  const alt = stimulus.alt ?? "Question visual stimulus";
+  const caption = stimulus.caption
+    ? `<figcaption>${escapeHtml(stimulus.caption)}</figcaption>`
+    : "";
+
+  return `
+    <figure class="visual-stimulus">
+      <img src="${escapeHtml(stimulus.path)}" alt="${escapeHtml(alt)}" loading="lazy" />
+      ${caption}
+    </figure>
+  `;
+}
+
+function renderPracticeMiniLesson(question) {
+  const miniLesson = question.mini_lesson;
+  if (!miniLesson) return "";
+
+  const title = typeof miniLesson === "string" ? "Mini-lesson" : miniLesson.title ?? "Mini-lesson";
+  const body = typeof miniLesson === "string" ? miniLesson : miniLesson.body;
+  if (!body) return "";
+
+  return `
+    <section class="practice-mini-lesson">
+      <h3>${escapeHtml(title)}</h3>
+      ${formatTextBlock(body)}
+    </section>
+  `;
+}
+
+function renderPracticeThinkingBlocks(question) {
+  const thinkingBlocks = question.thinking_blocks ?? [];
+  const blockList = thinkingBlocks.map((block) => `
+    <li>
+      <strong>${escapeHtml(block.title)}</strong>
+      <p>${escapeHtml(block.prompt)}</p>
+    </li>
+  `).join("");
+  const blocksMarkup = blockList
+    ? `
+      <section class="thinking-section">
+        <h3>Thinking Blocks</h3>
+        <ol>${blockList}</ol>
+      </section>
+    `
+    : "";
+  const finalTargetMarkup = question.final_target_check
+    ? `
+      <section class="content-note final-target-check">
+        <h3>Final Target Check</h3>
+        ${formatTextBlock(question.final_target_check)}
+      </section>
+    `
+    : "";
+
+  return `${blocksMarkup}${finalTargetMarkup}`;
+}
+
+function renderCheckpointInstruction(question) {
+  if (!question.checkpoint_instruction) return "";
+
+  return `
+    <section class="checkpoint-instruction">
+      ${formatTextBlock(question.checkpoint_instruction)}
+    </section>
+  `;
+}
+
+function renderWorkingConfirmation(question) {
+  return `
+    <div class="checkpoint-gate">
+      <button type="button" class="primary-action" id="workingDoneButton">
+        ${escapeHtml(question.working_confirmation_label ?? "I have finished my working")}
+      </button>
+    </div>
+  `;
+}
+
+function renderAuditInstructions() {
+  return `
+    <section class="audit-instruction">
+      <h3>How to answer these review questions</h3>
+      <p>Before typing your final answer, answer these quick review questions honestly.</p>
+      <p>They are not trick questions and they are not part of your score.</p>
+      <p>Choose what you actually used in your foolscap working.</p>
+      <p>If you are not sure, choose "Other / not sure".</p>
+      <p>This helps Dad see how you thought through the question, not just whether the final answer was correct.</p>
+    </section>
+  `;
+}
+
+function renderAuditFields(question, state) {
+  const fields = question.audit_fields ?? [];
+  if (!fields.length) return "";
+
+  const fieldMarkup = fields.map((field) => {
+    const value = state.auditResponses[field.field_id] ?? "";
+    const label = escapeHtml(field.label);
+
+    if (field.type === "textarea") {
+      return `
+        <label class="audit-field">
+          <span>${label}</span>
+          <textarea data-audit-field="${escapeHtml(field.field_id)}" rows="3">${escapeHtml(value)}</textarea>
+        </label>
+      `;
+    }
+
+    const options = (field.options ?? []).map(
+      (option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`
+    ).join("");
+
+    return `
+      <label class="audit-field">
+        <span>${label}</span>
+        <select data-audit-field="${escapeHtml(field.field_id)}">
+          <option value="">Choose one</option>
+          ${options}
+        </select>
+      </label>
+    `;
+  }).join("");
+
+  return `
+    <section class="audit-section">
+      ${renderAuditInstructions()}
+      <h3>Quick Review</h3>
+      ${fieldMarkup}
+    </section>
+  `;
+}
+
+function renderAnswerForm(question, disabled) {
+  const disabledAttribute = disabled ? "disabled" : "";
+
+  if (isMultiPartQuestion(question)) {
+    const fields = question.answer_parts.map((part) => `
+      <label class="answer-part-field" for="answerInput-${escapeHtml(part.part_id)}">
+        <span>${escapeHtml(part.label)}</span>
+        <input id="answerInput-${escapeHtml(part.part_id)}" data-answer-input data-answer-part="${escapeHtml(part.part_id)}" name="answer-${escapeHtml(part.part_id)}" autocomplete="off" ${disabledAttribute} />
+      </label>
+    `).join("");
+
+    return `
+      <form class="answer-form multi-part-answer-form" id="answerForm">
+        ${fields}
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    return `
+      <form class="answer-form mcq-answer-form" id="answerForm">
+        <fieldset class="mcq-fieldset">
+          <legend>${escapeHtml(question.answer_label ?? "Choose one answer")}</legend>
+          <div class="mcq-option-grid">
+            ${renderMcqOptions(question, disabledAttribute)}
+          </div>
+        </fieldset>
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  return `
+    <form class="answer-form" id="answerForm">
+      <label for="answerInput">${escapeHtml(question.answer_label ?? "Answer")}</label>
+      <input id="answerInput" data-answer-input name="answer" autocomplete="off" ${disabledAttribute} />
+      <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+    </form>
+  `;
+}
+
+function renderMcqOptions(question, disabledAttribute) {
+  return question.options.map((option) => {
+    const optionKey = escapeHtml(option.key);
+    const optionLabel = escapeHtml(option.label ?? option.key);
+    const optionText = escapeHtml(option.text ?? "");
+    const sourceOptionNumber = Number.isInteger(option.source_option_number)
+      ? ` data-source-option-number="${option.source_option_number}"`
+      : "";
+
+    return `
+      <label class="mcq-option">
+        <input type="radio" data-answer-input data-answer-option="${optionKey}" name="answer" value="${optionKey}" ${disabledAttribute}${sourceOptionNumber} />
+        <span class="mcq-option-label">${optionLabel}</span>
+        <span class="mcq-option-text">${optionText}</span>
+      </label>
+    `;
+  }).join("");
+}
+
+function bindAnswerInputs(question, state) {
+  if (isMultiPartQuestion(question)) {
+    question.answer_parts.forEach((part) => {
+      const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+      input.value = state.input[part.part_id] ?? "";
+      input.addEventListener("input", () => {
+        state.input = {
+          ...state.input,
+          [part.part_id]: input.value
+        };
+      });
+    });
+    return;
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    question.options.forEach((option) => {
+      const input = document.querySelector(`[data-answer-option="${cssEscape(option.key)}"]`);
+      if (!input) return;
+
+      input.checked = state.input === option.key;
+      input.addEventListener("change", () => {
+        state.input = input.value;
+      });
+    });
+    return;
+  }
+
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+}
+
+function bindAuditInputs(question, state) {
+  (question.audit_fields ?? []).forEach((field) => {
+    const input = document.querySelector(`[data-audit-field="${cssEscape(field.field_id)}"]`);
+    if (!input) return;
+
+    input.value = state.auditResponses[field.field_id] ?? "";
+    input.addEventListener("input", () => {
+      state.auditResponses = {
+        ...state.auditResponses,
+        [field.field_id]: input.value
+      };
+    });
+  });
+}
+
+function getAnswerInputValue(question) {
+  if (isMultiPartQuestion(question)) {
+    return Object.fromEntries(
+      question.answer_parts.map((part) => {
+        const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+        return [part.part_id, input?.value ?? ""];
+      })
+    );
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    return document.querySelector("[data-answer-option]:checked")?.value ?? "";
+  }
+
+  return document.querySelector("#answerInput")?.value ?? "";
+}
+
+function focusFirstAnswerInput() {
+  document.querySelector("[data-answer-input]")?.focus();
+}
+
+function getInitialInputState(question) {
+  if (!isMultiPartQuestion(question)) return "";
+
+  return Object.fromEntries((question.answer_parts ?? []).map((part) => [part.part_id, ""]));
+}
+
+function isMultiPartQuestion(question) {
+  return question.expected_format === "multi_part" && Array.isArray(question.answer_parts);
+}
+
+function isMcqOptionsQuestion(question) {
+  return question.expected_format === "mcq" && Array.isArray(question.options) && question.options.length > 0;
+}
+
+function usesWorkingConfirmation(question) {
+  return Boolean(question.requires_working_confirmation || question.audit_fields?.length);
+}
+
+function formatTextBlock(value) {
+  return escapeHtml(value)
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+function cssEscape(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+}
+
+function renderInstructionCallout() {
+  if (!quizHasCalculatorPolicy()) return "";
+
+  return `
+    <div class="instruction-callout">
+      <p><strong><u>Check the calculator instruction for every question.</u></strong></p>
+      <p>If it says <strong><u>Calculator: Not allowed</u></strong>, do it without a calculator and write your working on foolscap paper.</p>
+      <p>If it says <strong><u>Calculator: Allowed</u></strong>, you may use a calculator, but only after choosing the correct steps.</p>
+      <p>The calculator can help with arithmetic. It cannot read the story. No licence, no driving.</p>
+    </div>
+  `;
+}
+
+function quizHasCalculatorPolicy() {
+  return [...(quiz.practice_questions ?? []), ...(quiz.checkpoint_questions ?? [])].some(
+    (question) => question.calculator_policy
+  );
+}
+
+function bindQuestionMap(renderFunction) {
+  document.querySelectorAll(".question-map-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentIndex = Number(button.dataset.questionIndex);
+      renderFunction();
+    });
+  });
+}
+
+function getMapStatus(state, isCurrent) {
+  if (isCurrent) return { label: "Current", className: "current" };
+  if (!state.submitted) return { label: "Not tried", className: "not-tried" };
+  if (state.isCorrect) return { label: "Correct", className: "correct" };
+  return { label: "Tried", className: "tried" };
+}
+
+function escapeHtml(value) {
+  const replacements = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  };
+
+  return String(value).replace(/[&<>"']/g, (character) => replacements[character]);
+}
+
+function renderFeedback(state, mode) {
+  const feedback = document.querySelector("#feedback");
+  const status = mode === "Practice" ? document.querySelector("#practiceStatus") : null;
+
+  if (!state.submitted) {
+    feedback.textContent = "";
+    if (status) status.textContent = "Not submitted yet.";
+    return;
+  }
+
+  feedback.textContent = state.feedbackMessage;
+  feedback.className = state.isCorrect ? "feedback is-correct" : "feedback is-retry";
+  if (status) status.textContent = state.isCorrect ? "Latest answer: correct." : "Latest answer: try again.";
+}
+
+function getAttemptCount(questionId) {
+  return checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId).length;
+}
+
+function getLatestAttempt(questionId) {
+  const attempts = checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId);
+  return attempts.length ? attempts[attempts.length - 1] : null;
+}
+
+function getSummaryStatus(latestAttempt) {
+  if (!latestAttempt || latestAttempt.feedback_code === "BLANK") return "Blank";
+  return latestAttempt.is_correct ? "Correct" : "Incorrect";
+}
+
+function renderLoadError(error) {
+  app.innerHTML = `
+    <section class="panel error-panel">
+      <p class="eyebrow">Local setup needed</p>
+      <h1>Quiz content did not load.</h1>
+      <p class="lede">Run a local server from the repo root, then open the local URL.</p>
+      <pre class="run-command">python -m http.server 8000</pre>
+      <p class="small-note">Then open http://localhost:8000/</p>
+    </section>
+  `;
+
+  console.error(error);
+}
+    </script>
+  </body>
+</html>
