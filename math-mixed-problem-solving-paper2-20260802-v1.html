@@ -1,0 +1,4182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mixed Problem Solving — Paper 2 Set | Asher PSLE Quiz Lab</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #536170;
+  --line: #d8ded6;
+  --primary: #225e54;
+  --primary-dark: #18463f;
+  --accent: #d55f3a;
+  --checkpoint: #344b7a;
+  --success: #1f6d46;
+  --retry: #9a4b1f;
+  --shadow: 0 18px 45px rgba(28, 36, 48, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(34, 94, 84, 0.09), rgba(255, 255, 255, 0) 38%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 32px 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.completion-panel,
+.error-panel {
+  margin-top: clamp(24px, 8vh, 80px);
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.question-panel {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.eyebrow,
+.question-id,
+.progress-text,
+.attempt-count,
+.small-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.question-id {
+  margin: 0 0 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 4.8rem, 4.8rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 2.2rem, 2.2rem);
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.topic-line {
+  margin: 12px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.calculator-policy {
+  display: inline-block;
+  margin: 14px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #d8c796;
+  border-radius: 6px;
+  background: #fff8df;
+  color: #5f4a12;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.instruction-callout {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #d8c796;
+  border-radius: 8px;
+  background: #fff8df;
+  color: #453409;
+}
+
+.instruction-callout p {
+  margin: 8px 0 0;
+}
+
+.instruction-callout p:first-child {
+  margin-top: 0;
+}
+
+.module-intro,
+.content-note,
+.practice-mini-lesson,
+.thinking-section,
+.checkpoint-instruction,
+.audit-section {
+  margin: 20px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9faf7;
+}
+
+.module-intro {
+  max-width: 68ch;
+}
+
+.content-note h3,
+.practice-mini-lesson h3,
+.thinking-section h3,
+.audit-section h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.content-note p,
+.practice-mini-lesson p,
+.thinking-section p,
+.checkpoint-instruction p,
+.module-intro p {
+  margin: 10px 0 0;
+}
+
+.content-note p:first-child,
+.practice-mini-lesson p:first-child,
+.thinking-section p:first-child,
+.checkpoint-instruction p:first-child,
+.module-intro p:first-child {
+  margin-top: 0;
+}
+
+.thinking-section ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.thinking-section li {
+  margin-top: 12px;
+}
+
+.checkpoint-instruction {
+  border-color: #cbd4e8;
+  background: #f4f7ff;
+  color: #27375e;
+  font-weight: 700;
+}
+
+.practice-mini-lesson {
+  border-color: #d9c27c;
+  background: #fff9e8;
+  color: #3f3420;
+}
+
+.checkpoint-gate {
+  margin-top: 22px;
+}
+
+.audit-section {
+  display: grid;
+  gap: 12px;
+  background: #fbfcf8;
+}
+
+.audit-instruction {
+  padding: 12px 14px;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 6px;
+  background: #f4f7ff;
+  color: #27375e;
+}
+
+.audit-instruction h3 {
+  margin-bottom: 6px;
+}
+
+.audit-instruction p {
+  margin: 6px 0 0;
+}
+
+.audit-instruction p:first-of-type {
+  margin-top: 0;
+}
+
+.audit-field,
+.answer-part-field {
+  display: grid;
+  gap: 6px;
+}
+
+.audit-field span,
+.answer-part-field span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.audit-field select,
+.audit-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.audit-field textarea {
+  resize: vertical;
+}
+
+.mode-actions,
+.support-actions,
+.navigation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action,
+.text-action,
+.final-action {
+  padding: 10px 16px;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-action:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-action {
+  background: #fff4ed;
+  color: #713316;
+  border: 1px solid #f2c3a8;
+}
+
+.final-action {
+  background: #8e2f2f;
+  color: #ffffff;
+}
+
+.final-action:hover {
+  background: #6f2424;
+}
+
+.text-action {
+  min-height: auto;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e7f0ec;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mode-pill.checkpoint {
+  background: #e9edf7;
+  color: var(--checkpoint);
+}
+
+.question-map {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.question-map-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.question-map-button {
+  display: grid;
+  min-height: 62px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  text-align: left;
+}
+
+.question-map-button span {
+  font-weight: 800;
+}
+
+.question-map-button small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.question-map-button.is-current {
+  border-color: var(--checkpoint);
+  outline: 3px solid rgba(52, 75, 122, 0.14);
+}
+
+.question-map-button.is-correct {
+  border-color: rgba(31, 109, 70, 0.45);
+  background: #eef8f1;
+}
+
+.question-map-button.is-tried {
+  border-color: rgba(154, 75, 31, 0.45);
+  background: #fff6ee;
+}
+
+.question-map-button.is-not-tried {
+  background: #ffffff;
+}
+
+.prompt {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f9faf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+}
+
+.question-figure {
+  margin: 14px 0 0;
+}
+
+.question-figure-art {
+  margin: 0;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: "Cascadia Mono", Consolas, "DejaVu Sans Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.question-figure figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.visual-stimulus {
+  margin: 18px 0 0;
+}
+
+.visual-stimulus img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.visual-stimulus figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.answer-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.answer-form label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.answer-form input:focus,
+.audit-field select:focus,
+.audit-field textarea:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.multi-part-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mcq-answer-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mcq-fieldset {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mcq-fieldset legend {
+  margin: 0 0 2px;
+  padding: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.mcq-option-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.mcq-option {
+  display: grid;
+  grid-template-columns: auto minmax(34px, auto) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  min-height: 54px;
+  padding: 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.mcq-option:has(input:checked) {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.mcq-option input {
+  width: 18px;
+  height: 18px;
+  min-height: auto;
+  margin: 3px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.mcq-option-label {
+  font-weight: 800;
+}
+
+.mcq-option-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 16px 0 0;
+  font-weight: 700;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+}
+
+.feedback.is-retry {
+  color: var(--retry);
+}
+
+.hint-list,
+.summary-list {
+  margin: 20px 0 0;
+  padding-left: 22px;
+}
+
+.hint-list li,
+.summary-list li {
+  margin-top: 8px;
+}
+
+.model-clue {
+  margin: 18px 0 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid #cbd4e8;
+  border-left: 4px solid #8aa5d6;
+  border-radius: 8px;
+  background: #f4f7ff;
+  color: #27375e;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.worked-solution,
+.run-command {
+  margin: 20px 0 0;
+  padding: 16px;
+  overflow: auto;
+  background: #17202a;
+  color: #f7fbff;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.attempt-count {
+  min-height: 24px;
+  margin: 8px 0 0;
+}
+
+.summary-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.guided-process-visual,
+.guided-explanation {
+  margin: 22px 0 0;
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7faf8;
+  color: var(--text);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.guided-instruction {
+  margin: 18px 0 0;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.guided-source-crop {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.guided-source-crop img {
+  min-width: 0;
+  object-fit: contain;
+}
+
+.guided-answer-form {
+  grid-template-columns: 1fr;
+}
+
+.guided-option-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(72px, 1fr));
+  gap: 10px;
+}
+
+.guided-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 58px;
+  padding: 12px;
+  border: 2px solid #bdc8bd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.guided-option:has(input:checked) {
+  border-color: var(--primary);
+  outline: 3px solid rgba(34, 94, 84, 0.16);
+}
+
+.guided-option input {
+  width: 20px;
+  height: 20px;
+  min-height: auto;
+  margin: 0;
+}
+
+.guided-metrics {
+  display: grid;
+  gap: 0;
+  margin: 24px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.guided-metrics div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+}
+
+.guided-metrics div:first-child {
+  border-top: 0;
+}
+
+.guided-metrics dt {
+  font-weight: 700;
+}
+
+.guided-metrics dd {
+  margin: 0;
+}
+
+@media (max-width: 620px) {
+  .app {
+    padding: 18px 12px;
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .progress-text {
+    grid-column: 1 / -1;
+  }
+
+  .answer-form {
+    grid-template-columns: 1fr;
+  }
+
+  .answer-form button,
+  .mode-actions button,
+  .support-actions button,
+  .navigation-actions button {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+
+  .guided-option-grid {
+    grid-template-columns: repeat(2, minmax(72px, 1fr));
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section class="panel hero-panel">
+        <p class="eyebrow">Asher PSLE Quiz Lab</p>
+        <h1>Loading quiz...</h1>
+      </section>
+    </main>
+    <script id="quiz-content-data" type="application/json">
+{
+  "quiz_id": "math-mixed-problem-solving-paper2-20260802-v1",
+  "title": "Mixed Problem Solving — Paper 2 Set",
+  "topic": "Mixed Problem Solving",
+  "module": "Math Mixed Problem Solving — Source Set 13–16 (2 August 2026)",
+  "version": "1.0",
+  "source_authority": "D_DAVE_REVIEW_REQUIRED",
+  "learner_lede": "Asher, solve four source questions with support, then try four fresh partners without hints.",
+  "learner_intro": "Asher, this set mixes percentage, fractions, ratio and volume. Read the whole story before choosing a method, and write your working on foolscap.\n\nMate, use the same four checks every time: What is equal? Which stage does each number belong to? What stays unchanged? What exactly is the final target?",
+  "practice_questions": [
+    {
+      "question_id": "MPS-P13",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Equal groups with percentage",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Source-faithful transcription of Q13 from Dave's 2 August 2026 Math PDF, question page 1; supplied working on page 5; answer independently recomputed.",
+      "source_summary": "Asher, two equal groups have different boy–girl differences, and the overall percentage links the groups.",
+      "requires_attempt_before_support": true,
+      "support_locked_label": "Asher, try one answer first. Then the Hint, Model clue and Worked Solution buttons will unlock.",
+      "learner_purpose": "Asher, this question hides the total behind two equal groups and one overall percentage.\n\nMate, keep the groups equal first. Then join their boy–girl differences before using 45% and 55%.",
+      "mini_lesson": {
+        "title": "Asher — match the equal group totals first",
+        "body": "Asher, both groups have the same number of participants. That is the anchor. Inside each group, the boy–girl difference tells you how the equal total is split.\n\nMate, after combining both groups, girls are 45% and boys are 55%. The 10% gap between them must match the net boy–girl difference from the two groups."
+      },
+      "prompt": "The participants of a quiz are divided equally into two groups. In the first group, there are 20 more boys than girls. In the second group, there are 12 more girls than boys. 45% of all the participants are girls.\n\nHow many participants are boys?",
+      "expected_format": "numeric",
+      "canonical_answer": "44",
+      "accepted_answers": [
+        "44",
+        "44 boys",
+        "44 participants"
+      ],
+      "target_number": 44,
+      "error_tags": [
+        "EQUAL_GROUP_TOTALS",
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "equal-group comparison",
+        "percentage of a hidden total",
+        "boys as the final target"
+      ],
+      "diagnostic_answers": {
+        "80": "INTERMEDIATE_NOT_FINAL",
+        "40": "UNIT_VALUE_NOT_FINAL",
+        "36": "WRONG_FINAL_TARGET"
+      },
+      "feedback_by_code": {
+        "CORRECT": "Correct. The two groups contain 80 participants altogether, so 55% are boys: 44.",
+        "INTERMEDIATE_NOT_FINAL": "Asher, that is the total number of participants. Re-read the final target: it asks for boys.",
+        "UNIT_VALUE_NOT_FINAL": "Mate, that is one equal group's total, not the number of boys in both groups.",
+        "WRONG_FINAL_TARGET": "Asher, check whether you found girls instead of boys.",
+        "CALCULATION_ERROR": "Mate, combine the two group differences first, then match that net difference to the gap between 55% and 45%.",
+        "INVALID_FORMAT": "Asher, enter a whole number of boys.",
+        "BLANK": "Mate, start by finding the net boy–girl difference across both groups."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — what is equal?",
+          "prompt": "The two group totals are equal. Keep that fact fixed while you compare boys and girls."
+        },
+        {
+          "title": "Mate — combine the differences",
+          "prompt": "Group 1 has 20 extra boys, while Group 2 has 12 extra girls. Find the net difference across both groups."
+        },
+        {
+          "title": "Asher — connect to the percentages",
+          "prompt": "If girls are 45%, boys are 55%. What percentage gap matches the net difference?"
+        }
+      ],
+      "model_clue": "Asher, use this visual model.\n\nEqual group totals:\nGroup 1: boys = girls + 20\nGroup 2: girls = boys + 12\n\nAcross both groups:\nboys  [----------- 55% -----------]\ngirls [--------- 45% ---------]\n              gap = 10%\n\nMate, match the net head-count difference to this 10% gap.",
+      "final_target_check": "Mate, the question asks for the number of BOYS across both groups, not the total participants or the girls.",
+      "hints": [
+        "Asher, the two group differences oppose each other: 20 extra boys and 12 extra girls.",
+        "Mate, across both groups there are 8 more boys than girls.",
+        "Asher, boys are 55% and girls are 45%, so 10% of all participants equals 8."
+      ],
+      "worked_solution": "Asher, combine the two group differences first.\n\nGroup 1: 20 more boys than girls.\nGroup 2: 12 more girls than boys.\nNet difference = 20 - 12 = 8 more boys.\n\nGirls = 45%, so boys = 55%.\nPercentage difference = 55% - 45% = 10%.\n\n10% -> 8 participants\n100% -> 80 participants\n55% -> 0.55 × 80 = 44 participants\n\nMate, check the final target: boys = 44.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "MPS-P14",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Fractions of a whole and mixed box capacities",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Source-faithful transcription of Q14 from Dave's 2 August 2026 Math PDF, question page 2; supplied working on page 6; answers independently recomputed.",
+      "source_summary": "Asher, a fixed number links two fractions of the original total, then mixed box capacities form a second equation.",
+      "requires_attempt_before_support": true,
+      "support_locked_label": "Asher, try both answer parts first. Then the Hint, Model clue and Worked Solution buttons will unlock.",
+      "learner_purpose": "Asher, part (a) is a fractions-of-the-whole question. Part (b) changes into a box-capacity question.\n\nMate, finish one stage before starting the next: first find the pies packed, then split that amount across 18 boxes.",
+      "mini_lesson": {
+        "title": "Asher — give every amount the same whole",
+        "body": "Asher, the relatives received 1/5 of all the pies and 2/3 were left. The 30 pies must be the missing fraction between those two amounts.\n\nMate, once part (a) is done, forget the fractions. For the boxes, begin with all 18 boxes holding 12 pies, then trade boxes down from 12 to 6 until the total matches."
+      },
+      "prompt": "Suyin baked some pies. She gave 1/5 of them to her relatives and 30 of them to her friends. She was left with 2/3 of the pies. She packed these into 18 boxes. Some boxes contained 6 pies while the rest contained 12.\n\n(a) How many pies were packed into the 18 boxes?\n(b) How many boxes contained 6 pies?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 150; (b) 11",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Pies packed",
+          "expected_format": "numeric",
+          "canonical_answer": "150",
+          "accepted_answers": [
+            "150",
+            "150 pies"
+          ],
+          "target_number": 150,
+          "diagnostic_answers": {
+            "225": "INTERMEDIATE_NOT_FINAL",
+            "30": "UNIT_VALUE_NOT_FINAL"
+          }
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Boxes containing 6 pies",
+          "expected_format": "numeric",
+          "canonical_answer": "11",
+          "accepted_answers": [
+            "11",
+            "11 boxes"
+          ],
+          "target_number": 11,
+          "diagnostic_answers": {
+            "7": "WRONG_FINAL_TARGET",
+            "18": "INTERMEDIATE_NOT_FINAL"
+          }
+        }
+      ],
+      "error_tags": [
+        "FRACTION_OF_WHOLE",
+        "MIXED_CAPACITY_BOXES",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "fractions of one whole",
+        "mixed box capacities",
+        "two-part problem"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. 150 pies were packed, and 11 boxes contained 6 pies.",
+        "INTERMEDIATE_NOT_FINAL": "Asher, that is a useful total, but it is not the requested answer for this part.",
+        "UNIT_VALUE_NOT_FINAL": "Mate, that is one clue amount, not the final amount for this part.",
+        "WRONG_FINAL_TARGET": "Asher, check whether you counted the 12-pie boxes instead of the 6-pie boxes.",
+        "CALCULATION_ERROR": "Mate, solve part (a) first. Then use 18 boxes and compare 6 pies with 12 pies per box.",
+        "INVALID_FORMAT": "Asher, enter a whole number in each answer box.",
+        "BLANK": "Mate, complete both parts before submitting."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — name the missing fraction",
+          "prompt": "Relatives, friends and pies left make one whole. Work out what fraction the 30 friend pies represent."
+        },
+        {
+          "title": "Mate — find what was packed",
+          "prompt": "The pies packed are the 2/3 that remained. Keep part (a)'s target separate from the original total."
+        },
+        {
+          "title": "Asher — use a box baseline",
+          "prompt": "Pretend all 18 boxes hold 12 pies. Each 6-pie box lowers that total by 6."
+        }
+      ],
+      "model_clue": "Asher, use this visual model.\n\nWhole pie batch = 15 equal units\nrelatives: [3u]   friends: [2u = 30]   left/packed: [10u]\n\nBoxes for the packed pies:\n18 boxes × 12 pies = baseline\neach 6-pie box lowers the baseline by 6 pies\n\nMate, keep the fraction stage and box stage separate.",
+      "final_target_check": "Mate, part (a) asks for pies PACKED; part (b) asks only for the number of 6-pie BOXES.",
+      "hints": [
+        "Asher, 1 - 1/5 - 2/3 is the fraction given to friends.",
+        "Mate, 30 pies represent 2/15 of the original batch; use that to find the 2/3 left.",
+        "Asher, for part (b), compare 18 × 12 with the 150 pies actually packed."
+      ],
+      "worked_solution": "Asher, use fifteenths for the fractions.\n\nRelatives = 1/5 = 3/15.\nLeft = 2/3 = 10/15.\nFriends = 1 - 3/15 - 10/15 = 2/15.\n\n2/15 -> 30 pies\n10/15 -> 30 × 5 = 150 pies\n\n(a) 150 pies were packed.\n\nMate, now use the box baseline.\nIf all 18 boxes held 12 pies: 18 × 12 = 216 pies.\nThe actual total is 150, a difference of 216 - 150 = 66 pies.\nEach 6-pie box is 6 below the 12-pie baseline.\nNumber of 6-pie boxes = 66 ÷ 6 = 11.\n\n(b) 11 boxes contained 6 pies.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "MPS-P15",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Volume difference and packing",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Source-complete text adaptation of Q15 from Dave's 2 August 2026 Math PDF, question page 3; diagram dimensions transcribed into the prompt; supplied working on page 7; answers independently recomputed.",
+      "source_summary": "Asher, two blocks share height and depth, so their volume difference comes from the difference in length; a square-base packing follows.",
+      "requires_attempt_before_support": true,
+      "support_locked_label": "Asher, try both answer parts first. Then the Hint, Model clue and Worked Solution buttons will unlock.",
+      "learner_purpose": "Asher, the two blocks share two dimensions. Only one dimension creates the volume difference.\n\nMate, for part (b), switch to a top view. Height no longer matters when you count how many block footprints fit on the square base.",
+      "mini_lesson": {
+        "title": "Asher — compare only the dimension that changed",
+        "body": "Asher, Y and Z have the same height and the same 10 cm depth. Their lengths are 8 cm and 15 cm, so the extra volume is one 7 cm by 10 cm by height strip.\n\nMate, packing is a top-view problem. Six 15 cm by 10 cm footprints make a 30 cm by 30 cm square. Then count 8 cm by 10 cm footprints inside that square."
+      },
+      "prompt": "A rectangular block X is 23 cm long and 10 cm deep. It was cut along a vertical line into two smaller rectangular blocks Y and Z of equal height. Along the 23 cm length, Y measures 8 cm and Z measures 15 cm. The volume of Z is 1470 cm³ more than that of Y.\n\n(a) What is the height of each block?\n(b) Peter packed 6 of block Z so that they fitted exactly into a box with a square base. The box had the same height as Z. Keep every block upright. Keep Y's 8 cm base edge parallel to the same box side as Z's 15 cm base edge, and keep their 10 cm base edges parallel to the other box side. At most, how many of block Y could be packed into such a box?",
+      "figure": "Side relationship:\nX length 23 cm = [ Y: 8 cm ][ Z: 15 cm ]\nBoth blocks: depth 10 cm, height h\n\nTop-view footprints:\nY = 8 cm × 10 cm\nZ = 15 cm × 10 cm",
+      "figure_alt": "Text diagram showing block X split into Y of length 8 centimetres and Z of length 15 centimetres, both with depth 10 centimetres and height h; top-view footprints are 8 by 10 and 15 by 10.",
+      "figure_caption": "Asher, the diagram data are written here so no source screenshot is needed.",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 21 cm; (b) 9 blocks",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Height in cm",
+          "expected_format": "numeric",
+          "canonical_answer": "21",
+          "accepted_answers": [
+            "21",
+            "21 cm"
+          ],
+          "target_number": 21,
+          "diagnostic_answers": {
+            "147": "INTERMEDIATE_NOT_FINAL",
+            "7": "UNIT_VALUE_NOT_FINAL"
+          }
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Maximum number of Y blocks",
+          "expected_format": "numeric",
+          "canonical_answer": "9",
+          "accepted_answers": [
+            "9",
+            "9 blocks"
+          ],
+          "target_number": 9,
+          "diagnostic_answers": {
+            "6": "INTERMEDIATE_NOT_FINAL"
+          }
+        }
+      ],
+      "error_tags": [
+        "VOLUME_DIFFERENCE",
+        "TOP_VIEW_PACKING",
+        "FINAL_TARGET_CHECK",
+        "CALCULATION_ERROR"
+      ],
+      "parent_summary_tags": [
+        "volume difference",
+        "shared dimensions",
+        "square-base packing"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. The height is 21 cm, and at most 9 Y blocks fit.",
+        "INTERMEDIATE_NOT_FINAL": "Asher, that is a useful number from the setup, but it is not the requested answer for this part.",
+        "UNIT_VALUE_NOT_FINAL": "Mate, that looks like one changed dimension, not the block height.",
+        "CALCULATION_ERROR": "Mate, use the 7 cm length difference for part (a), then use only the top-view footprints for part (b).",
+        "INVALID_FORMAT": "Asher, enter a whole number in each answer box.",
+        "BLANK": "Mate, complete both parts before submitting."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — isolate the extra volume",
+          "prompt": "Z is 7 cm longer than Y. The depth and height are shared, so the extra strip is 7 × 10 × height."
+        },
+        {
+          "title": "Mate — build the square base",
+          "prompt": "Use six Z footprints of 15 cm × 10 cm. Arrange 2 along the 15 cm side and 3 along the 10 cm side."
+        },
+        {
+          "title": "Asher — count Y footprints",
+          "prompt": "On the square base, count whole 8 cm lengths in one direction and whole 10 cm depths in the other."
+        }
+      ],
+      "model_clue": "Asher, use this visual model.\n\nVolume difference strip:\n[ extra 7 cm ] × [ depth 10 cm ] × [ height h ] = 1470 cm³\n\nSix Z footprints make the square:\n2 × 15 cm = 30 cm\n3 × 10 cm = 30 cm\n\nSquare base: 30 cm × 30 cm\nY footprint: 8 cm × 10 cm\n\nMate, keep corresponding base edges aligned when you count whole rows and columns.",
+      "final_target_check": "Mate, part (a) asks for HEIGHT in centimetres; part (b) asks for the maximum COUNT of Y blocks.",
+      "hints": [
+        "Asher, Z is 15 - 8 = 7 cm longer than Y; depth and height are the same.",
+        "Mate, solve 7 × 10 × height = 1470 for part (a).",
+        "Asher, six 15 cm × 10 cm Z footprints form a 30 cm × 30 cm square; count 8 cm × 10 cm Y footprints."
+      ],
+      "worked_solution": "Asher, Z is 15 - 8 = 7 cm longer than Y.\nThe extra volume is a 7 cm × 10 cm × height strip.\n\n7 × 10 × height = 1470\n70 × height = 1470\nheight = 21 cm\n\n(a) The height is 21 cm.\n\nMate, now use the aligned top view from the question.\nSix Z footprints of 15 cm × 10 cm fit as 2 by 3:\n2 × 15 = 30 cm and 3 × 10 = 30 cm.\nSo the box base is 30 cm × 30 cm.\n\nAligned base view:\n30 cm: [8][8][8][6 left]\n30 cm: [10][10][10]\n\nOnly 3 whole 8 cm lengths and 3 whole 10 cm depths fit. The 6 cm strip cannot hold another aligned 8 cm edge.\n3 × 3 = 9 blocks.\n\n(b) At most 9 Y blocks fit under the stated aligned orientation.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "MPS-P16",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Merge ratios and scale a total",
+      "section": "Practice",
+      "mode": "Practice",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Source-faithful transcription of Q16 from Dave's 2 August 2026 Math PDF, question page 4; supplied working on page 8; answers independently recomputed.",
+      "source_summary": "Asher, an adults-to-children ratio combines with a girls-to-boys ratio, then different wing rates scale the group.",
+      "requires_attempt_before_support": true,
+      "support_locked_label": "Asher, try both answer parts first. Then the Hint, Model clue and Worked Solution buttons will unlock.",
+      "learner_purpose": "Asher, the two ratios share the children. Make the children count match before combining them.\n\nMate, after the people ratio is ready, the chicken-wing total gives the scale. Keep people units and wing units separate.",
+      "mini_lesson": {
+        "title": "Asher — make the shared group match",
+        "body": "Asher, adults : children is 2 : 3, while girls : boys inside the children is 4 : 1. Turn the children into the same number of units in both ratios before merging.\n\nMate, the merged ratio answers part (a). For part (b), adults get 4 wings each and children get 2, so one ratio set uses different numbers of wings for the two groups."
+      },
+      "prompt": "A caterer prepares chicken wings for some people attending a barbeque. The ratio of the number of adults to the number of children attending is 2 : 3. Among the children, the ratio of the number of girls to that of boys is 4 : 1. A total of 210 chicken wings are prepared so that each adult gets 4 chicken wings and each child gets 2.\n\n(a) What fraction of the people attending the barbeque are boys?\n(b) How many children are attending the barbeque?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 3/25; (b) 45",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Fraction who are boys",
+          "expected_format": "fraction",
+          "canonical_answer": "3/25",
+          "accepted_answers": [
+            "3/25"
+          ],
+          "target_value": {
+            "whole": 0,
+            "numerator": 3,
+            "denominator": 25
+          },
+          "equivalent_not_simplest_examples": [
+            "6/50",
+            "12/100"
+          ],
+          "diagnostic_answers": {
+            "1/5": "WRONG_BASE_ORIGINAL"
+          }
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Number of children",
+          "expected_format": "numeric",
+          "canonical_answer": "45",
+          "accepted_answers": [
+            "45",
+            "45 children"
+          ],
+          "target_number": 45,
+          "diagnostic_answers": {
+            "15": "UNIT_VALUE_NOT_FINAL",
+            "25": "INTERMEDIATE_NOT_FINAL"
+          }
+        }
+      ],
+      "error_tags": [
+        "MERGE_SHARED_RATIO",
+        "FRACTION_OF_ALL_PEOPLE",
+        "RATE_PER_PERSON",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "merge ratios through children",
+        "boys as a fraction of all people",
+        "different rate per group"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct. Boys are 3/25 of all the people, and 45 children attend.",
+        "WRONG_BASE_ORIGINAL": "Asher, that is boys as a fraction of the children. Part (a) asks for boys as a fraction of ALL the people.",
+        "UNIT_VALUE_NOT_FINAL": "Mate, that looks like one scale unit, not the number of children.",
+        "INTERMEDIATE_NOT_FINAL": "Asher, that is a useful ratio total, but it is not the requested answer for this part.",
+        "EQUIVALENT_NOT_SIMPLEST": "Mate, the fraction is equivalent but not in simplest form.",
+        "CALCULATION_ERROR": "Mate, make the children units match first, then keep people counts separate from chicken-wing counts.",
+        "INVALID_FORMAT": "Asher, enter a simplest fraction for part (a) and a whole number for part (b).",
+        "BLANK": "Mate, complete both parts before submitting."
+      },
+      "thinking_blocks": [
+        {
+          "title": "Asher — merge through the children",
+          "prompt": "Make the 3 children units in adults : children match the 5 child units in girls : boys."
+        },
+        {
+          "title": "Mate — check the fraction base",
+          "prompt": "Part (a) asks for boys out of everyone, not boys out of children only."
+        },
+        {
+          "title": "Asher — weight the ratio by wings",
+          "prompt": "Adults use 4 wings each; children use 2 each. Find the wings used by one complete ratio set."
+        }
+      ],
+      "model_clue": "Asher, use this visual model.\n\nMake the children match:\nadults : children = 2 : 3 = 10 : 15\ngirls  : boys     = 4 : 1 = 12 : 3\n\nCombined people ratio:\nadults : girls : boys = 10 : 12 : 3\n\nWings for one ratio set:\nadults -> 10 × 4\nchildren -> 15 × 2\n\nMate, keep people units and wing units in separate rows.",
+      "final_target_check": "Mate, part (a) is boys divided by ALL people; part (b) is the NUMBER of children.",
+      "hints": [
+        "Asher, make the children count 15 units in both ratios.",
+        "Mate, the merged people ratio is adults : girls : boys = 10 : 12 : 3.",
+        "Asher, one ratio set uses 10 × 4 + 15 × 2 chicken wings. Compare that with 210."
+      ],
+      "worked_solution": "Asher, make the children units match.\n\nAdults : children = 2 : 3 = 10 : 15.\nGirls : boys = 4 : 1, so among 15 child units:\ngirls = 12 units and boys = 3 units.\n\nAdults : girls : boys = 10 : 12 : 3.\nTotal people units = 10 + 12 + 3 = 25.\n\n(a) Fraction who are boys = 3/25.\n\nMate, now scale using chicken wings.\nAdults use 10 × 4 = 40 wing units.\nChildren use 15 × 2 = 30 wing units.\nOne complete ratio set uses 70 wing units.\n\n70 wing units -> 210 wings, so the scale factor is 3.\nChildren = 15 × 3 = 45.\n\n(b) 45 children attend.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    }
+  ],
+  "checkpoint_questions": [
+    {
+      "question_id": "MPS-C1",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Cold solve 1",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Fresh checkpoint partner; source-inspired transfer item; no method label shown.",
+      "source_summary": "Asher, solve this as an independent mixed-problem question.",
+      "prompt": "At a sports day, the ratio of coaches to players is 4 : 7. Among the players, the ratio of girls to boys is 4 : 3. There are 287 drinks. Each coach receives 5 drinks and each player receives 3 drinks.\n\nHow many boys are at the sports day?",
+      "expected_format": "numeric",
+      "canonical_answer": "21",
+      "accepted_answers": [
+        "21",
+        "21 boys"
+      ],
+      "target_number": 21,
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Asher, solve this fully on foolscap first. Decide what KIND of question this is and what the exact target is.\n\nMate, choose your method, finish the working, then re-read the last line. Do not type your answer yet. When you are done, click \"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage model",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. One group",
+            "B. One category",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A fraction or ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units table",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "MERGE_SHARED_RATIO",
+        "RATE_PER_PERSON",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "merge ratios through players",
+        "different rate per group"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "INTERMEDIATE_NOT_FINAL": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole-number answer.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "Asher, the final target is the number of boys, not the number of all players.",
+      "hints": [],
+      "worked_solution": "Asher, the 7 player units split directly into 4 girl units and 3 boy units.\n\nPeople model:\ncoaches [4u]\nplayers [girls 4u][boys 3u]\n\nDrinks for one ratio set:\ncoaches: 4 × 5 = 20\nplayers: 7 × 3 = 21\ntotal: 41\n\n287 ÷ 41 = 7, so each people unit represents 7 people.\n\nMate, boys = 3 × 7 = 21. The final answer is 21 boys.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "MPS-C2",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Cold solve 2",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Fresh checkpoint partner; source-inspired transfer item; no method label shown.",
+      "source_summary": "Asher, solve this as an independent mixed-problem question.",
+      "prompt": "A rectangular block A is 20 cm long and 10 cm deep. It is cut vertically into two blocks, B and C, of equal height. Block B is 5 cm long and block C is 15 cm long. The volume of C is 2200 cm³ more than the volume of B.\n\n(a) What is the height of each block?\n(b) Six C blocks, standing upright, fit exactly into a box with a square base and the same height as C. At most, how many B blocks can be packed upright into the same box?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 22 cm; (b) 18 blocks",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Height in cm",
+          "expected_format": "numeric",
+          "canonical_answer": "22",
+          "accepted_answers": [
+            "22",
+            "22 cm"
+          ],
+          "target_number": 22
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Maximum number of B blocks",
+          "expected_format": "numeric",
+          "canonical_answer": "18",
+          "accepted_answers": [
+            "18",
+            "18 blocks"
+          ],
+          "target_number": 18
+        }
+      ],
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Asher, solve this fully on foolscap first. Decide what KIND of question this is and what the exact target is.\n\nMate, choose your method, finish the working, then re-read the last line. Do not type your answer yet. When you are done, click \"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage model",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. One group",
+            "B. One category",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A fraction or ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units table",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "VOLUME_DIFFERENCE",
+        "TOP_VIEW_PACKING",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "volume difference",
+        "square-base packing"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "INTERMEDIATE_NOT_FINAL": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole number in each answer box.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "Asher, part (a) asks for height; part (b) asks for the maximum count of B blocks.",
+      "hints": [],
+      "worked_solution": "Asher, C is 15 - 5 = 10 cm longer than B.\n\nExtra-volume strip:\n[10 cm] × [10 cm] × [height h] = 2200 cm³\n\n100 × h = 2200, so h = 22 cm.\n(a) The height is 22 cm.\n\nMate, six 15 cm × 10 cm C footprints make a 30 cm × 30 cm square.\n\nSquare base: [30 cm × 30 cm] = 900 cm²\nB footprint:  [ 5 cm × 10 cm] = 50 cm²\n\nThe area bound is 900 ÷ 50 = 18 blocks. This bound is reached by 6 rows across the 5 cm side and 3 rows across the 10 cm side: 6 × 3 = 18.\n(b) At most 18 B blocks fit.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "MPS-C3",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Cold solve 3",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Fresh checkpoint partner; source-inspired transfer item; no method label shown.",
+      "source_summary": "Asher, solve this as an independent mixed-problem question.",
+      "prompt": "Nila baked some rolls. She sold 1/8 of all the rolls and donated 42 rolls. She had 5/8 of the rolls left. She packed the rolls left into 15 boxes. Some boxes held 5 rolls and the rest held 10 rolls.\n\n(a) How many rolls did Nila bake at first?\n(b) How many boxes held 10 rolls?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 168 rolls; (b) 6 boxes",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Original number of rolls",
+          "expected_format": "numeric",
+          "canonical_answer": "168",
+          "accepted_answers": [
+            "168",
+            "168 rolls"
+          ],
+          "target_number": 168
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Boxes containing 10 rolls",
+          "expected_format": "numeric",
+          "canonical_answer": "6",
+          "accepted_answers": [
+            "6",
+            "6 boxes"
+          ],
+          "target_number": 6
+        }
+      ],
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Asher, solve this fully on foolscap first. Decide what KIND of question this is and what the exact target is.\n\nMate, choose your method, finish the working, then re-read the last line. Do not type your answer yet. When you are done, click \"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage model",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. One group",
+            "B. One category",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A fraction or ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units table",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "FRACTION_OF_WHOLE",
+        "MIXED_CAPACITY_BOXES",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "fractions of one whole",
+        "mixed box capacities"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "INTERMEDIATE_NOT_FINAL": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole number in each answer box.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "Asher, part (a) asks for the original batch; part (b) asks only for the 10-roll boxes.",
+      "hints": [],
+      "worked_solution": "Asher, sold + donated + left makes one whole.\n\nWhole-roll model (eighths):\nsold [1u] donated [2u = 42] left [5u]\n\nThe donated fraction is 1 - 1/8 - 5/8 = 2/8 = 1/4.\n1/4 is 42, so the whole batch is 42 × 4 = 168.\n(a) Nila baked 168 rolls.\n\nMate, 5/8 × 168 = 105 rolls were packed. Let x be the number of 10-roll boxes.\n\nBox model:\n15 boxes at 5 rolls = 75 rolls\neach 10-roll box adds 5 rolls\nneeded increase = 105 - 75 = 30 rolls\n\nx = 30 ÷ 5 = 6.\n(b) 6 boxes held 10 rolls.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    },
+    {
+      "question_id": "MPS-C4",
+      "topic": "Mixed Problem Solving",
+      "subtopic": "Cold solve 4",
+      "section": "Checkpoint",
+      "mode": "Checkpoint",
+      "calculator_policy": "Asher, calculator: allowed. Mate, write your working on foolscap paper before entering the answer.",
+      "source": "Fresh checkpoint partner; source-inspired transfer item; no method label shown.",
+      "source_summary": "Asher, solve this as an independent mixed-problem question.",
+      "prompt": "Two teachers each have the same number of pupils. In the first class, there are 38 more boys than girls. In the second class, there are 10 more girls than boys. Altogether, 43% of the pupils are girls.\n\n(a) How many pupils are there altogether?\n(b) How many of the pupils are girls?",
+      "expected_format": "multi_part",
+      "canonical_answer": "(a) 200 pupils; (b) 86 girls",
+      "answer_parts": [
+        {
+          "part_id": "a",
+          "label": "(a) Total number of pupils",
+          "expected_format": "numeric",
+          "canonical_answer": "200",
+          "accepted_answers": [
+            "200",
+            "200 pupils"
+          ],
+          "target_number": 200
+        },
+        {
+          "part_id": "b",
+          "label": "(b) Number of girls",
+          "expected_format": "numeric",
+          "canonical_answer": "86",
+          "accepted_answers": [
+            "86",
+            "86 girls"
+          ],
+          "target_number": 86
+        }
+      ],
+      "requires_working_confirmation": true,
+      "working_confirmation_label": "I have finished my working",
+      "checkpoint_instruction": "Asher, solve this fully on foolscap first. Decide what KIND of question this is and what the exact target is.\n\nMate, choose your method, finish the working, then re-read the last line. Do not type your answer yet. When you are done, click \"I have finished my working.\"",
+      "audit_fields": [
+        {
+          "field_id": "main_method",
+          "label": "Audit 1 — Main method used",
+          "type": "select",
+          "options": [
+            "A. Bar model (units)",
+            "B. Ratio units",
+            "C. Fraction model",
+            "D. Percentage model",
+            "E. Equations only",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "final_target",
+          "label": "Audit 2 — Final target",
+          "type": "select",
+          "options": [
+            "A. One group",
+            "B. One category",
+            "C. A total or whole",
+            "D. A difference",
+            "E. A fraction or ratio",
+            "F. Other / not sure"
+          ]
+        },
+        {
+          "field_id": "visual_model",
+          "label": "Audit 3 — Visual/model used",
+          "type": "select",
+          "options": [
+            "A. Bar model",
+            "B. Units table",
+            "C. Diagram or sketch",
+            "D. Equations only",
+            "E. I did not draw anything"
+          ]
+        },
+        {
+          "field_id": "hardest_part",
+          "label": "Audit 4 — Optional hardest part",
+          "type": "textarea"
+        }
+      ],
+      "error_tags": [
+        "CHECKPOINT",
+        "EQUAL_GROUP_TOTALS",
+        "WRONG_PERCENT_BASE",
+        "FINAL_TARGET_CHECK"
+      ],
+      "parent_summary_tags": [
+        "checkpoint",
+        "equal-group comparison",
+        "percentage of a hidden total"
+      ],
+      "feedback_by_code": {
+        "CORRECT": "Correct.",
+        "CALCULATION_ERROR": "Try again.",
+        "WRONG_VALUE": "Try again.",
+        "WRONG_FINAL_TARGET": "Try again.",
+        "INTERMEDIATE_NOT_FINAL": "Try again.",
+        "UNIT_VALUE_NOT_FINAL": "Try again.",
+        "INVALID_FORMAT": "Try again: use a whole number in each answer box.",
+        "BLANK": "Try again."
+      },
+      "final_target_check": "Asher, part (a) asks for all pupils; part (b) asks for girls only.",
+      "hints": [],
+      "worked_solution": "Asher, combine the two class differences first.\n\nClass 1: 38 more boys than girls\nClass 2: 10 more girls than boys\nNet: 38 - 10 = 28 more boys\n\nPercentage model:\nboys  [----------- 57% -----------]\ngirls [--------- 43% ---------]\n              gap = 14%\n\n14% represents 28 pupils, so 1% represents 2 pupils.\n100% represents 200 pupils.\n(a) There are 200 pupils altogether.\n\nMate, girls = 43% × 200 = 86.\n(b) There are 86 girls.",
+      "source_authority": "D_DAVE_REVIEW_REQUIRED"
+    }
+  ]
+}
+    </script>
+    <script>
+const FEEDBACK_CODES = Object.freeze({
+  CORRECT: "CORRECT",
+  BLANK: "BLANK",
+  INVALID_FORMAT: "INVALID_FORMAT",
+  FRACTION_REQUIRED: "FRACTION_REQUIRED",
+  MIXED_NUMBER_REQUIRED: "MIXED_NUMBER_REQUIRED",
+  EQUIVALENT_NOT_SIMPLEST: "EQUIVALENT_NOT_SIMPLEST",
+  PLACE_VALUE_DENOMINATOR_ERROR: "PLACE_VALUE_DENOMINATOR_ERROR",
+  WRONG_VALUE: "WRONG_VALUE",
+  CALCULATION_ERROR: "CALCULATION_ERROR",
+  WRONG_START_RATIO: "WRONG_START_RATIO",
+  TRANSFER_APPLIED_TO_WRONG_PERSON: "TRANSFER_APPLIED_TO_WRONG_PERSON",
+  WRONG_CURRENT_AMOUNT: "WRONG_CURRENT_AMOUNT",
+  USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL",
+  UNIT_VALUE_NOT_FINAL: "UNIT_VALUE_NOT_FINAL",
+  WRONG_BASE_ORIGINAL: "WRONG_BASE_ORIGINAL",
+  WRONG_BASE_REMAINDER: "WRONG_BASE_REMAINDER",
+  WRONG_LEFTOVER_STAGE: "WRONG_LEFTOVER_STAGE",
+  INTERMEDIATE_NOT_FINAL: "INTERMEDIATE_NOT_FINAL",
+  WRONG_FINAL_TARGET: "WRONG_FINAL_TARGET",
+  WRONG_CATEGORY: "WRONG_CATEGORY",
+  MISSING_UNIT: "MISSING_UNIT"
+});
+
+const PLACE_VALUE_DENOMINATORS = new Set([10, 100, 1000]);
+
+function normaliseAnswer(input) {
+  return String(input ?? "")
+    .replace(/\u2044/g, "/")
+    .trim()
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+/g, " ");
+}
+
+function getFeedbackMessage(code, mode, expectedFormat = "fraction", question = null) {
+  const mixedFormat = expectedFormat.includes("mixed");
+  const questionFeedback = question?.feedback_by_code?.[code];
+
+  if (questionFeedback) return questionFeedback;
+
+  if (code === FEEDBACK_CODES.CORRECT) return "Correct.";
+  if (code === FEEDBACK_CODES.BLANK) return mode === "Practice" ? "Try typing an answer." : "Try again.";
+  if (code === FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST) {
+    return mode === "Practice"
+      ? "Equivalent, but not in simplest form. Try simplifying it."
+      : "Try again: equivalent but not in simplest form.";
+  }
+  if (code === FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR) {
+    return mode === "Practice"
+      ? "Try again: check the decimal place value."
+      : "Try again: check the decimal place value.";
+  }
+  if (code === FEEDBACK_CODES.MIXED_NUMBER_REQUIRED || (code === FEEDBACK_CODES.INVALID_FORMAT && mixedFormat)) {
+    return "Try again: write your answer as a mixed number.";
+  }
+  if (code === FEEDBACK_CODES.INVALID_FORMAT && expectedFormat === "numeric") {
+    return "Try again: use a whole-number answer.";
+  }
+  if (code === FEEDBACK_CODES.FRACTION_REQUIRED || code === FEEDBACK_CODES.INVALID_FORMAT) {
+    return "Try again: answer must be written as a fraction.";
+  }
+  if (code === FEEDBACK_CODES.WRONG_BASE_ORIGINAL) return "Try again: check what the fraction is about.";
+  if (code === FEEDBACK_CODES.WRONG_BASE_REMAINDER) return "Try again: check what we started with.";
+  if (code === FEEDBACK_CODES.WRONG_LEFTOVER_STAGE) return "Try again: check what is left.";
+  if (code === FEEDBACK_CODES.WRONG_START_RATIO) return "Try again: check the starting ratio.";
+  if (code === FEEDBACK_CODES.TRANSFER_APPLIED_TO_WRONG_PERSON) return "Try again: check who changed.";
+  if (code === FEEDBACK_CODES.WRONG_CURRENT_AMOUNT) return "Try again: check the new amount now.";
+  if (code === FEEDBACK_CODES.USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL) return "Try again: the story changed before this clue.";
+  if (code === FEEDBACK_CODES.UNIT_VALUE_NOT_FINAL) return "Try again: this looks like one unit, not the final answer.";
+  if (code === FEEDBACK_CODES.INTERMEDIATE_NOT_FINAL) return "Try again: this looks like a halfway answer.";
+  if (code === FEEDBACK_CODES.WRONG_FINAL_TARGET) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.WRONG_CATEGORY) return "Try again: check what the question asked for.";
+  if (code === FEEDBACK_CODES.MISSING_UNIT) return "Try again: include the unit or group.";
+  if (code === FEEDBACK_CODES.CALCULATION_ERROR) return "Try again: check the calculation.";
+
+  return "Try again.";
+}
+
+function validateQuestionAnswer(question, rawInput) {
+  if (question.expected_format === "multi_part") {
+    return validateMultiPartQuestion(question, rawInput);
+  }
+
+  const answer = normaliseAnswer(rawInput);
+
+  if (!answer) {
+    return result(FEEDBACK_CODES.BLANK, answer);
+  }
+
+  if (question.expected_format === "three_denominators") {
+    return validateDenominatorSequence(question, answer);
+  }
+
+  if (question.expected_format === "denominator_only") {
+    return validateDenominatorOnly(question, answer);
+  }
+
+  if (question.expected_format === "mcq") {
+    return validateMcq(question, answer);
+  }
+
+  if (question.expected_format === "numeric") {
+    return validateNumeric(question, answer);
+  }
+
+  if (question.expected_format === "ratio") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "short_text") {
+    return validateShortText(question, answer);
+  }
+
+  if (question.expected_format === "ratio_units") {
+    return validateRatioUnits(question, answer);
+  }
+
+  if (question.expected_format === "error_explanation_plus_fraction") {
+    return validateErrorExplanation(question, answer);
+  }
+
+  if (question.expected_format === "yes_no_plus_mixed_number") {
+    return validateYesNoMixed(question, answer);
+  }
+
+  if (question.expected_format === "mixed_number") {
+    return validateMixedNumber(question, answer);
+  }
+
+  if (question.expected_format === "fraction_optional_unit") {
+    return validateFractionWithOptionalUnit(question, answer);
+  }
+
+  return validateFraction(question, answer);
+}
+
+function validateMultiPartQuestion(question, rawInput) {
+  if (!question.answer_parts?.length) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, {});
+  }
+
+  const answers = rawInput && typeof rawInput === "object" ? rawInput : {};
+  const partResults = (question.answer_parts ?? []).map((part) => {
+    const partQuestion = {
+      ...question,
+      ...part,
+      expected_format: part.expected_format,
+      feedback_by_code: part.feedback_by_code ?? question.feedback_by_code,
+      answer_parts: undefined
+    };
+
+    return {
+      part_id: part.part_id,
+      result: validateQuestionAnswer(partQuestion, answers[part.part_id] ?? "")
+    };
+  });
+  const normalised = Object.fromEntries(partResults.map((part) => [part.part_id, part.result.normalised]));
+  const firstIssue = partResults.find((part) => !part.result.isCorrect);
+
+  if (firstIssue) {
+    return result(firstIssue.result.code, normalised);
+  }
+
+  return result(FEEDBACK_CODES.CORRECT, normalised);
+}
+
+function validateDenominatorSequence(question, answer) {
+  const numbers = answer.split(/[,\s]+/).filter(Boolean);
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).replace(/\s*,\s*/g, ",")) ?? [];
+  const compact = answer.replace(/\s*,\s*/g, ",");
+
+  if (accepted.includes(compact) || arraysEqual(numbers, ["10", "100", "1000"])) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateDenominatorOnly(question, answer) {
+  if (question.accepted_answers?.includes(answer)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+}
+
+function validateMcq(question, answer) {
+  const cleaned = answer.toUpperCase().replace(/\.$/, "");
+  const accepted = question.accepted_answers?.map((item) => normaliseAnswer(item).toUpperCase()) ?? [];
+
+  if (accepted.includes(cleaned)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const optionFeedbackCode = question.option_feedback_codes?.[cleaned];
+  if (optionFeedbackCode && FEEDBACK_CODES[optionFeedbackCode]) {
+    return result(FEEDBACK_CODES[optionFeedbackCode], answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  if (/^[A-D]$/i.test(cleaned)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+}
+
+function validateNumeric(question, answer) {
+  const parsed = parseWholeNumberAnswer(answer);
+
+  if (!parsed.ok) {
+    return result(parsed.code, answer);
+  }
+
+  const targetNumber = getTargetNumber(question);
+  if (!Number.isInteger(targetNumber)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.value === targetNumber) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, String(parsed.value));
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.CALCULATION_ERROR, answer);
+}
+
+function validateShortText(question, answer) {
+  const accepted = question.accepted_answers?.map((item) => normaliseTextAnswer(item)) ?? [];
+  const normalisedText = normaliseTextAnswer(answer);
+
+  if (accepted.includes(normalisedText) || matchesRequiredTerms(question, normalisedText)) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateRatioUnits(question, answer) {
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseRatioUnits(answer);
+  if (!parsed.ok) {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const target = question.target_ratio_units;
+  if (!target || !Number.isInteger(target.left) || !Number.isInteger(target.right)) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (parsed.left === target.left && parsed.right === target.right) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (parsed.left * target.right === parsed.right * target.left) {
+    return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_CURRENT_AMOUNT, answer);
+}
+
+function validateErrorExplanation(question, answer) {
+  const hasFinalFraction = hasTargetFractionToken(question, answer);
+  const hasMistakeEvidence = hasP10MistakeEvidence(answer);
+
+  if (hasFinalFraction && hasMistakeEvidence) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  const parsedFraction = parseFraction(answer);
+  if (parsedFraction.ok && !isFractionPartSimplest(parsedFraction.value)) {
+    return evaluateFractionValue(question, parsedFraction.value, "fraction", answer);
+  }
+
+  if (hasFractionToken(answer, "48/100")) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  if (answer.includes("48/10") || answer.includes("24/5")) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, answer);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+}
+
+function validateYesNoMixed(question, answer) {
+  const hasFinalMixedNumber = hasTargetMixedNumberToken(question, answer);
+  const hasNotSimplestSignal = hasP11NotSimplestSignal(answer);
+
+  if (hasFinalMixedNumber && hasNotSimplestSignal) {
+    return result(FEEDBACK_CODES.CORRECT, answer);
+  }
+
+  if (hasFinalMixedNumber) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, answer);
+  }
+
+  if (question.equivalent_not_simplest_examples?.some((item) => answer.includes(normaliseAnswer(item)))) {
+    return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function validateFraction(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.FRACTION_REQUIRED, answer);
+  }
+
+  const diagnosticCode = getDiagnosticFeedbackCode(question, answer);
+  if (diagnosticCode) return result(diagnosticCode, answer);
+
+  const parsed = parseFraction(answer);
+  if (!parsed.ok) {
+    return result(parsed.code ?? FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return evaluateFractionValue(question, parsed.value, "fraction", answer);
+}
+
+function validateFractionWithOptionalUnit(question, answer) {
+  return validateFraction(question, stripOptionalUnit(answer, question.allowed_unit_tokens ?? []));
+}
+
+function validateMixedNumber(question, answer) {
+  if (hasDecimalNumber(answer)) {
+    return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+  }
+
+  const mixed = parseMixedNumber(answer);
+  if (mixed.ok) {
+    return evaluateFractionValue(question, mixed.value, "mixed_number", answer);
+  }
+
+  if (mixed.code === FEEDBACK_CODES.INVALID_FORMAT && mixed.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  const fraction = parseFraction(answer);
+  if (fraction.ok) {
+    return evaluateFractionValue(question, fraction.value, "improper_for_mixed", answer);
+  }
+
+  if (fraction.code === FEEDBACK_CODES.INVALID_FORMAT && fraction.reason === "zero_denominator") {
+    return result(FEEDBACK_CODES.INVALID_FORMAT, answer);
+  }
+
+  return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, answer);
+}
+
+function evaluateFractionValue(question, parsed, parsedFormat, normalised) {
+  const target = targetToImproperFraction(question.target_value);
+
+  if (!target) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  const input = toImproperFraction(parsed);
+
+  if (sameValue(input, target)) {
+    if (parsedFormat === "improper_for_mixed") {
+      return result(FEEDBACK_CODES.MIXED_NUMBER_REQUIRED, normalised);
+    }
+
+    if (!isFractionPartSimplest(parsed)) {
+      return result(FEEDBACK_CODES.EQUIVALENT_NOT_SIMPLEST, normalised);
+    }
+
+    return result(FEEDBACK_CODES.CORRECT, normalised);
+  }
+
+  if (parsedFormat === "mixed_number" && parsed.whole !== question.target_value?.whole) {
+    return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+  }
+
+  if (looksLikePlaceValueError(question, parsed)) {
+    return result(FEEDBACK_CODES.PLACE_VALUE_DENOMINATOR_ERROR, normalised);
+  }
+
+  return result(FEEDBACK_CODES.WRONG_VALUE, normalised);
+}
+
+function parseFraction(answer) {
+  const match = answer.match(/^(\d+)\/(\d+)$/);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (numerator <= 0 || denominator <= 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole: 0,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseMixedNumber(answer) {
+  const match = answer.match(/^(\d+)(?:\s+and)?\s+(\d+)\/(\d+)$/i);
+  if (!match) return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+
+  const whole = Number(match[1]);
+  const numerator = Number(match[2]);
+  const denominator = Number(match[3]);
+
+  if (!Number.isInteger(whole) || !Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT, reason: "zero_denominator" };
+  }
+
+  if (whole <= 0 || numerator <= 0 || denominator <= 0 || numerator >= denominator) {
+    return { ok: false, code: FEEDBACK_CODES.MIXED_NUMBER_REQUIRED };
+  }
+
+  return {
+    ok: true,
+    value: {
+      whole,
+      numerator,
+      denominator
+    }
+  };
+}
+
+function parseRatioUnits(answer) {
+  const match = answer
+    .toLowerCase()
+    .match(/^(\d+)\s*(?:units?)?\s*(?::|to)\s*(\d+)\s*(?:units?)?$/);
+
+  if (!match) return { ok: false };
+
+  const left = Number(match[1]);
+  const right = Number(match[2]);
+
+  if (!Number.isInteger(left) || !Number.isInteger(right) || left <= 0 || right <= 0) {
+    return { ok: false };
+  }
+
+  return {
+    ok: true,
+    left,
+    right
+  };
+}
+
+function targetToImproperFraction(target) {
+  if (!target) return null;
+
+  return {
+    numerator: target.whole * target.denominator + target.numerator,
+    denominator: target.denominator
+  };
+}
+
+function toImproperFraction(value) {
+  return {
+    numerator: value.whole * value.denominator + value.numerator,
+    denominator: value.denominator
+  };
+}
+
+function sameValue(left, right) {
+  return left.numerator * right.denominator === right.numerator * left.denominator;
+}
+
+function isFractionPartSimplest(value) {
+  return gcd(value.numerator, value.denominator) === 1;
+}
+
+function looksLikePlaceValueError(question, parsed) {
+  if (!question.place_value_denominator) return false;
+  if (!PLACE_VALUE_DENOMINATORS.has(parsed.denominator)) return false;
+
+  return parsed.denominator !== question.place_value_denominator;
+}
+
+function getDiagnosticFeedbackCode(question, answer) {
+  const diagnostics = question.diagnostic_answers ?? {};
+  const candidates = [answer, normaliseAnswer(answer), normaliseAnswer(answer).toLowerCase(), normaliseAnswer(answer).toUpperCase()];
+
+  for (const candidate of candidates) {
+    const code = diagnostics[candidate];
+    if (code && FEEDBACK_CODES[code]) {
+      return FEEDBACK_CODES[code];
+    }
+  }
+
+  return "";
+}
+
+function normaliseTextAnswer(value) {
+  return normaliseAnswer(value)
+    .toLowerCase()
+    .replace(/[:.,;]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function matchesRequiredTerms(question, normalisedText) {
+  const requiredTerms = question.required_terms ?? [];
+
+  return requiredTerms.length > 0 && requiredTerms.every((group) => group.some((term) => normalisedText.includes(term)));
+}
+
+function parseWholeNumberAnswer(answer) {
+  const cleanedAnswer = answer.replace(/^\$\s*/, "");
+  const match = cleanedAnswer.match(/^(\d+)(.*)$/);
+
+  if (!match) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const rest = match[2].trim();
+  if (rest && (/^[\d./+\-*=/]/.test(rest) || /\d+\s*\/\s*\d+/.test(rest) || /\d+\.\d+/.test(rest))) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  const value = Number(match[1]);
+  if (!Number.isInteger(value)) {
+    return { ok: false, code: FEEDBACK_CODES.INVALID_FORMAT };
+  }
+
+  return { ok: true, value };
+}
+
+function stripOptionalUnit(answer, allowedUnitTokens) {
+  if (!allowedUnitTokens.length) return answer;
+
+  const unitPattern = allowedUnitTokens.map((unit) => escapeRegExp(unit)).join("|");
+  const match = answer.match(new RegExp(`^(.+?)\\s*(?:${unitPattern})\\.?$`, "i"));
+
+  return match ? match[1].trim() : answer;
+}
+
+function getTargetNumber(question) {
+  if (Number.isInteger(question.target_number)) return question.target_number;
+  if (Number.isInteger(question.expected_numeric_value)) return question.expected_numeric_value;
+
+  const canonical = normaliseAnswer(question.canonical_answer ?? "");
+  const match = canonical.match(/^(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function hasTargetFractionToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole !== 0) return false;
+
+  return hasFractionToken(answer, `${target.numerator}/${target.denominator}`);
+}
+
+function hasTargetMixedNumberToken(question, answer) {
+  const target = question.target_value;
+  if (!target || target.whole <= 0) return false;
+
+  const mixedNumber = `${target.whole} ${target.numerator}/${target.denominator}`;
+  const mixedNumberWithAnd = `${target.whole} and ${target.numerator}/${target.denominator}`;
+
+  return hasPhraseToken(answer, mixedNumber) || hasPhraseToken(answer, mixedNumberWithAnd);
+}
+
+function hasP10MistakeEvidence(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    hasFractionToken(answer, "48/100") ||
+    /\bnot\s+48\/10\b/.test(lower) ||
+    /\bdenominator\b.{0,30}\b100\b/.test(lower) ||
+    /\bhundredths?\b/.test(lower)
+  );
+}
+
+function hasP11NotSimplestSignal(answer) {
+  const lower = answer.toLowerCase();
+
+  return (
+    /\bno\b/.test(lower) ||
+    /\bnot\s+(?:in\s+)?simplest(?:\s+form)?\b/.test(lower) ||
+    /\bnot\s+simplified\b/.test(lower)
+  );
+}
+
+function hasFractionToken(answer, fraction) {
+  return hasPhraseToken(answer, fraction);
+}
+
+function hasPhraseToken(answer, phrase) {
+  const escaped = escapeRegExp(phrase);
+  const tokenPattern = new RegExp(`(^|[^\\d])${escaped}([^\\d]|$)`, "i");
+
+  return tokenPattern.test(answer);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function hasDecimalNumber(answer) {
+  return /\d+\.\d+/.test(answer);
+}
+
+function gcd(left, right) {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+
+  while (b !== 0) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+
+  return a;
+}
+
+function arraysEqual(left, right) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function result(code, normalised) {
+  return {
+    code,
+    isCorrect: code === FEEDBACK_CODES.CORRECT,
+    normalised
+  };
+}
+
+
+const REMOTE_LOGGING_ENDPOINT = "";
+
+const checkpointLoggingConfig = {
+  remoteEndpoint: REMOTE_LOGGING_ENDPOINT
+};
+
+const CHECKPOINT_ATTEMPT_EVENT = "checkpoint_attempt";
+const SCHEMA_VERSION = "0.1";
+const SOURCE = "browser-local-first";
+
+function logCheckpointAttempt(session, attempt) {
+  try {
+    if (!session?.sessionId || !session?.quizId) {
+      return { ok: false, error: "Missing checkpoint session details." };
+    }
+
+    if (!attempt?.question_id || !Number.isInteger(attempt?.attempt_number)) {
+      return { ok: false, error: "Missing checkpoint attempt details." };
+    }
+
+    const endpoint = checkpointLoggingConfig.remoteEndpoint.trim();
+
+    if (!endpoint) {
+      return { ok: true, mode: "local-only" };
+    }
+
+    const payload = buildCheckpointAttemptPayload(session, attempt);
+
+    // Optional remote logging integration point. Blank by default for the static export workflow.
+    // Remote logging is fire-and-forget so it never blocks local checkpoint flow.
+    sendCheckpointAttempt(endpoint, payload);
+    return { ok: true, mode: "remote-queued" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown logging error."
+    };
+  }
+}
+
+function buildCheckpointAttemptPayload(session, attempt) {
+  return {
+    event_type: CHECKPOINT_ATTEMPT_EVENT,
+    schema_version: SCHEMA_VERSION,
+    session_id: session.sessionId,
+    quiz_id: session.quizId,
+    question_id: attempt.question_id,
+    attempt_number: attempt.attempt_number,
+    raw_input: attempt.raw_input,
+    normalised_input: attempt.normalised_input ?? "",
+    feedback_code: attempt.feedback_code,
+    is_correct: attempt.is_correct,
+    attempt_timestamp: attempt.timestamp,
+    client_timezone: getClientTimezone(),
+    source: SOURCE
+  };
+}
+
+async function sendCheckpointAttempt(endpoint, payload) {
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.warn("Checkpoint remote logging failed.", error);
+  }
+}
+
+function getClientTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+}
+
+
+
+const STORAGE_KEY_PREFIX = "asher-quiz-lab";
+
+function createCheckpointSession(quizId) {
+  return {
+    sessionId: `${quizId}-${Date.now()}`,
+    quizId,
+    startedAt: new Date().toISOString(),
+    attempts: []
+  };
+}
+
+function recordCheckpointAttempt(session, questionId, rawInput, feedbackCode, isCorrect, normalisedInput) {
+  const attemptNumber = session.attempts.filter((attempt) => attempt.question_id === questionId).length + 1;
+  const attempt = {
+    question_id: questionId,
+    attempt_number: attemptNumber,
+    raw_input: rawInput,
+    normalised_input: normalisedInput ?? "",
+    feedback_code: feedbackCode,
+    is_correct: isCorrect,
+    timestamp: new Date().toISOString()
+  };
+
+  session.attempts.push(attempt);
+  saveCheckpointSession(session);
+  logCheckpointAttempt(session, attempt);
+  return attempt;
+}
+
+function getCheckpointAttemptCounts(session, questionIds) {
+  return questionIds.map((questionId) => ({
+    question_id: questionId,
+    attempts: session.attempts.filter((attempt) => attempt.question_id === questionId).length
+  }));
+}
+
+function saveCheckpointSession(session) {
+  try {
+    window.localStorage.setItem(getStorageKey(session.quizId), JSON.stringify(session));
+  } catch {
+    // Local storage is helpful for Dave review, but the quiz should still run without it.
+  }
+}
+
+function clearCheckpointSession(quizId) {
+  try {
+    window.localStorage.removeItem(getStorageKey(quizId));
+  } catch {
+    // Ignore storage failures in local prototype mode.
+  }
+}
+
+function getStorageKey(quizId) {
+  return `${STORAGE_KEY_PREFIX}.${quizId}`;
+}
+
+
+function createGuidedSession(quizId, now = Date.now()) {
+  return {
+    sessionId: `${quizId}-${now}`,
+    quizId,
+    startedAt: new Date(now).toISOString(),
+    completedAt: "",
+    activeMs: 0,
+    lastTickAt: now,
+    paused: false,
+    visible: true,
+    completed: false,
+    events: []
+  };
+}
+
+function syncGuidedActiveTime(session, now = Date.now()) {
+  if (!session.paused && session.visible && !session.completed) {
+    session.activeMs += Math.max(0, now - session.lastTickAt);
+  }
+  session.lastTickAt = now;
+  return session.activeMs;
+}
+
+function setGuidedPaused(session, paused, now = Date.now()) {
+  syncGuidedActiveTime(session, now);
+  session.paused = paused;
+}
+
+function setGuidedVisibility(session, visible, now = Date.now()) {
+  syncGuidedActiveTime(session, now);
+  session.visible = visible;
+}
+
+function completeGuidedSession(session, now = Date.now()) {
+  syncGuidedActiveTime(session, now);
+  session.completed = true;
+  session.completedAt = new Date(now).toISOString();
+}
+
+function getGuidedActiveTime(session, now = Date.now()) {
+  if (session.paused || !session.visible || session.completed) return session.activeMs;
+  return session.activeMs + Math.max(0, now - session.lastTickAt);
+}
+
+function buildGuidedMetrics(questions, states) {
+  const records = questions.map((question, index) => {
+    const state = states[index];
+    const attempts = state.attempts ?? [];
+    const firstAttemptCorrect = Boolean(attempts[0]?.correctness);
+    const eventuallyCorrect = attempts.some((attempt) => attempt.correctness);
+    const status = !attempts.length
+      ? "Not attempted"
+      : firstAttemptCorrect
+        ? "Correct on first attempt"
+        : eventuallyCorrect
+          ? "Correct after another try"
+          : "Attempted, not yet correct";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      hints_opened: state.hintsOpened ?? 0,
+      family: question.parent_summary_family,
+      recommendation: question.parent_recommendation,
+      wrong_attempt_count: attempts.filter((attempt) => !attempt.correctness).length,
+      first_attempt_correct_without_hints: firstAttemptCorrect && (state.hintsOpened ?? 0) === 0
+    };
+  });
+
+  return {
+    attempted_count: records.filter((record) => record.attempt_count > 0).length,
+    not_attempted_count: records.filter((record) => record.attempt_count === 0).length,
+    first_attempt_correct_count: records.filter((record) => record.status === "Correct on first attempt").length,
+    eventual_correct_after_retry_count: records.filter((record) => record.status === "Correct after another try").length,
+    eventual_correct_count: records.filter((record) => record.status.startsWith("Correct")).length,
+    not_yet_correct_count: records.filter((record) => record.status === "Attempted, not yet correct").length,
+    total_attempts: records.reduce((total, record) => total + record.attempt_count, 0),
+    total_hints_opened: records.reduce((total, record) => total + record.hints_opened, 0),
+    review_questions: records
+      .filter((record) => record.wrong_attempt_count > 0 || record.hints_opened > 0)
+      .map((record) => record.question_id),
+    records
+  };
+}
+
+function buildParentAnalysis(metrics, thresholds) {
+  const families = new Map();
+
+  for (const record of metrics.records) {
+    if (!record.wrong_attempt_count) continue;
+    const entry = families.get(record.family) ?? {
+      family: record.family,
+      signal_count: 0,
+      question_ids: new Set(),
+      recommendation: record.recommendation
+    };
+    entry.signal_count += record.wrong_attempt_count;
+    entry.question_ids.add(record.question_id);
+    families.set(record.family, entry);
+  }
+
+  return [...families.values()]
+    .map((entry) => {
+      const questionIds = [...entry.question_ids];
+      const level =
+        entry.signal_count >= thresholds.priority_practice &&
+        questionIds.length >= thresholds.priority_minimum_questions
+          ? "PRIORITY PRACTICE"
+          : entry.signal_count >= thresholds.practise_next
+            ? "PRACTISE NEXT"
+            : "WATCH";
+      return {
+        ...entry,
+        level,
+        question_ids: questionIds
+      };
+    })
+    .sort((left, right) => right.signal_count - left.signal_count || left.family.localeCompare(right.family));
+}
+
+function formatGuidedDuration(milliseconds) {
+  const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+}
+
+function buildGuidedParentSummary({
+  quiz,
+  metrics,
+  activeTimeMs,
+  completedAt
+}) {
+  const analyses = buildParentAnalysis(metrics, quiz.parent_analysis_thresholds);
+  const analysisLines = analyses.length
+    ? analyses.flatMap(formatAnalysis)
+    : ["No wrong-attempt signals were recorded.", ""];
+  const recommendationLines = analyses.length
+    ? analyses.map((analysis) => `- ${analysis.recommendation}`)
+    : ["- No additional question type was identified from wrong attempts."];
+  const recordLines = metrics.records.map(
+    (record) =>
+      `${record.question_id}: ${record.status}; attempts ${record.attempt_count}; hints opened ${record.hints_opened}; focus ${record.family}.`
+  );
+
+  return [
+    "ASHER SCIENCE REVISION — PARENT SUMMARY",
+    "",
+    "Revision:",
+    quiz.title,
+    "",
+    "Completed:",
+    new Date(completedAt).toLocaleString(),
+    "",
+    "SESSION OVERVIEW",
+    `Active time: ${formatGuidedDuration(activeTimeMs)}`,
+    `Questions attempted: ${metrics.attempted_count} / ${quiz.guided_questions.length}`,
+    `Questions not attempted: ${metrics.not_attempted_count}`,
+    `Correct on first attempt: ${metrics.first_attempt_correct_count}`,
+    `Correct after another try: ${metrics.eventual_correct_after_retry_count}`,
+    `Not yet correct: ${metrics.not_yet_correct_count}`,
+    `Total marked attempts: ${metrics.total_attempts}`,
+    `Total hints opened: ${metrics.total_hints_opened}`,
+    "",
+    "WHAT THE ATTEMPTS SUGGEST",
+    ...analysisLines,
+    "STRENGTHS SEEN",
+    ...formatStrengths(metrics),
+    "",
+    "SUGGESTED QUESTION TYPES TO PRACTISE",
+    ...recommendationLines,
+    "",
+    "QUESTION RECORD",
+    ...recordLines,
+    "",
+    "This summary reports attempts and learning signals only. It does not contain the answer key, Asher's selected answers, question text, hints or explanations.",
+    ""
+  ].join("\n");
+}
+
+function formatAnalysis(analysis) {
+  const questionList = analysis.question_ids.join(", ");
+  if (analysis.level === "PRIORITY PRACTICE") {
+    return [
+      "PRIORITY PRACTICE",
+      `${analysis.family}: There were ${analysis.signal_count} wrong-attempt signals across ${analysis.question_ids.length} questions (${questionList}). ${analysis.recommendation}`,
+      ""
+    ];
+  }
+  if (analysis.level === "PRACTISE NEXT") {
+    return [
+      "PRACTISE NEXT",
+      `${analysis.family}: There were ${analysis.signal_count} wrong-attempt signals (${questionList}). ${analysis.recommendation}`,
+      ""
+    ];
+  }
+  return [
+    "WATCH",
+    `${analysis.family}: There was one wrong-attempt signal (${questionList}). Watch this skill in the next revision before calling it a pattern.`,
+    ""
+  ];
+}
+
+function formatStrengths(metrics) {
+  const strengths = metrics.records.filter((record) => record.first_attempt_correct_without_hints);
+  if (!strengths.length) return ["No first-attempt, no-hint strengths were recorded yet."];
+  return strengths.map((record) => `${record.family}: ${record.question_id} were correct on the first attempt without hints.`);
+}
+
+
+
+const DEFAULT_QUIZ_ID = "decimals-to-fractions-v1";
+const QUIZ_REGISTRY = Object.freeze({
+  "decimals-to-fractions-v1": {
+    quizId: "decimals-to-fractions-v1",
+    contentPath: "content/math/decimals-to-fractions-v1.json"
+  },
+  "frp-module-1a-start-left-asked-v1": {
+    quizId: "frp-module-1a-start-left-asked-v1",
+    contentPath: "content/math/frp-module-1a-start-left-asked-v1.json"
+  },
+  "frp-module-2a-before-change-after-v1": {
+    quizId: "frp-module-2a-before-change-after-v1",
+    contentPath: "content/math/frp-module-2a-before-change-after-v1.json"
+  },
+  "frp-module-3-pyp-method-application-lab-v1": {
+    quizId: "frp-module-3-pyp-method-application-lab-v1",
+    contentPath: "content/math/frp-module-3-pyp-method-application-lab-v1.json"
+  },
+  "frp-equality-anchor-recognition-v1": {
+    quizId: "frp-equality-anchor-recognition-v1",
+    contentPath: "content/math/frp-equality-anchor-recognition-v1.json"
+  },
+  "frp-equality-anchor-solve-v1": {
+    quizId: "frp-equality-anchor-solve-v1",
+    contentPath: "content/math/frp-equality-anchor-solve-v1.json"
+  },
+  "frp-mixed-methods-tutor-update-v1": {
+    quizId: "frp-mixed-methods-tutor-update-v1",
+    contentPath: "content/math/frp-mixed-methods-tutor-update-v1.json"
+  },
+  "math-mixed-problem-solving-paper2-20260802-v1": {
+    quizId: "math-mixed-problem-solving-paper2-20260802-v1",
+    contentPath: "content/math/math-mixed-problem-solving-paper2-20260802-v1.json"
+  },
+  "science-mcq-module-1a-read-setup-beat-trap-v1": {
+    quizId: "science-mcq-module-1a-read-setup-beat-trap-v1",
+    contentPath: "content/science/science-mcq-module-1a-read-setup-beat-trap-v1.json"
+  },
+  "science-mcq-module-1b-read-data-match-evidence-v1": {
+    quizId: "science-mcq-module-1b-read-data-match-evidence-v1",
+    contentPath: "content/science/science-mcq-module-1b-read-data-match-evidence-v1.json"
+  },
+  "acsj-2024-science-mcq-revision-v1": {
+    quizId: "acsj-2024-science-mcq-revision-v1",
+    contentPath: "content/science/acsj-2024-science-mcq-revision-v1.json"
+  }
+});
+const FINAL_CHECKPOINT_WARNING =
+  "After this, your checkpoint will be locked. You will not be able to change your answers or try again.";
+const CHECKPOINT_EXPORT_SCHEMA_VERSION = "1.0";
+const CHECKPOINT_EXPORT_SOURCE = "static-html-export";
+
+const app = document.querySelector("#app");
+
+let quiz = null;
+let activeMode = "home";
+let currentIndex = 0;
+let checkpointSession = null;
+let checkpointLocked = false;
+let practiceState = [];
+let checkpointState = [];
+let guidedState = [];
+let guidedSession = null;
+let guidedReviewMode = false;
+
+init();
+document.addEventListener("visibilitychange", handleGuidedVisibilityChange);
+
+async function init() {
+  const quizConfig = getRequestedQuizConfig();
+
+  try {
+    quiz = await loadQuizContent(quizConfig);
+    document.title = `${quiz.title} | Asher PSLE Quiz Lab`;
+    renderHome();
+  } catch (error) {
+    renderLoadError(error);
+  }
+}
+
+async function loadQuizContent() {
+  const embeddedQuizData = document.querySelector("#quiz-content-data");
+  if (!embeddedQuizData) throw new Error("Embedded quiz content is missing.");
+  return JSON.parse(embeddedQuizData.textContent);
+}
+
+function getRequestedQuizConfig() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedQuizId = params.get("quiz") || DEFAULT_QUIZ_ID;
+
+  return QUIZ_REGISTRY[requestedQuizId] ?? QUIZ_REGISTRY[DEFAULT_QUIZ_ID];
+}
+
+function renderHome() {
+  if (isGuidedRevision()) {
+    renderGuidedHome();
+    return;
+  }
+
+  activeMode = "home";
+  currentIndex = 0;
+
+  app.innerHTML = `
+    <section class="panel hero-panel">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${quiz.title}</h1>
+      <p class="topic-line">${quiz.topic}</p>
+      <p class="lede">${escapeHtml(quiz.learner_lede ?? "Practise the method first, then try the checkpoint without hints.")}</p>
+      ${renderModuleIntro()}
+      ${renderInstructionCallout()}
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startPractice">Start Practice</button>
+        <button type="button" class="secondary-action" id="startCheckpoint">Start Checkpoint</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startPractice").addEventListener("click", startPractice);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+}
+
+function isGuidedRevision() {
+  return quiz?.revision_mode === "guided" && Array.isArray(quiz.guided_questions);
+}
+
+function renderGuidedHome() {
+  activeMode = "home";
+  currentIndex = 0;
+  const prose = quiz.learner_prose;
+
+  app.innerHTML = `
+    <section class="panel hero-panel guided-home">
+      <p class="eyebrow">Asher PSLE Quiz Lab</p>
+      <h1>${escapeHtml(quiz.title)}</h1>
+      <p class="lede">${escapeHtml(prose.teacher_opening)}</p>
+      <p class="lede">${escapeHtml(prose.student_opening)}</p>
+      <pre class="guided-process-visual" aria-label="Revision process">${escapeHtml(prose.process_visual)}</pre>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="startGuidedRevision">${escapeHtml(prose.start_button)}</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#startGuidedRevision").addEventListener("click", startGuidedRevision);
+}
+
+function startGuidedRevision() {
+  activeMode = "Guided";
+  currentIndex = 0;
+  guidedReviewMode = false;
+  guidedState = createGuidedQuestionState(quiz.guided_questions);
+  guidedSession = createGuidedSession(quiz.quiz_id);
+  guidedSession.visible = document.visibilityState !== "hidden";
+  recordGuidedEvent("session_started");
+  recordGuidedEvent("question_viewed", {
+    question_id: quiz.guided_questions[currentIndex].question_id
+  });
+  renderGuidedQuestion();
+}
+
+function createGuidedQuestionState(questions) {
+  return questions.map(() => ({
+    input: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    attempts: [],
+    hintsUnlocked: false,
+    hintsOpened: 0,
+    questionCompleted: false
+  }));
+}
+
+function renderGuidedQuestion() {
+  if (guidedSession.paused) {
+    renderGuidedPaused();
+    return;
+  }
+
+  const question = quiz.guided_questions[currentIndex];
+  const state = guidedState[currentIndex];
+  const prose = quiz.learner_prose;
+  const isReadOnly = guidedSession.completed;
+  const nextHintLabel = prose.hint_button_labels[state.hintsOpened] ?? prose.hints_button;
+  const progress = prose.progress_label.replace("{current}", String(currentIndex + 1));
+  const attemptLabel = prose.attempt_label.replace("{count}", String(state.attempts.length));
+  const hintProgress = prose.hint_progress.replace("{opened}", String(state.hintsOpened));
+  const hintMarkup = state.hintsOpened
+    ? `<ol class="hint-list">${question.hints
+        .slice(0, state.hintsOpened)
+        .map((hint) => `<li>${formatTextBlock(hint)}</li>`)
+        .join("")}</ol>`
+    : "";
+  const explanationMarkup = state.isCorrect
+    ? `<pre class="guided-explanation">${escapeHtml(question.correct_explanation)}</pre>`
+    : "";
+
+  app.innerHTML = `
+    <section class="quiz-shell guided-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        ${guidedReviewMode ? "" : `<button type="button" class="text-action" id="pauseGuided">${escapeHtml(prose.pause_control)}</button>`}
+        <span class="mode-pill">Guided revision</span>
+        <span class="progress-text">${escapeHtml(progress)}</span>
+      </div>
+      ${renderQuestionMap(quiz.guided_questions, guidedState, currentIndex, "Guided revision")}
+      <article class="panel question-panel">
+        <p class="question-id">${escapeHtml(question.question_id)}</p>
+        <h2 id="questionTitle">${escapeHtml(progress)}</h2>
+        <p class="guided-instruction">${escapeHtml(prose.question_instruction)}</p>
+        <figure class="visual-stimulus guided-source-crop">
+          <img
+            src="${escapeHtml(question.visual_stimulus.path)}"
+            alt="${escapeHtml(question.accessible_source_transcript)}"
+          />
+        </figure>
+        <form class="answer-form mcq-answer-form guided-answer-form" id="guidedAnswerForm">
+          <fieldset class="mcq-fieldset" ${isReadOnly || state.isCorrect ? "disabled" : ""}>
+            <legend>Choose one answer</legend>
+            <div class="guided-option-grid">
+              ${question.options.map((option) => `
+                <label class="guided-option">
+                  <input type="radio" name="guidedAnswer" value="${option.key}" ${state.input === option.key ? "checked" : ""} />
+                  <span>${option.label}</span>
+                </label>
+              `).join("")}
+            </div>
+          </fieldset>
+          ${isReadOnly || state.isCorrect ? "" : `<button type="submit" class="primary-action">${escapeHtml(prose.mark_button)}</button>`}
+        </form>
+        <p class="feedback ${state.isCorrect ? "is-correct" : state.feedbackMessage ? "is-retry" : ""}" id="guidedFeedback" aria-live="polite">${escapeHtml(state.feedbackMessage)}</p>
+        <p class="attempt-count">${escapeHtml(attemptLabel)}</p>
+        <p class="attempt-count">${escapeHtml(hintProgress)}</p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="guidedHintButton"
+            ${!state.hintsUnlocked || state.hintsOpened >= question.hints.length || state.isCorrect || isReadOnly ? "disabled" : ""}>
+            ${escapeHtml(state.hintsUnlocked ? nextHintLabel : prose.hints_button)}
+          </button>
+        </div>
+        ${!state.hintsUnlocked && !state.isCorrect ? `<p class="small-note">${escapeHtml(prose.locked_hint_label)}</p>` : ""}
+        ${hintMarkup}
+        ${explanationMarkup}
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousGuided" ${currentIndex === 0 ? "disabled" : ""}>Back</button>
+          <button type="button" class="secondary-action" id="nextGuided">${currentIndex === quiz.guided_questions.length - 1 ? (guidedReviewMode ? escapeHtml(prose.completion_heading) : "Next") : "Next"}</button>
+          ${guidedReviewMode ? "" : `<button type="button" class="final-action" id="finishGuided">Finish revision</button>`}
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelectorAll('input[name="guidedAnswer"]').forEach((input) => {
+    input.addEventListener("change", () => {
+      state.input = input.value;
+    });
+  });
+  document.querySelector("#guidedAnswerForm").addEventListener("submit", (event) =>
+    submitGuidedAnswer(event, question, state)
+  );
+  document.querySelector("#guidedHintButton").addEventListener("click", () => openNextGuidedHint(question, state));
+  document.querySelector("#previousGuided").addEventListener("click", () => moveGuidedQuestion(-1));
+  document.querySelector("#nextGuided").addEventListener("click", () => {
+    if (guidedReviewMode && currentIndex === quiz.guided_questions.length - 1) {
+      renderGuidedComplete();
+      return;
+    }
+    moveGuidedQuestion(1);
+  });
+  document.querySelector("#finishGuided")?.addEventListener("click", finishGuidedRevision);
+  document.querySelector("#pauseGuided")?.addEventListener("click", pauseGuidedRevision);
+  bindQuestionMap(() => {
+    recordGuidedEvent("question_viewed", {
+      question_id: quiz.guided_questions[currentIndex].question_id
+    });
+    renderGuidedQuestion();
+  });
+}
+
+function submitGuidedAnswer(event, question, state) {
+  event.preventDefault();
+  if (guidedSession.completed || state.isCorrect) return;
+
+  const selectedOption = document.querySelector('input[name="guidedAnswer"]:checked')?.value ?? "";
+  if (!selectedOption) {
+    state.feedbackMessage = quiz.learner_prose.blank_feedback;
+    renderGuidedQuestion();
+    return;
+  }
+
+  state.input = selectedOption;
+  const correctness = selectedOption === question.canonical_answer;
+  const attemptNumber = state.attempts.length + 1;
+  const submittedAt = new Date().toISOString();
+  const activeElapsed = getGuidedActiveTime(guidedSession);
+  const attempt = {
+    question_id: question.question_id,
+    attempt_number: attemptNumber,
+    selected_option_internal: selectedOption,
+    correctness,
+    diagnostic_tag_internal: question.diagnostic_by_option[selectedOption],
+    submitted_at: submittedAt,
+    active_elapsed_at_submission: activeElapsed
+  };
+
+  recordGuidedEvent("attempt_submitted", {
+    question_id: question.question_id,
+    attempt_number: attemptNumber
+  });
+  state.attempts.push(attempt);
+  state.submitted = true;
+  state.isCorrect = correctness;
+  state.feedbackMessage = correctness ? question.correct_feedback : question.wrong_feedback;
+  recordGuidedEvent("attempt_marked", {
+    question_id: question.question_id,
+    attempt_number: attemptNumber,
+    correctness
+  });
+
+  if (!state.hintsUnlocked) {
+    state.hintsUnlocked = true;
+    recordGuidedEvent("hint_unlocked", {
+      question_id: question.question_id
+    });
+  }
+
+  if (correctness && !state.questionCompleted) {
+    state.questionCompleted = true;
+    recordGuidedEvent("question_completed", {
+      question_id: question.question_id
+    });
+  }
+
+  renderGuidedQuestion();
+}
+
+function openNextGuidedHint(question, state) {
+  if (!state.hintsUnlocked || state.isCorrect || state.hintsOpened >= question.hints.length) return;
+  state.hintsOpened += 1;
+  recordGuidedEvent("hint_opened", {
+    question_id: question.question_id,
+    hint_number: state.hintsOpened
+  });
+  renderGuidedQuestion();
+}
+
+function moveGuidedQuestion(direction) {
+  const nextIndex = Math.max(0, Math.min(quiz.guided_questions.length - 1, currentIndex + direction));
+  if (nextIndex === currentIndex) return;
+  currentIndex = nextIndex;
+  recordGuidedEvent("question_viewed", {
+    question_id: quiz.guided_questions[currentIndex].question_id
+  });
+  renderGuidedQuestion();
+}
+
+function pauseGuidedRevision() {
+  setGuidedPaused(guidedSession, true);
+  recordGuidedEvent("session_paused");
+  renderGuidedPaused();
+}
+
+function renderGuidedPaused() {
+  const prose = quiz.learner_prose;
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="lede">${escapeHtml(prose.paused_state)}</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="resumeGuided">${escapeHtml(prose.resume_control)}</button>
+      </div>
+    </section>
+  `;
+  document.querySelector("#resumeGuided").addEventListener("click", resumeGuidedRevision);
+}
+
+function resumeGuidedRevision() {
+  setGuidedPaused(guidedSession, false);
+  recordGuidedEvent("session_resumed");
+  renderGuidedQuestion();
+}
+
+function handleGuidedVisibilityChange() {
+  if (!guidedSession || guidedSession.completed) return;
+  setGuidedVisibility(guidedSession, document.visibilityState !== "hidden");
+}
+
+function finishGuidedRevision() {
+  const unattempted = quiz.guided_questions.filter((question, index) => guidedState[index].attempts.length === 0);
+  if (unattempted.length) {
+    const questionList = unattempted.map((question) => question.question_id).join(", ");
+    const notice = quiz.learner_prose.unanswered_notice.replace("{question_list}", questionList);
+    if (!window.confirm(`${quiz.learner_prose.finish_warning}\n\n${notice}`)) return;
+  }
+
+  completeGuidedSession(guidedSession);
+  recordGuidedEvent("session_completed");
+  guidedReviewMode = false;
+  renderGuidedComplete();
+}
+
+function renderGuidedComplete() {
+  const prose = quiz.learner_prose;
+  const metrics = buildGuidedMetrics(quiz.guided_questions, guidedState);
+  const reviewList = metrics.review_questions.length ? metrics.review_questions.join(", ") : "None";
+
+  app.innerHTML = `
+    <section class="panel completion-panel guided-completion">
+      <p class="eyebrow">${escapeHtml(prose.completion_heading)}</p>
+      <h1>${escapeHtml(prose.completion_heading)}</h1>
+      <p class="lede">${escapeHtml(prose.completion_teacher)}</p>
+      <p class="lede">${escapeHtml(prose.completion_student)}</p>
+      <dl class="guided-metrics">
+        <div><dt>Active time</dt><dd>${escapeHtml(formatGuidedDuration(guidedSession.activeMs))}</dd></div>
+        <div><dt>Questions attempted</dt><dd>${metrics.attempted_count} / ${quiz.guided_questions.length}</dd></div>
+        <div><dt>Correct on first attempt</dt><dd>${metrics.first_attempt_correct_count}</dd></div>
+        <div><dt>Correct after another try</dt><dd>${metrics.eventual_correct_after_retry_count}</dd></div>
+        <div><dt>Not yet correct</dt><dd>${metrics.not_yet_correct_count}</dd></div>
+        <div><dt>Total marked attempts</dt><dd>${metrics.total_attempts}</dd></div>
+        <div><dt>Hints opened</dt><dd>${metrics.total_hints_opened}</dd></div>
+      </dl>
+      <p class="summary-note">Review next: ${escapeHtml(reviewList)}</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="reviewGuided">${escapeHtml(prose.review_button)}</button>
+        <button type="button" class="primary-action" id="exportGuidedSummary">${escapeHtml(prose.export_button)}</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#reviewGuided").addEventListener("click", () => {
+    guidedReviewMode = true;
+    currentIndex = 0;
+    renderGuidedQuestion();
+  });
+  document.querySelector("#exportGuidedSummary").addEventListener("click", exportGuidedParentSummary);
+}
+
+function exportGuidedParentSummary() {
+  const metrics = buildGuidedMetrics(quiz.guided_questions, guidedState);
+  const summary = buildGuidedParentSummary({
+    quiz,
+    metrics,
+    activeTimeMs: guidedSession.activeMs,
+    completedAt: guidedSession.completedAt
+  });
+  recordGuidedEvent("parent_summary_exported");
+  downloadFile(
+    summary,
+    "text/plain",
+    `asher-quiz-lab-${quiz.quiz_id}-${guidedSession.completedAt.replace(/[:.]/g, "-")}-parent-summary.txt`
+  );
+}
+
+function recordGuidedEvent(eventType, details = {}) {
+  if (!guidedSession) return;
+  guidedSession.events.push({
+    event_type: eventType,
+    ...details,
+    timestamp: new Date().toISOString(),
+    active_elapsed_ms: getGuidedActiveTime(guidedSession)
+  });
+}
+
+function startPractice() {
+  activeMode = "Practice";
+  currentIndex = 0;
+  practiceState = createQuestionState(quiz.practice_questions);
+  renderPracticeQuestion();
+}
+
+function startCheckpoint() {
+  activeMode = "Checkpoint";
+  currentIndex = 0;
+  checkpointLocked = false;
+  checkpointState = createQuestionState(quiz.checkpoint_questions);
+  clearCheckpointSession(quiz.quiz_id);
+  checkpointSession = createCheckpointSession(quiz.quiz_id);
+  renderCheckpointQuestion();
+}
+
+function createQuestionState(questions) {
+  return questions.map((question) => ({
+    input: getInitialInputState(question),
+    feedbackCode: "",
+    feedbackMessage: "",
+    isCorrect: false,
+    submitted: false,
+    attempts: [],
+    hintsShown: 0,
+    solutionShown: false,
+    modelClueShown: false,
+    workingCompleted: false,
+    auditResponses: {}
+  }));
+}
+
+function renderPracticeQuestion() {
+  const question = quiz.practice_questions[currentIndex];
+  const state = practiceState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.practice_questions.length}`;
+  const supportLocked = question.requires_attempt_before_support && !state.submitted;
+  const questionHeading = supportLocked ? "Practice question" : question.subtopic;
+  const showPersistentModel = question.requires_attempt_before_support && !supportLocked && question.model_clue;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill">Practice</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.practice_questions, practiceState, currentIndex, "Practice")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${escapeHtml(questionHeading)}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${supportLocked ? "" : renderQuestionOverview(question)}
+        ${supportLocked ? "" : renderPracticeMiniLesson(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderQuestionFigure(question)}
+        ${renderVisualStimulus(question)}
+        ${supportLocked ? "" : renderPracticeThinkingBlocks(question)}
+        ${showPersistentModel ? renderUnlockedPracticeModel(question) : ""}
+        ${renderAnswerForm(question, false)}
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <p class="attempt-count" id="practiceStatus"></p>
+        <div class="support-actions">
+          <button type="button" class="secondary-action" id="hintButton" ${supportLocked ? "disabled" : ""}>Hint</button>
+          ${question.model_clue && !showPersistentModel ? `<button type="button" class="secondary-action" id="modelClueButton" ${supportLocked ? "disabled" : ""}>Model clue</button>` : ""}
+          <button type="button" class="secondary-action" id="solutionButton" ${supportLocked ? "disabled" : ""}>Worked Solution</button>
+        </div>
+        ${supportLocked ? `<p class="small-note">${escapeHtml(question.support_locked_label ?? "Try one answer first to unlock support.")}</p>` : ""}
+        <ol class="hint-list" id="hintList" hidden></ol>
+        ${question.model_clue && !showPersistentModel ? `<pre class="model-clue" id="modelClue" hidden></pre>` : ""}
+        <pre class="worked-solution" id="workedSolution" hidden></pre>
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="primary-action" id="nextQuestion">${currentIndex === quiz.practice_questions.length - 1 ? "Finish Practice" : "Next"}</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+  bindAnswerInputs(question, state);
+
+  renderFeedback(state, "Practice");
+  renderPracticeSupport(question, state);
+  bindQuestionMap(renderPracticeQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#answerForm").addEventListener("submit", (event) => submitPracticeAnswer(event, question, state));
+  document.querySelector("#hintButton").addEventListener("click", () => showNextHint(question, state));
+  document.querySelector("#modelClueButton")?.addEventListener("click", () => showModelClue(question, state));
+  document.querySelector("#solutionButton").addEventListener("click", () => showWorkedSolution(question, state));
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousPracticeQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextPracticeQuestion);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  if (supportLocked || !question.mini_lesson) focusFirstAnswerInput();
+}
+
+function submitPracticeAnswer(event, question, state) {
+  event.preventDefault();
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+  state.attempts.push({
+    attempt_number: state.attempts.length + 1,
+    feedback_code: validation.code,
+    is_correct: validation.isCorrect,
+    timestamp: new Date().toISOString()
+  });
+
+  renderPracticeQuestion();
+}
+
+function renderPracticeSupport(question, state) {
+  const hintList = document.querySelector("#hintList");
+  const hintButton = document.querySelector("#hintButton");
+  const modelClue = document.querySelector("#modelClue");
+  const modelClueButton = document.querySelector("#modelClueButton");
+  const solution = document.querySelector("#workedSolution");
+  const solutionButton = document.querySelector("#solutionButton");
+  const supportLocked = question.requires_attempt_before_support && !state.submitted;
+
+  if (state.hintsShown > 0) {
+    hintList.hidden = false;
+    question.hints.slice(0, state.hintsShown).forEach((hint) => {
+      const item = document.createElement("li");
+      item.textContent = hint;
+      hintList.append(item);
+    });
+  }
+
+  hintButton.disabled = supportLocked || state.hintsShown >= question.hints.length;
+
+  if (modelClueButton) {
+    modelClueButton.disabled = supportLocked || state.modelClueShown;
+  }
+
+  if (solutionButton) solutionButton.disabled = supportLocked;
+
+  if (modelClue && state.modelClueShown) {
+    modelClue.textContent = question.model_clue;
+    modelClue.hidden = false;
+  }
+
+  if (state.solutionShown) {
+    solution.textContent = question.worked_solution;
+    solution.hidden = false;
+  }
+}
+
+function showNextHint(question, state) {
+  if (question.requires_attempt_before_support && !state.submitted) return;
+  state.hintsShown = Math.min(state.hintsShown + 1, question.hints.length);
+  renderPracticeQuestion();
+}
+
+function showModelClue(question, state) {
+  if (question.requires_attempt_before_support && !state.submitted) return;
+  if (!question.model_clue) return;
+
+  state.modelClueShown = true;
+  renderPracticeQuestion();
+}
+
+function showWorkedSolution(question, state) {
+  if (question.requires_attempt_before_support && !state.submitted) return;
+  state.solutionShown = true;
+  renderPracticeQuestion();
+}
+
+function goToPreviousPracticeQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderPracticeQuestion();
+}
+
+function goToNextPracticeQuestion() {
+  if (currentIndex === quiz.practice_questions.length - 1) {
+    renderPracticeComplete();
+    return;
+  }
+
+  currentIndex += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeComplete() {
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Practice complete</p>
+      <h1>Nice work.</h1>
+      <p class="lede">You reached the end of the practice ladder.</p>
+      <div class="mode-actions">
+        <button type="button" class="secondary-action" id="resumePractice">Review Practice</button>
+        <button type="button" class="secondary-action" id="exportPracticeSummary">Export Parent Practice Summary</button>
+        <button type="button" class="primary-action" id="startCheckpoint">Start Checkpoint</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  document.querySelector("#resumePractice").addEventListener("click", () => {
+    currentIndex = quiz.practice_questions.length - 1;
+    renderPracticeQuestion();
+  });
+  document.querySelector("#exportPracticeSummary").addEventListener("click", exportPracticeSummary);
+  document.querySelector("#startCheckpoint").addEventListener("click", startCheckpoint);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function exportPracticeSummary() {
+  const exportedAt = new Date().toISOString();
+
+  downloadFile(
+    buildPracticeParentSummary(exportedAt),
+    "text/plain",
+    buildPracticeParentSummaryFilename(exportedAt)
+  );
+}
+
+function buildPracticeParentSummary(exportedAt) {
+  const questions = buildPracticeQuestionSummaries();
+  const attemptedQuestions = questions.filter((question) => question.attempt_count > 0);
+  const notAttemptedQuestions = questions.filter((question) => question.status === "Not attempted");
+  const latestCorrectQuestions = questions.filter((question) => question.status === "Correct");
+  const repeatedAttemptQuestions = questions.filter((question) => question.attempt_count > 1);
+  const openedSolutionQuestions = questions.filter((question) => question.worked_solution_opened);
+  const latestNotCorrectQuestions = questions.filter((question) => question.status === "Tried");
+  const totalAttempts = questions.reduce((total, question) => total + question.attempt_count, 0);
+  const totalHintsViewed = questions.reduce((total, question) => total + question.hints_viewed, 0);
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Practice Summary",
+    "",
+    `Quiz: ${quiz.title}`,
+    `Topic: ${quiz.topic}`,
+    `Exported: ${formatSummaryTimestamp(exportedAt)}`,
+    "",
+    "Practice Usage Summary",
+    "----------------------",
+    `Total practice questions: ${questions.length}`,
+    `Questions attempted: ${attemptedQuestions.length}`,
+    `Questions not attempted: ${notAttemptedQuestions.length}`,
+    `Questions with latest correct attempt: ${latestCorrectQuestions.length}`,
+    `Total practice attempts: ${totalAttempts}`,
+    `Total hints viewed: ${totalHintsViewed}`,
+    `Worked solutions opened: ${openedSolutionQuestions.length}`,
+    "",
+    "Question Summary",
+    "----------------",
+    ...questions.flatMap(formatPracticeQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    "Questions not attempted",
+    ...formatPracticeReviewList(notAttemptedQuestions),
+    "",
+    "Questions not correct on latest attempt",
+    ...formatPracticeReviewList(latestNotCorrectQuestions),
+    "",
+    "Questions with repeated attempts",
+    ...formatPracticeReviewList(repeatedAttemptQuestions, (question) => `${formatAttemptCount(question.attempt_count)}`),
+    "",
+    "Questions where worked solution was opened",
+    ...formatPracticeReviewList(openedSolutionQuestions),
+    "",
+    "No correct answers, accepted answers, hint text, worked solutions, raw submitted answers, normalised submitted answers, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function buildPracticeQuestionSummaries() {
+  return quiz.practice_questions.map((question, index) => {
+    const state = practiceState[index];
+    const attempts = state.attempts ?? [];
+    const latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    const status = latestAttempt ? (latestAttempt.is_correct ? "Correct" : "Tried") : "Not attempted";
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempt_count: attempts.length,
+      latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+      hints_viewed: state.hintsShown,
+      worked_solution_opened: state.solutionShown,
+      parent_summary_tags: question.parent_summary_tags ?? []
+    };
+  });
+}
+
+function formatPracticeQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status}`,
+    `  Attempt count: ${formatAttemptCount(question.attempt_count)}`,
+    `  Latest feedback category: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`,
+    `  Hints viewed: ${question.hints_viewed}`,
+    `  Worked solution opened: ${question.worked_solution_opened ? "Yes" : "No"}`
+  ];
+}
+
+function formatPracticeReviewList(questions, detailFormatter = null) {
+  if (questions.length === 0) {
+    return ["- none"];
+  }
+
+  return questions.map((question) => {
+    const detail = detailFormatter ? `: ${detailFormatter(question)}` : "";
+    return `- ${question.question_id}${detail}`;
+  });
+}
+
+function renderCheckpointQuestion() {
+  const question = quiz.checkpoint_questions[currentIndex];
+  const state = checkpointState[currentIndex];
+  const progressText = `${currentIndex + 1} of ${quiz.checkpoint_questions.length}`;
+  const attemptCount = getAttemptCount(question.question_id);
+  const needsWorkingConfirmation = usesWorkingConfirmation(question);
+  const showAnswerEntry = !needsWorkingConfirmation || state.workingCompleted;
+  const showCheckpointSolution = state.isCorrect && question.worked_solution;
+
+  app.innerHTML = `
+    <section class="quiz-shell" aria-labelledby="questionTitle">
+      <div class="top-bar">
+        <button type="button" class="text-action" id="backHome">Home</button>
+        <span class="mode-pill checkpoint">Checkpoint</span>
+        <span class="progress-text">${progressText}</span>
+      </div>
+      ${renderQuestionMap(quiz.checkpoint_questions, checkpointState, currentIndex, "Checkpoint")}
+      <article class="panel question-panel">
+        <p class="question-id">${question.question_id}</p>
+        <h2 id="questionTitle">${question.subtopic}</h2>
+        ${renderCalculatorPolicy(question)}
+        ${renderQuestionOverview(question)}
+        <div class="prompt" id="questionPrompt"></div>
+        ${renderQuestionFigure(question)}
+        ${renderVisualStimulus(question)}
+        ${renderCheckpointInstruction(question)}
+        ${!showAnswerEntry ? renderWorkingConfirmation(question) : ""}
+        ${showAnswerEntry ? renderAuditFields(question, state) : ""}
+        ${showAnswerEntry ? renderAnswerForm(question, checkpointLocked) : ""}
+        ${showAnswerEntry ? `<p class="feedback" id="feedback" aria-live="polite"></p>` : ""}
+        <p class="attempt-count" id="attemptCount">Attempts recorded: ${attemptCount}</p>
+        ${showCheckpointSolution ? `<pre class="worked-solution checkpoint-solution">${escapeHtml(question.worked_solution)}</pre>` : ""}
+        <div class="navigation-actions">
+          <button type="button" class="secondary-action" id="previousQuestion">Back</button>
+          <button type="button" class="secondary-action" id="nextQuestion">Next</button>
+          <button type="button" class="final-action" id="finalCheckpoint" ${checkpointLocked ? "disabled" : ""}>Submit Final Checkpoint</button>
+        </div>
+      </article>
+    </section>
+  `;
+
+  document.querySelector("#questionPrompt").textContent = question.prompt;
+
+  if (showAnswerEntry) {
+    bindAnswerInputs(question, state);
+    bindAuditInputs(question, state);
+    renderFeedback(state, "Checkpoint");
+    document.querySelector("#answerForm").addEventListener("submit", (event) => submitCheckpointAnswer(event, question, state));
+  } else {
+    document.querySelector("#workingDoneButton").addEventListener("click", () => {
+      state.workingCompleted = true;
+      renderCheckpointQuestion();
+    });
+  }
+
+  bindQuestionMap(renderCheckpointQuestion);
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+  document.querySelector("#previousQuestion").addEventListener("click", goToPreviousCheckpointQuestion);
+  document.querySelector("#nextQuestion").addEventListener("click", goToNextCheckpointQuestion);
+  document.querySelector("#finalCheckpoint").addEventListener("click", submitFinalCheckpoint);
+  document.querySelector("#previousQuestion").disabled = currentIndex === 0;
+  document.querySelector("#nextQuestion").disabled = currentIndex === quiz.checkpoint_questions.length - 1;
+  if (!checkpointLocked && showAnswerEntry) focusFirstAnswerInput();
+}
+
+function submitCheckpointAnswer(event, question, state) {
+  event.preventDefault();
+  if (checkpointLocked) return;
+
+  const inputValue = getAnswerInputValue(question);
+  const validation = validateQuestionAnswer(question, inputValue);
+
+  recordCheckpointAttempt(
+    checkpointSession,
+    question.question_id,
+    inputValue,
+    validation.code,
+    validation.isCorrect,
+    validation.normalised
+  );
+
+  state.input = inputValue;
+  state.feedbackCode = validation.code;
+  state.feedbackMessage = getFeedbackMessage(validation.code, activeMode, question.expected_format, question);
+  state.isCorrect = validation.isCorrect;
+  state.submitted = true;
+
+  renderCheckpointQuestion();
+}
+
+function goToPreviousCheckpointQuestion() {
+  if (currentIndex === 0) return;
+
+  currentIndex -= 1;
+  renderCheckpointQuestion();
+}
+
+function goToNextCheckpointQuestion() {
+  if (currentIndex === quiz.checkpoint_questions.length - 1) return;
+
+  currentIndex += 1;
+  renderCheckpointQuestion();
+}
+
+function submitFinalCheckpoint() {
+  if (checkpointLocked) return;
+  if (!window.confirm(FINAL_CHECKPOINT_WARNING)) return;
+
+  checkpointLocked = true;
+  checkpointSession.lockedAt = new Date().toISOString();
+  saveCheckpointSession(checkpointSession);
+  renderCheckpointComplete();
+}
+
+function renderCheckpointComplete() {
+  const questionIds = quiz.checkpoint_questions.map((question) => question.question_id);
+  const attemptCounts = getCheckpointAttemptCounts(checkpointSession, questionIds);
+  const summaries = quiz.checkpoint_questions.map((question) => {
+    const latestAttempt = getLatestAttempt(question.question_id);
+    const attempts = attemptCounts.find((item) => item.question_id === question.question_id)?.attempts ?? 0;
+    const status = getSummaryStatus(latestAttempt);
+
+    return {
+      question_id: question.question_id,
+      status,
+      attempts,
+      isCorrect: status === "Correct"
+    };
+  });
+  const score = summaries.filter((item) => item.isCorrect).length;
+  const exportData = buildCheckpointExport(summaries, score);
+
+  app.innerHTML = `
+    <section class="panel completion-panel">
+      <p class="eyebrow">Checkpoint complete</p>
+      <h1>Finished.</h1>
+      <p class="lede">Score: ${score} / ${quiz.checkpoint_questions.length}</p>
+      <ul class="summary-list" id="summaryList"></ul>
+      <p class="summary-note">No answers are shown here. Review mistakes with Dad or tutor.</p>
+      <div class="mode-actions">
+        <button type="button" class="primary-action" id="exportParentSummary">Export Parent Checkpoint Summary</button>
+        <button type="button" class="secondary-action" id="exportResults">Export Checkpoint JSON Data</button>
+        <button type="button" class="secondary-action" id="backHome">Home</button>
+      </div>
+    </section>
+  `;
+
+  const summaryList = document.querySelector("#summaryList");
+  summaries.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.question_id}: ${item.status}, ${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+    summaryList.append(row);
+  });
+
+  document.querySelector("#exportParentSummary").addEventListener("click", () => exportParentSummary(exportData));
+  document.querySelector("#exportResults").addEventListener("click", () => exportCheckpointResults(exportData));
+  document.querySelector("#backHome").addEventListener("click", renderHome);
+}
+
+function buildCheckpointExport(summaries, score) {
+  return {
+    export_schema_version: CHECKPOINT_EXPORT_SCHEMA_VERSION,
+    exported_at: new Date().toISOString(),
+    source: CHECKPOINT_EXPORT_SOURCE,
+    quiz: {
+      quiz_id: quiz.quiz_id,
+      title: quiz.title,
+      topic: quiz.topic,
+      version: quiz.version
+    },
+    checkpoint: {
+      session_id: checkpointSession.sessionId,
+      started_at: checkpointSession.startedAt,
+      locked_at: checkpointSession.lockedAt ?? "",
+      score,
+      total_questions: quiz.checkpoint_questions.length,
+      questions: summaries.map((summary) => {
+        const latestAttempt = getLatestAttempt(summary.question_id);
+        const question = quiz.checkpoint_questions.find((item) => item.question_id === summary.question_id);
+
+        return {
+          question_id: summary.question_id,
+          status: summary.status,
+          is_correct: summary.isCorrect,
+          attempt_count: summary.attempts,
+          parent_summary_tags: question?.parent_summary_tags ?? [],
+          latest_feedback_code: latestAttempt?.feedback_code ?? "BLANK",
+          latest_attempt_timestamp: latestAttempt?.timestamp ?? ""
+        };
+      }),
+      attempts: checkpointSession.attempts.map((attempt) => ({
+        question_id: attempt.question_id,
+        attempt_number: attempt.attempt_number,
+        feedback_code: attempt.feedback_code,
+        is_correct: attempt.is_correct,
+        timestamp: attempt.timestamp
+      }))
+    }
+  };
+}
+
+function exportCheckpointResults(exportData) {
+  downloadFile(JSON.stringify(exportData, null, 2), "application/json", buildJsonExportFilename(exportData));
+}
+
+function exportParentSummary(exportData) {
+  downloadFile(buildParentSummary(exportData), "text/plain", buildParentSummaryFilename(exportData));
+}
+
+function buildParentSummary(exportData) {
+  const checkpoint = exportData.checkpoint;
+  const reviewQuestions = checkpoint.questions.filter((question) => question.status !== "Correct");
+  const lines = [
+    "Asher Quiz Lab",
+    "Parent Checkpoint Summary",
+    "",
+    `Quiz: ${exportData.quiz.title}`,
+    `Topic: ${exportData.quiz.topic}`,
+    `Completed: ${formatSummaryTimestamp(checkpoint.locked_at || exportData.exported_at)}`,
+    `Score: ${checkpoint.score} / ${checkpoint.total_questions}`,
+    "",
+    getParentEncouragement(checkpoint.score, checkpoint.total_questions),
+    "",
+    "Question Summary",
+    "----------------",
+    ...checkpoint.questions.flatMap(formatParentQuestionSummary),
+    "",
+    "Review With Dad Or Tutor",
+    "-------------------------",
+    ...formatReviewList(reviewQuestions),
+    "",
+    "No correct answers, hints, worked solutions, or answer key are included in this file.",
+    "Use this summary to choose what to review together."
+  ];
+
+  return `${lines.join("\n")}\n`;
+}
+
+function formatParentQuestionSummary(question) {
+  return [
+    `${question.question_id}: ${question.status} (${formatAttemptCount(question.attempt_count)})`,
+    `  Latest feedback: ${formatFeedbackCodeForParent(question.latest_feedback_code)}`,
+    `  Focus tags: ${formatParentSummaryTags(question.parent_summary_tags)}`
+  ];
+}
+
+function formatReviewList(questions) {
+  if (questions.length === 0) {
+    return ["- No checkpoint questions marked for review."];
+  }
+
+  return questions.map(
+    (question) =>
+      `- ${question.question_id}: ${question.status}; ${formatAttemptCount(question.attempt_count)}.`
+  );
+}
+
+function getParentEncouragement(score, totalQuestions) {
+  if (score === totalQuestions) {
+    return "Great focus. Every checkpoint question was finished correct.";
+  }
+
+  if (score >= Math.ceil(totalQuestions / 2)) {
+    return "Good work. There are a few questions to review together.";
+  }
+
+  if (score > 0) {
+    return "Good effort. This gives Dad or tutor a clear review list.";
+  }
+
+  return "Thanks for giving it a go. Use this as a calm review list.";
+}
+
+function formatFeedbackCodeForParent(code) {
+  const labels = {
+    CORRECT: "Correct",
+    BLANK: "Blank or not submitted",
+    INVALID_FORMAT: "Check the answer format",
+    FRACTION_REQUIRED: "Answer needed as a fraction",
+    MIXED_NUMBER_REQUIRED: "Answer needed as a mixed number",
+    EQUIVALENT_NOT_SIMPLEST: "Equivalent, but not in simplest form",
+    PLACE_VALUE_DENOMINATOR_ERROR: "Check the decimal place value",
+    WRONG_VALUE: "Try again",
+    CALCULATION_ERROR: "Check the calculation",
+    WRONG_START_RATIO: "Check the starting ratio",
+    TRANSFER_APPLIED_TO_WRONG_PERSON: "Check who changed",
+    WRONG_CURRENT_AMOUNT: "Check the new amount now",
+    USED_ORIGINAL_INSTEAD_OF_NEW_TOTAL: "Use the new amount now",
+    UNIT_VALUE_NOT_FINAL: "One unit, not final answer",
+    WRONG_BASE_ORIGINAL: "Check what the fraction is about",
+    WRONG_BASE_REMAINDER: "Check what we started with",
+    WRONG_LEFTOVER_STAGE: "Check what is left",
+    INTERMEDIATE_NOT_FINAL: "Halfway answer",
+    WRONG_FINAL_TARGET: "Check the final target",
+    WRONG_CATEGORY: "Check what the question asked for",
+    MISSING_UNIT: "Include the unit or group"
+  };
+
+  return labels[code] ?? "Review needed";
+}
+
+function formatAttemptCount(count) {
+  return `${count} attempt${count === 1 ? "" : "s"}`;
+}
+
+function formatParentSummaryTags(tags) {
+  return tags?.length ? tags.join("; ") : "none";
+}
+
+function formatSummaryTimestamp(timestamp) {
+  if (!timestamp) return "";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}
+
+function downloadFile(content, type, filename) {
+  const blob = new Blob([content], {
+    type
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function buildJsonExportFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}.json`;
+}
+
+function buildParentSummaryFilename(exportData) {
+  return `${buildExportFilenameBase(exportData)}-parent-summary.txt`;
+}
+
+function buildPracticeParentSummaryFilename(exportedAt) {
+  return `${buildExportFilenameBase({
+    exported_at: exportedAt,
+    quiz: {
+      quiz_id: quiz.quiz_id
+    }
+  })}-practice-parent-summary.txt`;
+}
+
+function buildExportFilenameBase(exportData) {
+  const quizId = exportData.quiz.quiz_id.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+  const timestamp = exportData.exported_at.replace(/[:.]/g, "-");
+
+  return `asher-quiz-lab-${quizId}-${timestamp}`;
+}
+
+function renderQuestionMap(questions, states, activeIndex, mode) {
+  const buttons = questions.map((question, index) => {
+    const status = getMapStatus(states[index], index === activeIndex);
+    const classNames = ["question-map-button", `is-${status.className}`];
+    if (index === activeIndex) classNames.push("is-current");
+
+    return `
+      <button type="button" class="${classNames.join(" ")}" data-question-index="${index}" aria-current="${index === activeIndex ? "step" : "false"}">
+        <span>${question.question_id}</span>
+        <small>${status.label}</small>
+      </button>
+    `;
+  }).join("");
+
+  return `
+    <nav class="question-map" aria-label="${mode} question list">
+      <p class="question-map-title">Questions</p>
+      <div class="question-map-grid">${buttons}</div>
+    </nav>
+  `;
+}
+
+function renderCalculatorPolicy(question) {
+  if (!question.calculator_policy) return "";
+
+  return `<p class="calculator-policy">${escapeHtml(question.calculator_policy)}</p>`;
+}
+
+function renderModuleIntro() {
+  if (!quiz.learner_intro) return "";
+
+  return `
+    <div class="module-intro">
+      ${formatTextBlock(quiz.learner_intro)}
+    </div>
+  `;
+}
+
+function renderQuestionOverview(question) {
+  const sections = [];
+
+  if (question.source_summary) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Source Summary</h3>
+        ${formatTextBlock(question.source_summary)}
+      </section>
+    `);
+  }
+
+  if (question.learner_purpose) {
+    sections.push(`
+      <section class="content-note">
+        <h3>Purpose</h3>
+        ${formatTextBlock(question.learner_purpose)}
+      </section>
+    `);
+  }
+
+  return sections.join("");
+}
+
+function renderQuestionFigure(question) {
+  if (!question.figure) return "";
+
+  const caption = question.figure_caption
+    ? `<figcaption>${escapeHtml(question.figure_caption)}</figcaption>`
+    : "";
+
+  return `
+    <figure class="question-figure">
+      <pre class="question-figure-art" role="img" aria-label="${escapeHtml(question.figure_alt ?? "Question figure")}">${escapeHtml(question.figure)}</pre>
+      ${caption}
+    </figure>
+  `;
+}
+
+function renderVisualStimulus(question) {
+  const stimulus = question.visual_stimulus;
+  if (!stimulus?.path) return "";
+
+  const alt = stimulus.alt ?? "Question visual stimulus";
+  const caption = stimulus.caption
+    ? `<figcaption>${escapeHtml(stimulus.caption)}</figcaption>`
+    : "";
+
+  return `
+    <figure class="visual-stimulus">
+      <img src="${escapeHtml(stimulus.path)}" alt="${escapeHtml(alt)}" loading="lazy" />
+      ${caption}
+    </figure>
+  `;
+}
+
+function renderPracticeMiniLesson(question) {
+  const miniLesson = question.mini_lesson;
+  if (!miniLesson) return "";
+
+  const title = typeof miniLesson === "string" ? "Mini-lesson" : miniLesson.title ?? "Mini-lesson";
+  const body = typeof miniLesson === "string" ? miniLesson : miniLesson.body;
+  if (!body) return "";
+
+  return `
+    <section class="practice-mini-lesson">
+      <h3>${escapeHtml(title)}</h3>
+      ${formatTextBlock(body)}
+    </section>
+  `;
+}
+
+function renderPracticeThinkingBlocks(question) {
+  const thinkingBlocks = question.thinking_blocks ?? [];
+  const blockList = thinkingBlocks.map((block) => `
+    <li>
+      <strong>${escapeHtml(block.title)}</strong>
+      <p>${escapeHtml(block.prompt)}</p>
+    </li>
+  `).join("");
+  const blocksMarkup = blockList
+    ? `
+      <section class="thinking-section">
+        <h3>Thinking Blocks</h3>
+        <ol>${blockList}</ol>
+      </section>
+    `
+    : "";
+  const finalTargetMarkup = question.final_target_check
+    ? `
+      <section class="content-note final-target-check">
+        <h3>Final Target Check</h3>
+        ${formatTextBlock(question.final_target_check)}
+      </section>
+    `
+    : "";
+
+  return `${blocksMarkup}${finalTargetMarkup}`;
+}
+
+function renderUnlockedPracticeModel(question) {
+  if (!question.model_clue) return "";
+
+  return `
+    <section class="content-note">
+      <h3>Visual Model</h3>
+      <pre class="model-clue">${escapeHtml(question.model_clue)}</pre>
+    </section>
+  `;
+}
+
+function renderCheckpointInstruction(question) {
+  if (!question.checkpoint_instruction) return "";
+
+  return `
+    <section class="checkpoint-instruction">
+      ${formatTextBlock(question.checkpoint_instruction)}
+    </section>
+  `;
+}
+
+function renderWorkingConfirmation(question) {
+  return `
+    <div class="checkpoint-gate">
+      <button type="button" class="primary-action" id="workingDoneButton">
+        ${escapeHtml(question.working_confirmation_label ?? "I have finished my working")}
+      </button>
+    </div>
+  `;
+}
+
+function renderAuditInstructions() {
+  return `
+    <section class="audit-instruction">
+      <h3>Asher — how to answer these review questions</h3>
+      <p>Asher, answer these quick review questions honestly before typing your final answer. They are not trick questions and are not part of your score.</p>
+      <p>Mate, choose what you actually used in your foolscap working. If you are unsure, choose "Other / not sure". This helps Dad see how you thought, not only whether the final answer was correct.</p>
+    </section>
+  `;
+}
+
+function renderAuditFields(question, state) {
+  const fields = question.audit_fields ?? [];
+  if (!fields.length) return "";
+
+  const fieldMarkup = fields.map((field) => {
+    const value = state.auditResponses[field.field_id] ?? "";
+    const label = escapeHtml(field.label);
+
+    if (field.type === "textarea") {
+      return `
+        <label class="audit-field">
+          <span>${label}</span>
+          <textarea data-audit-field="${escapeHtml(field.field_id)}" rows="3">${escapeHtml(value)}</textarea>
+        </label>
+      `;
+    }
+
+    const options = (field.options ?? []).map(
+      (option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`
+    ).join("");
+
+    return `
+      <label class="audit-field">
+        <span>${label}</span>
+        <select data-audit-field="${escapeHtml(field.field_id)}">
+          <option value="">Choose one</option>
+          ${options}
+        </select>
+      </label>
+    `;
+  }).join("");
+
+  return `
+    <section class="audit-section">
+      ${renderAuditInstructions()}
+      <h3>Mate — quick review</h3>
+      ${fieldMarkup}
+    </section>
+  `;
+}
+
+function renderAnswerForm(question, disabled) {
+  const disabledAttribute = disabled ? "disabled" : "";
+
+  if (isMultiPartQuestion(question)) {
+    const fields = question.answer_parts.map((part) => `
+      <label class="answer-part-field" for="answerInput-${escapeHtml(part.part_id)}">
+        <span>${escapeHtml(part.label)}</span>
+        <input id="answerInput-${escapeHtml(part.part_id)}" data-answer-input data-answer-part="${escapeHtml(part.part_id)}" name="answer-${escapeHtml(part.part_id)}" autocomplete="off" ${disabledAttribute} />
+      </label>
+    `).join("");
+
+    return `
+      <form class="answer-form multi-part-answer-form" id="answerForm">
+        ${fields}
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    return `
+      <form class="answer-form mcq-answer-form" id="answerForm">
+        <fieldset class="mcq-fieldset">
+          <legend>${escapeHtml(question.answer_label ?? "Choose one answer")}</legend>
+          <div class="mcq-option-grid">
+            ${renderMcqOptions(question, disabledAttribute)}
+          </div>
+        </fieldset>
+        <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+      </form>
+    `;
+  }
+
+  return `
+    <form class="answer-form" id="answerForm">
+      <label for="answerInput">${escapeHtml(question.answer_label ?? "Answer")}</label>
+      <input id="answerInput" data-answer-input name="answer" autocomplete="off" ${disabledAttribute} />
+      <button type="submit" class="primary-action" id="submitButton" ${disabledAttribute}>Submit Answer</button>
+    </form>
+  `;
+}
+
+function renderMcqOptions(question, disabledAttribute) {
+  return question.options.map((option) => {
+    const optionKey = escapeHtml(option.key);
+    const optionLabel = escapeHtml(option.label ?? option.key);
+    const optionText = escapeHtml(option.text ?? "");
+    const sourceOptionNumber = Number.isInteger(option.source_option_number)
+      ? ` data-source-option-number="${option.source_option_number}"`
+      : "";
+
+    return `
+      <label class="mcq-option">
+        <input type="radio" data-answer-input data-answer-option="${optionKey}" name="answer" value="${optionKey}" ${disabledAttribute}${sourceOptionNumber} />
+        <span class="mcq-option-label">${optionLabel}</span>
+        <span class="mcq-option-text">${optionText}</span>
+      </label>
+    `;
+  }).join("");
+}
+
+function bindAnswerInputs(question, state) {
+  if (isMultiPartQuestion(question)) {
+    question.answer_parts.forEach((part) => {
+      const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+      input.value = state.input[part.part_id] ?? "";
+      input.addEventListener("input", () => {
+        state.input = {
+          ...state.input,
+          [part.part_id]: input.value
+        };
+      });
+    });
+    return;
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    question.options.forEach((option) => {
+      const input = document.querySelector(`[data-answer-option="${cssEscape(option.key)}"]`);
+      if (!input) return;
+
+      input.checked = state.input === option.key;
+      input.addEventListener("change", () => {
+        state.input = input.value;
+      });
+    });
+    return;
+  }
+
+  const input = document.querySelector("#answerInput");
+  input.value = state.input;
+  input.addEventListener("input", () => {
+    state.input = input.value;
+  });
+}
+
+function bindAuditInputs(question, state) {
+  (question.audit_fields ?? []).forEach((field) => {
+    const input = document.querySelector(`[data-audit-field="${cssEscape(field.field_id)}"]`);
+    if (!input) return;
+
+    input.value = state.auditResponses[field.field_id] ?? "";
+    input.addEventListener("input", () => {
+      state.auditResponses = {
+        ...state.auditResponses,
+        [field.field_id]: input.value
+      };
+    });
+  });
+}
+
+function getAnswerInputValue(question) {
+  if (isMultiPartQuestion(question)) {
+    return Object.fromEntries(
+      question.answer_parts.map((part) => {
+        const input = document.querySelector(`[data-answer-part="${cssEscape(part.part_id)}"]`);
+        return [part.part_id, input?.value ?? ""];
+      })
+    );
+  }
+
+  if (isMcqOptionsQuestion(question)) {
+    return document.querySelector("[data-answer-option]:checked")?.value ?? "";
+  }
+
+  return document.querySelector("#answerInput")?.value ?? "";
+}
+
+function focusFirstAnswerInput() {
+  document.querySelector("[data-answer-input]")?.focus();
+}
+
+function getInitialInputState(question) {
+  if (!isMultiPartQuestion(question)) return "";
+
+  return Object.fromEntries((question.answer_parts ?? []).map((part) => [part.part_id, ""]));
+}
+
+function isMultiPartQuestion(question) {
+  return question.expected_format === "multi_part" && Array.isArray(question.answer_parts);
+}
+
+function isMcqOptionsQuestion(question) {
+  return question.expected_format === "mcq" && Array.isArray(question.options) && question.options.length > 0;
+}
+
+function usesWorkingConfirmation(question) {
+  return Boolean(question.requires_working_confirmation || question.audit_fields?.length);
+}
+
+function formatTextBlock(value) {
+  return escapeHtml(value)
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+function cssEscape(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+}
+
+function renderInstructionCallout() {
+  if (!quizHasCalculatorPolicy()) return "";
+
+  return `
+    <div class="instruction-callout">
+      <p><strong><u>Check the calculator instruction for every question.</u></strong></p>
+      <p>If it says <strong><u>Calculator: Not allowed</u></strong>, do it without a calculator and write your working on foolscap paper.</p>
+      <p>If it says <strong><u>Calculator: Allowed</u></strong>, you may use a calculator, but only after choosing the correct steps.</p>
+      <p>The calculator can help with arithmetic. It cannot read the story. No licence, no driving.</p>
+    </div>
+  `;
+}
+
+function quizHasCalculatorPolicy() {
+  return [...(quiz.practice_questions ?? []), ...(quiz.checkpoint_questions ?? [])].some(
+    (question) => question.calculator_policy
+  );
+}
+
+function bindQuestionMap(renderFunction) {
+  document.querySelectorAll(".question-map-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentIndex = Number(button.dataset.questionIndex);
+      renderFunction();
+    });
+  });
+}
+
+function getMapStatus(state, isCurrent) {
+  if (isCurrent) return { label: "Current", className: "current" };
+  if (!state.submitted) return { label: "Not tried", className: "not-tried" };
+  if (state.isCorrect) return { label: "Correct", className: "correct" };
+  return { label: "Tried", className: "tried" };
+}
+
+function escapeHtml(value) {
+  const replacements = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  };
+
+  return String(value).replace(/[&<>"']/g, (character) => replacements[character]);
+}
+
+function renderFeedback(state, mode) {
+  const feedback = document.querySelector("#feedback");
+  const status = mode === "Practice" ? document.querySelector("#practiceStatus") : null;
+
+  if (!state.submitted) {
+    feedback.textContent = "";
+    if (status) status.textContent = "Not submitted yet.";
+    return;
+  }
+
+  feedback.textContent = state.feedbackMessage;
+  feedback.className = state.isCorrect ? "feedback is-correct" : "feedback is-retry";
+  if (status) status.textContent = state.isCorrect ? "Latest answer: correct." : "Latest answer: try again.";
+}
+
+function getAttemptCount(questionId) {
+  return checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId).length;
+}
+
+function getLatestAttempt(questionId) {
+  const attempts = checkpointSession.attempts.filter((attempt) => attempt.question_id === questionId);
+  return attempts.length ? attempts[attempts.length - 1] : null;
+}
+
+function getSummaryStatus(latestAttempt) {
+  if (!latestAttempt || latestAttempt.feedback_code === "BLANK") return "Blank";
+  return latestAttempt.is_correct ? "Correct" : "Incorrect";
+}
+
+function renderLoadError(error) {
+  app.innerHTML = `
+    <section class="panel error-panel">
+      <p class="eyebrow">Local setup needed</p>
+      <h1>Quiz content did not load.</h1>
+      <p class="lede">Run a local server from the repo root, then open the local URL.</p>
+      <pre class="run-command">python -m http.server 8000</pre>
+      <p class="small-note">Then open http://localhost:8000/</p>
+    </section>
+  `;
+
+  console.error(error);
+}
+
+    </script>
+  </body>
+</html>
